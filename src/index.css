@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 20%;
 
-    --primary: 174 62% 40%;
+    --primary: 174 80% 30%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 45 100% 60%;
@@ -99,11 +99,11 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Work Sans', sans-serif;
+    font-family: "Work Sans", "Work Sans - fallback", Arial, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Work Sans', sans-serif;
+    font-family: "Work Sans", "Work Sans - fallback", Arial, sans-serif;
   }
 }
 
@@ -111,4 +111,5 @@
   .text-balance {
     text-wrap: balance;
   }
+
 }
