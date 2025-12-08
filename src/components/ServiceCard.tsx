@@ -17,9 +17,9 @@ const colorClasses = {
 
 const ServiceCard = ({ title, subtitle, color, image }: ServiceCardProps) => {
   return (
-    <div 
+    <div
       className={cn(
-        "relative rounded-3xl h-72 md:h-80 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl overflow-hidden flex",
+        "relative rounded-3xl h-40 md:h-56 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl overflow-hidden flex",
         colorClasses[color]
       )}
     >
@@ -32,12 +32,12 @@ const ServiceCard = ({ title, subtitle, color, image }: ServiceCardProps) => {
           {subtitle}
         </p>
       </div>
-      
+
       {/* Right side - Image */}
       {image && (
         <div className="w-1/2 h-full relative">
-          <img 
-            src={image} 
+          <img
+            src={image}
             alt={title}
             className="absolute inset-0 w-full h-full object-cover"
           />

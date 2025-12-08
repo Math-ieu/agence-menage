@@ -11,7 +11,7 @@ import serviceBureaux from "@/assets/service-bureaux.jpg";
 interface ServicesGridProps {
   type: "particulier" | "entreprise";
 }
-
+ 
 const particulierServices = [
   { title: "Ménage", subtitle: "Ponctuel", color: "orange" as const, image: serviceMenagePonctuel },
   { title: "Ménage", subtitle: "dans les Airbnb", color: "yellow" as const, image: serviceAirbnb },
