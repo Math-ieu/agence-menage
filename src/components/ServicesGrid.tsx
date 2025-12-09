@@ -17,14 +17,14 @@ const particulierServices = [
   { title: "Ménage", subtitle: "dans les Airbnb", color: "yellow" as const, image: serviceAirbnb },
   { title: "Ménage", subtitle: "fin de chantier", color: "purple" as const, image: serviceChantier },
   { title: "Ménage", subtitle: "Prédéménagement", color: "green" as const, image: serviceDemenagement },
-  { title: "Ménage", subtitle: "régulier avec abonnement", color: "blue" as const, image: serviceRegulier },
-  { title: "Grand", subtitle: "ménage", color: "orange" as const, image: serviceGrandMenage },
+  { title: "Ménage", subtitle: "régulier avec abonnement", color: "blue" as const, image: serviceRegulier, url: "/services/menage-regulier" },
+  { title: "Grand", subtitle: "ménage", color: "orange" as const, image: serviceGrandMenage, url: "/services/grand-menage" },
   { title: "Garde malade", subtitle: "à la journée", color: "yellow" as const, image: serviceGardeMalade },
-  { title: "Garde malade", subtitle: "régulier", color: "purple" as const, image: serviceGardeMalade },
+  { title: "Garde malade", subtitle: "régulier", color: "purple" as const, image: serviceGardeMalade, url: "/services/garde-malade" },
 ];
 
 const entrepriseServices = [
-  { title: "Ménage", subtitle: "Bureaux", color: "orange" as const, image: serviceBureaux },
+  { title: "Ménage", subtitle: "Bureaux", color: "orange" as const, image: serviceBureaux, url: "/services/menage-bureaux" },
   { title: "Grand Ménage", subtitle: "des locaux", color: "yellow" as const, image: serviceGrandMenage },
   { title: "Ménage", subtitle: "régulier/abonnement", color: "purple" as const, image: serviceRegulier },
   { title: "Placement", subtitle: "de femme de ménage", color: "green" as const, image: serviceMenagePonctuel },
@@ -55,6 +55,7 @@ const ServicesGrid = ({ type }: ServicesGridProps) => {
                   subtitle={service.subtitle}
                   color={service.color}
                   image={service.image}
+                  url={service.url}
                 />
               </div>
             ))}

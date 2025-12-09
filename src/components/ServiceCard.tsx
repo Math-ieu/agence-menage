@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface ServiceCardProps {
@@ -5,6 +6,7 @@ interface ServiceCardProps {
   subtitle: string;
   color: "green" | "orange" | "purple" | "yellow" | "blue";
   image?: string;
+  url?: string;
 }
 
 const colorClasses = {
@@ -15,8 +17,8 @@ const colorClasses = {
   blue: "bg-service-blue",
 };
 
-const ServiceCard = ({ title, subtitle, color, image }: ServiceCardProps) => {
-  return (
+const ServiceCard = ({ title, subtitle, color, image, url }: ServiceCardProps) => {
+  const cardContent = (
     <div
       className={cn(
         "relative rounded-3xl h-40 md:h-56 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl overflow-hidden flex",
@@ -45,6 +47,12 @@ const ServiceCard = ({ title, subtitle, color, image }: ServiceCardProps) => {
       )}
     </div>
   );
+
+  if (url) {
+    return <Link to={url}>{cardContent}</Link>;
+  }
+
+  return cardContent;
 };
 
 export default ServiceCard;
