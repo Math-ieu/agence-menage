@@ -16,7 +16,7 @@ const ServiceHeroSection = ({ title, description, image }: ServiceHeroSectionPro
             <p className="text-lg text-foreground leading-relaxed">
               {description}
             </p>
-          </div>
+          </div> 
           <div className="rounded-2xl overflow-hidden shadow-xl">
             <img
               src={image}

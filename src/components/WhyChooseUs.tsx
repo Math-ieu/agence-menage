@@ -12,7 +12,7 @@ const WhyChooseUs = () => {
       title: "Chargé de clientèle dédié 5j/7",
       description: "Notre Service Client est disponible du Lundi au Vendredi par email ou par téléphone.",
     },
-    {
+    { 
       icon: Monitor,
       title: "Réservation & gestion en ligne",
       description: "Réservation et gestion des prestations: tout se fait en ligne !",

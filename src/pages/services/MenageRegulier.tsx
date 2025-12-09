@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import serviceRegulier from "@/assets/service-regulier.jpg";
 
@@ -15,7 +16,7 @@ const MenageRegulier = () => {
   const [formData, setFormData] = useState({
     propertyType: "studio",
     frequency: "ponctuel",
-    duration: "4",
+    duration: 4,
     numberOfPeople: 1,
     city: "",
     neighborhood: "",
@@ -34,6 +35,7 @@ const MenageRegulier = () => {
     schedulingTime: "morning",
     schedulingHours: "09:00 - 12:00",
     schedulingDate: "",
+    fixedTime: "14:00",
     additionalServices: {
       produitsEtOutils: false
     },
@@ -57,8 +59,11 @@ const MenageRegulier = () => {
     toast.success("Réservation confirmée! Nous vous contactons bientôt.");
   };
 
-  const incrementPeople = () => setFormData({...formData, numberOfPeople: formData.numberOfPeople + 1});
-  const decrementPeople = () => setFormData({...formData, numberOfPeople: Math.max(1, formData.numberOfPeople - 1)});
+  const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
+  const decrementPeople = () => setFormData({ ...formData, numberOfPeople: Math.max(1, formData.numberOfPeople - 1) });
+
+  const incrementDuration = () => setFormData({ ...formData, duration: formData.duration + 1 });
+  const decrementDuration = () => setFormData({ ...formData, duration: Math.max(1, formData.duration - 1) });
 
   const updateRoomCount = (room: string, increment: boolean) => {
     setFormData({
@@ -68,6 +73,22 @@ const MenageRegulier = () => {
         [room]: Math.max(0, formData.rooms[room as keyof typeof formData.rooms] + (increment ? 1 : -1))
       }
     });
+  };
+
+  const frequencies = [
+    { value: "2fois", label: "2 fois par semaine" },
+    { value: "3fois", label: "3 fois par semaine - Recommandé" },
+    { value: "5fois", label: "5 fois par semaine" },
+    { value: "6fois", label: "6 fois par semaine" },
+    { value: "7fois", label: "7 fois par semaine" },
+    { value: "3foisMois", label: "3 fois par mois" },
+    { value: "1semaine2", label: "Une semaine sur deux" },
+    { value: "1foisMois", label: "1 fois par mois" }
+  ];
+
+  const getFrequencyLabel = (value: string) => {
+    const freq = frequencies.find(f => f.value === value);
+    return freq ? freq.label : "Ponctuel";
   };
 
   return (
@@ -83,20 +104,20 @@ const MenageRegulier = () => {
       <main className="flex-1 bg-background py-12">
         <div className="container max-w-4xl">
           <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="bg-primary/10 rounded-lg p-6 text-center">
-              <h2 className="text-2xl font-bold text-primary mb-2">
-                FORMULAIRE DE RESERVATION/régulier
+            <div className="bg-service-blue/10 rounded-lg p-6 text-center">
+              <h2 className="text-2xl font-bold text-service-blue mb-2">
+                FORMULAIRE DE RESERVATION
               </h2>
             </div>
 
             <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
               <div>
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-t-lg">
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-t-lg">
                   Type d'habitation
                 </h3>
                 <RadioGroup
                   value={formData.propertyType}
-                  onValueChange={(value) => setFormData({...formData, propertyType: value})}
+                  onValueChange={(value) => setFormData({ ...formData, propertyType: value })}
                   className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/30"
                 >
                   {["Studio", "Appartement", "Duplex", "Villa", "Maison"].map((type) => (
@@ -110,38 +131,34 @@ const MenageRegulier = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                  <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
                     Choisissez la fréquence
                   </h3>
-                  <RadioGroup
-                    value={formData.frequency}
-                    onValueChange={(value) => setFormData({...formData, frequency: value})}
-                    className="space-y-2"
-                  >
-                    {[
-                      { value: "2fois", label: "2 fois par semaine" },
-                      { value: "3fois", label: "3 fois par semaine - Recommandé" },
-                      { value: "5fois", label: "5 fois par semaine" },
-                      { value: "6fois", label: "6 fois par semaine" },
-                      { value: "7fois", label: "7 fois par semaine" },
-                      { value: "3foisMois", label: "3 fois par mois" },
-                      { value: "1semaine2", label: "Une semaine sur deux" },
-                      { value: "1foisMois", label: "1 fois par mois" }
-                    ].map((freq) => (
-                      <div key={freq.value} className="flex items-center space-x-2">
-                        <RadioGroupItem value={freq.value} id={freq.value} />
-                        <Label htmlFor={freq.value}>{freq.label}</Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
+                  <div className="p-4 bg-muted/30 rounded">
+                    <Select
+                      value={formData.frequency}
+                      onValueChange={(value) => setFormData({ ...formData, frequency: value })}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Sélectionnez une fréquence" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {frequencies.map((freq) => (
+                          <SelectItem key={freq.value} value={freq.value}>
+                            {freq.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
-                <div className="bg-accent/20 rounded-lg p-4 space-y-3">
+                <div className="bg-service-blue/10 rounded-lg p-4 space-y-3">
                   <h4 className="font-semibold">Votre réservation du :</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Fréquence :</span>
-                      <span className="font-medium">Ponctuel</span>
+                      <span className="font-medium">{getFrequencyLabel(formData.frequency)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Date :</span>
@@ -149,22 +166,29 @@ const MenageRegulier = () => {
                         <Input
                           type="date"
                           value={formData.schedulingDate}
-                          onChange={(e) => setFormData({...formData, schedulingDate: e.target.value})}
-                          className="h-8"
+                          onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
+                          className="h-8 w-full"
                         />
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Heures réservées :</span>
-                      <span className="font-medium">4 heures</span>
+                      <span className="font-medium">{formData.duration} heures</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Prix :</span>
-                      <span className="font-medium">à 14,00</span>
+                    <div className="flex justify-between items-center">
+                      <span>Heure :</span>
+                      <span className="font-medium w-32">
+                        <Input
+                          type="time"
+                          value={formData.fixedTime}
+                          onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
+                          className="h-8"
+                        />
+                      </span>
                     </div>
                   </div>
                   <div className="border-t pt-3 mt-3">
-                    <div className="text-2xl font-bold text-primary text-center border-2 border-primary rounded-lg p-3">
+                    <div className="text-2xl font-bold text-service-blue text-center border-2 border-service-blue rounded-lg p-3">
                       {totalPrice} DH
                     </div>
                   </div>
@@ -172,8 +196,8 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                  Durée Estimée
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                  Durée Estimée en heures
                 </h3>
                 <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
                   <Button
@@ -181,18 +205,19 @@ const MenageRegulier = () => {
                     variant="outline"
                     size="icon"
                     className="rounded-full"
-                    onClick={decrementPeople}
+                    onClick={decrementDuration}
                   >
                     -
                   </Button>
                   <span className="text-xl font-semibold min-w-[60px] text-center">
-                    {formData.duration}h
+                    {formData.duration}
                   </span>
                   <Button
                     type="button"
                     variant="outline"
                     size="icon"
                     className="rounded-full"
+                    onClick={incrementDuration}
                   >
                     +
                   </Button>
@@ -200,7 +225,7 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
                   Nombre de personne
                 </h3>
                 <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
@@ -229,19 +254,19 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
                   Où aura lieu votre ménage ?
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded">
                   <Input
                     placeholder="Ville , Casablanca"
                     value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   />
                   <Input
                     placeholder="Quartier : j'inscris le nom"
                     value={formData.neighborhood}
-                    onChange={(e) => setFormData({...formData, neighborhood: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                   />
                 </div>
                 <div className="mt-4 p-4 bg-muted/20 rounded">
@@ -249,14 +274,14 @@ const MenageRegulier = () => {
                   <Textarea
                     placeholder="Donnez-nous des repères pour faciliter le travail de ménage (points de référence pour la tournée du nettoyeur) après les points de repère"
                     value={formData.changeRepereNotes}
-                    onChange={(e) => setFormData({...formData, changeRepereNotes: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                     className="mt-2"
                   />
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
                   Présentez-nous votre domicile ainsi que les pièces qu'il contient
                 </h3>
                 <div className="space-y-4 p-4 bg-muted/30 rounded">
@@ -282,7 +307,7 @@ const MenageRegulier = () => {
                           type="button"
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full bg-accent"
+                          className="h-8 w-8 rounded-full bg-service-blue/20 hover:bg-service-blue/30 text-foreground"
                           onClick={() => updateRoomCount(room.key, false)}
                         >
                           -
@@ -294,7 +319,7 @@ const MenageRegulier = () => {
                           type="button"
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full bg-accent"
+                          className="h-8 w-8 rounded-full bg-service-blue/20 hover:bg-service-blue/30 text-foreground"
                           onClick={() => updateRoomCount(room.key, true)}
                         >
                           +
@@ -306,20 +331,26 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
                   Planning pour votre demande
                 </h3>
                 <div className="grid md:grid-cols-3 gap-6 p-4 bg-muted/30 rounded">
                   <div className="text-center">
                     <div className="font-semibold mb-2">Je souhaite une heure fixe</div>
-                    <div className="text-3xl font-bold">14:00</div>
-                    <div className="text-sm text-muted-foreground">Heure - Minutes</div>
+                    <div className="flex justify-center">
+                      <Input
+                        type="time"
+                        value={formData.fixedTime}
+                        onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
+                        className="w-32 text-center text-xl font-bold h-12"
+                      />
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="font-semibold mb-2">Je suis flexible et disponible</div>
                     <RadioGroup
                       value={formData.schedulingTime}
-                      onValueChange={(value) => setFormData({...formData, schedulingTime: value})}
+                      onValueChange={(value) => setFormData({ ...formData, schedulingTime: value })}
                       className="space-y-2"
                     >
                       <div className="flex items-center space-x-2">
@@ -334,15 +365,18 @@ const MenageRegulier = () => {
                   </div>
                   <div className="text-center">
                     <div className="font-semibold mb-2">Quand souhaitez-vous votre premier ménage ?</div>
-                    <Button type="button" variant="outline" className="w-full">
-                      sélectionnez un jour
-                    </Button>
+                    <Input
+                      type="date"
+                      value={formData.schedulingDate}
+                      onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
+                      className="w-full"
+                    />
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
                   Services optionnels
                 </h3>
                 <div className="flex items-center justify-between p-4 bg-muted/30 rounded">
@@ -355,7 +389,7 @@ const MenageRegulier = () => {
                     onCheckedChange={(checked) =>
                       setFormData({
                         ...formData,
-                        additionalServices: {...formData.additionalServices, produitsEtOutils: checked}
+                        additionalServices: { ...formData.additionalServices, produitsEtOutils: checked }
                       })
                     }
                   />
@@ -363,7 +397,7 @@ const MenageRegulier = () => {
               </div>
 
               <div className="bg-muted/30 rounded-lg p-6">
-                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4 -m-6 mb-4">
+                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4 -m-6 mb-4">
                   Mes informations
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -374,7 +408,7 @@ const MenageRegulier = () => {
                       <Input
                         placeholder="6 12 00 00 00"
                         value={formData.phoneNumber}
-                        onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                         required
                       />
                     </div>
@@ -386,7 +420,7 @@ const MenageRegulier = () => {
                       <Input
                         placeholder="6 12 00 00 00"
                         value={formData.whatsappNumber}
-                        onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                       />
                     </div>
                   </div>
@@ -394,7 +428,7 @@ const MenageRegulier = () => {
                     <Label>Nom*</Label>
                     <Input
                       value={formData.lastName}
-                      onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                       required
                       className="mt-1"
                     />
@@ -403,7 +437,7 @@ const MenageRegulier = () => {
                     <Label>Prénom*</Label>
                     <Input
                       value={formData.firstName}
-                      onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                       required
                       className="mt-1"
                     />
@@ -415,7 +449,7 @@ const MenageRegulier = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="px-12"
+                  className="px-12 bg-service-blue hover:bg-service-blue/90 text-white"
                 >
                   Confirmer ma réservation
                 </Button>

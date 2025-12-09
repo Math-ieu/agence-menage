@@ -15,7 +15,7 @@ const BookingSteps = () => {
       <div className="container">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-primary mb-12">
           Réservez votre ménage en 3 clics
-        </h2>
+        </h2> 
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           {steps.map((step, index) => (
