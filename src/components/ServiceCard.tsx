@@ -27,10 +27,10 @@ const ServiceCard = ({ title, subtitle, color, image, url }: ServiceCardProps) =
     >
       {/* Left side - Color background with text */}
       <div className="flex-1 p-6 flex flex-col justify-start z-10">
-        <h3 className="text-foreground font-bold text-2xl md:text-3xl leading-tight">
+        <h3 className="text-foreground font-[900] text-2xl md:text-[38px] leading-tight">
           {title}
         </h3>
-        <p className="text-foreground/70 text-base md:text-lg mt-1">
+        <p className="text-foreground/70 text-base md:text-lg mt-1 leading-[38px]">
           {subtitle}
         </p>
       </div>

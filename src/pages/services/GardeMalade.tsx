@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import serviceGardeMalade from "@/assets/service-garde-malade.jpg";
+import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 
 const GardeMalade = () => {
   const [formData, setFormData] = useState({
@@ -55,7 +56,7 @@ const GardeMalade = () => {
     lastName: ""
   });
 
-  const [totalPrice] = useState(350);
+  const totalPrice = formData.duration * 90;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +66,11 @@ const GardeMalade = () => {
       return;
     }
 
-    toast.success("Réservation confirmée! Nous vous contactons bientôt.");
+    const message = formatBookingMessage("Garde Malade", formData, totalPrice);
+    const whatsappLink = createWhatsAppLink("212669372603", message);
+
+    window.open(whatsappLink, '_blank');
+    toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
   };
 
   const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });

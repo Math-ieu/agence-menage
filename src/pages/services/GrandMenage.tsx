@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import serviceGrandMenage from "@/assets/service-grand-menage.jpg";
+import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 
 const GrandMenage = () => {
   const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ const GrandMenage = () => {
     changeRepereNotes: ""
   });
 
-  const [totalPrice] = useState(350);
+  const totalPrice = formData.duration * 100;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +57,11 @@ const GrandMenage = () => {
       return;
     }
 
-    toast.success("Réservation confirmée! Nous vous contactons bientôt.");
+    const message = formatBookingMessage("Grand Ménage", formData, totalPrice);
+    const whatsappLink = createWhatsAppLink("212669372603", message);
+
+    window.open(whatsappLink, '_blank');
+    toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
   };
 
   const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
