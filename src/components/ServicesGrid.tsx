@@ -13,7 +13,7 @@ interface ServicesGridProps {
 }
 
 const particulierServices = [
-  { title: "Ménage", subtitle: "standard", color: "#287271", image: serviceRegulier, url: "/services/menage-regulier" },
+  { title: "Ménage", subtitle: "standard", color: "#287271", image: serviceRegulier, url: "/services/menage-standard" },
   { title: "Grand", subtitle: "ménage", color: "#e6dec7", image: serviceGrandMenage, url: "/services/grand-menage" },
   { title: "Ménage", subtitle: "dans les Airbnb", color: "#9ed2ce", image: serviceAirbnb },
   { title: "Ménage", subtitle: "de fin de chantier", color: "#e9f6e9", image: serviceChantier },

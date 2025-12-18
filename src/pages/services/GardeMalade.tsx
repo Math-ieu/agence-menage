@@ -16,8 +16,9 @@ import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 
 const GardeMalade = () => {
   const [formData, setFormData] = useState({
-    frequency: "3foisSemaine",
-    duration: 4,
+    frequency: "oneshot",
+    subFrequency: "",
+    duration: 24,
     numberOfPeople: 1,
     careLocation: "domicile",
     careAddress: "",
@@ -56,7 +57,7 @@ const GardeMalade = () => {
     lastName: ""
   });
 
-  const totalPrice = formData.duration * 90;
+  const totalPrice = formData.numberOfDays * 500;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,9 +94,10 @@ const GardeMalade = () => {
     { value: "1foisMois", label: "1 fois par mois" }
   ];
 
-  const getFrequencyLabel = (value: string) => {
-    const freq = frequencies.find(f => f.value === value);
-    return freq ? freq.label : "Ponctuel";
+  const getFrequencyLabel = (value: string, subValue: string) => {
+    if (value === "oneshot") return "One shot - Tranche de 24h";
+    const freq = frequencies.find(f => f.value === subValue);
+    return freq ? `Abonnement - ${freq.label}` : "Abonnement";
   };
 
   return (
@@ -111,39 +113,56 @@ const GardeMalade = () => {
         />
 
         <main className="flex-1 bg-background py-12">
-          <div className="container max-w-4xl">
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="bg-primary/10 rounded-lg p-6 text-center">
-                <h2 className="text-2xl font-bold text-primary mb-2">
-                  FORMULAIRE DE RESERVATION GARDE MALADE
-                </h2>
-              </div>
-
-              <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
-                <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                    Choisissez la fréquence
-                  </h3>
-                  <div className="p-4 bg-muted/30 rounded">
-                    <Select
-                      value={formData.frequency}
-                      onValueChange={(value) => setFormData({ ...formData, frequency: value })}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Sélectionnez une fréquence" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {frequencies.map((freq) => (
-                          <SelectItem key={freq.value} value={freq.value}>
-                            {freq.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+          <div className="container max-w-5xl">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <div className="bg-primary/10 rounded-lg p-6 text-center">
+                  <h2 className="text-2xl font-bold text-primary mb-2">
+                    FORMULAIRE DE RESERVATION GARDE MALADE
+                  </h2>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
+                  <div>
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                      Choisissez la fréquence
+                    </h3>
+                    <div className="p-4 bg-muted/30 rounded space-y-4">
+                      <RadioGroup
+                        value={formData.frequency}
+                        onValueChange={(value) => setFormData({ ...formData, frequency: value, subFrequency: value === "oneshot" ? "" : formData.subFrequency, duration: value === "oneshot" ? 24 : formData.duration })}
+                        className="flex gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="oneshot" id="gm-oneshot" />
+                          <Label htmlFor="gm-oneshot">One shot (24h)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="subscription" id="gm-subscription" />
+                          <Label htmlFor="gm-subscription">Abonnement</Label>
+                        </div>
+                      </RadioGroup>
+
+                      {formData.frequency === "subscription" && (
+                        <Select
+                          value={formData.subFrequency}
+                          onValueChange={(value) => setFormData({ ...formData, subFrequency: value })}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Sélectionnez une fréquence" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {frequencies.map((freq) => (
+                              <SelectItem key={freq.value} value={freq.value}>
+                                {freq.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+                  </div>
+
                   <div>
                     <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                       Nombre de personne
@@ -170,47 +189,6 @@ const GardeMalade = () => {
                       >
                         +
                       </Button>
-                    </div>
-                  </div>
-
-                  <div className="bg-primary/10 rounded-lg p-4 space-y-3">
-                    <h4 className="font-semibold">Votre réservation du :</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>Fréquence :</span>
-                        <span className="font-medium">{getFrequencyLabel(formData.frequency)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Date :</span>
-                        <span className="font-medium">
-                          <Input
-                            type="date"
-                            value={formData.schedulingDate}
-                            onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
-                            className="h-8 w-full"
-                          />
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Heures réservées :</span>
-                        <span className="font-medium">{formData.duration} heures</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span>Heure :</span>
-                        <span className="font-medium w-32">
-                          <Input
-                            type="time"
-                            value={formData.fixedTime}
-                            onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
-                            className="h-8"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="border-t pt-3 mt-3">
-                      <div className="text-2xl font-bold text-primary text-center border-2 border-primary rounded-lg p-3">
-                        {totalPrice} DH
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -346,57 +324,7 @@ const GardeMalade = () => {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                      Tâches à effectuer
-                    </h3>
-                    <div className="space-y-3 p-4 bg-muted/30 rounded">
-                      {[
-                        { key: "cases", label: "Cases à cocher" },
-                        { key: "surveillance", label: "Surveillance générale / présence rassurante" },
-                        { key: "aideToilette", label: "Aide à la toilette" },
-                        { key: "aideHabillage", label: "Aide à l'habillage" },
-                        { key: "preparerRepas", label: "Préparer repas" },
-                        { key: "aideAlimentation", label: "Aide à l'alimentation" },
-                        { key: "priseMedicaments", label: "Prise de médicaments (sur ordonnance)" },
-                        { key: "accompagnementRDV", label: "Accompagnement aux RDV médicaux" },
-                        { key: "entretenirLinge", label: "Entretenir le linge" },
-                        { key: "menageLeger", label: "Ménage léger (pièce du malade, linge, etc.)" },
-                        { key: "autre", label: "Autre(s) :" }
-                      ].map((task) => (
-                        <div key={task.key} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`task-${task.key}`}
-                            checked={formData.careTasks[task.key as keyof typeof formData.careTasks]}
-                            onCheckedChange={(checked) =>
-                              setFormData({
-                                ...formData,
-                                careTasks: { ...formData.careTasks, [task.key]: checked }
-                              })
-                            }
-                          />
-                          <Label htmlFor={`task-${task.key}`}>{task.label}</Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
 
-                  <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                      Vous souhaitez une personne...
-                    </h3>
-                    <div className="flex items-center justify-between p-4 bg-muted/30 rounded">
-                      <Label htmlFor="overnight">Couchante</Label>
-                      <Switch
-                        id="overnight"
-                        checked={formData.isOvernight}
-                        onCheckedChange={(checked) => setFormData({ ...formData, isOvernight: checked })}
-                      />
-                      <Label htmlFor="overnight">Non couchante</Label>
-                    </div>
-                  </div>
-                </div>
 
                 <div>
                   <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
@@ -551,15 +479,50 @@ const GardeMalade = () => {
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="text-center pt-4">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="px-12 bg-primary hover:bg-primary/90 text-white"
-                  >
-                    Confirmer ma réservation
-                  </Button>
+              <div className="lg:col-span-1">
+                <div className="sticky top-24 space-y-6">
+                  <div className="bg-card rounded-lg border shadow-sm p-6 space-y-4">
+                    <h3 className="text-xl font-bold text-primary border-b pb-2">
+                      Ma Réservation
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Service:</span>
+                        <span className="font-medium text-right">Garde Malade</span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Fréquence:</span>
+                        <span className="font-medium text-right text-sm">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Jours:</span>
+                        <span className="font-medium text-right">{formData.numberOfDays}</span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Personnes:</span>
+                        <span className="font-medium text-right">{formData.numberOfPeople}</span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Date début:</span>
+                        <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t">
+                      <div className="flex justify-between items-center mb-6">
+                        <span className="text-lg font-bold">Total</span>
+                        <span className="text-2xl font-bold text-primary">{totalPrice} DH</span>
+                      </div>
+                      <Button
+                        type="submit"
+                        className="w-full bg-primary hover:bg-primary/90 text-white py-6 text-lg font-bold"
+                      >
+                        Confirmer ma réservation
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>
