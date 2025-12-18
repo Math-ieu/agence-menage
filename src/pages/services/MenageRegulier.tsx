@@ -97,27 +97,28 @@ const MenageRegulier = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ "--primary": "179 48% 30%" } as React.CSSProperties}>
       <Header />
 
       <ServiceHeroSection
         title="Ménage Régulier"
         description="Un service de ménage professionnel et régulier pour maintenir votre espace toujours propre. Nos équipes qualifiées interviennent à la fréquence de votre choix pour un confort optimal au quotidien."
         image={serviceRegulier}
+        primaryColor="#287271"
       />
 
       <main className="flex-1 bg-background py-12">
         <div className="container max-w-4xl">
           <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="bg-service-blue/10 rounded-lg p-6 text-center">
-              <h2 className="text-2xl font-bold text-service-blue mb-2">
+            <div className="bg-primary/10 rounded-lg p-6 text-center">
+              <h2 className="text-2xl font-bold text-primary mb-2">
                 FORMULAIRE DE RESERVATION
               </h2>
             </div>
 
             <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
               <div>
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-t-lg">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-t-lg">
                   Type d'habitation
                 </h3>
                 <RadioGroup
@@ -136,7 +137,7 @@ const MenageRegulier = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                     Choisissez la fréquence
                   </h3>
                   <div className="p-4 bg-muted/30 rounded">
@@ -158,7 +159,7 @@ const MenageRegulier = () => {
                   </div>
                 </div>
 
-                <div className="bg-service-blue/10 rounded-lg p-4 space-y-3">
+                <div className="bg-primary/10 rounded-lg p-4 space-y-3">
                   <h4 className="font-semibold">Votre réservation du :</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between">
@@ -193,7 +194,7 @@ const MenageRegulier = () => {
                     </div>
                   </div>
                   <div className="border-t pt-3 mt-3">
-                    <div className="text-2xl font-bold text-service-blue text-center border-2 border-service-blue rounded-lg p-3">
+                    <div className="text-2xl font-bold text-primary text-center border-2 border-primary rounded-lg p-3">
                       {totalPrice} DH
                     </div>
                   </div>
@@ -201,7 +202,7 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                   Durée Estimée en heures
                 </h3>
                 <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
@@ -230,7 +231,7 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                   Nombre de personne
                 </h3>
                 <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
@@ -259,7 +260,7 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                   Où aura lieu votre ménage ?
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded">
@@ -286,7 +287,7 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                   Présentez-nous votre domicile ainsi que les pièces qu'il contient
                 </h3>
                 <div className="space-y-4 p-4 bg-muted/30 rounded">
@@ -312,7 +313,7 @@ const MenageRegulier = () => {
                           type="button"
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full bg-service-blue/20 hover:bg-service-blue/30 text-foreground"
+                          className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
                           onClick={() => updateRoomCount(room.key, false)}
                         >
                           -
@@ -324,7 +325,7 @@ const MenageRegulier = () => {
                           type="button"
                           variant="outline"
                           size="icon"
-                          className="h-8 w-8 rounded-full bg-service-blue/20 hover:bg-service-blue/30 text-foreground"
+                          className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
                           onClick={() => updateRoomCount(room.key, true)}
                         >
                           +
@@ -336,7 +337,7 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                   Planning pour votre demande
                 </h3>
                 <div className="grid md:grid-cols-3 gap-6 p-4 bg-muted/30 rounded">
@@ -381,7 +382,7 @@ const MenageRegulier = () => {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                   Services optionnels
                 </h3>
                 <div className="flex items-center justify-between p-4 bg-muted/30 rounded">
@@ -402,7 +403,7 @@ const MenageRegulier = () => {
               </div>
 
               <div className="bg-muted/30 rounded-lg p-6">
-                <h3 className="text-xl font-bold bg-service-blue text-white p-3 rounded-lg mb-4 -m-6 mb-4">
+                <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4 -m-6 mb-4">
                   Mes informations
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -454,7 +455,7 @@ const MenageRegulier = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="px-12 bg-service-blue hover:bg-service-blue/90 text-white"
+                  className="px-12 bg-primary hover:bg-primary/90 text-white"
                 >
                   Confirmer ma réservation
                 </Button>
@@ -463,7 +464,6 @@ const MenageRegulier = () => {
           </form>
         </div>
       </main>
-
       <Footer />
     </div>
   );

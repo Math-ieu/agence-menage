@@ -9,7 +9,7 @@ const AboutSection = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-        }
+        } 
       },
       { threshold: 0.3 }
     );

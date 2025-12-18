@@ -10,10 +10,9 @@ const Header = () => {
 
   const navItems = [
     { label: "Accueil", href: "/" },
-    { label: "Service particulier", href: "/", active: isParticulier },
-    { label: "Service entreprise", href: "/entreprise", active: !isParticulier },
+    { label: "Services pour particuliers", href: "/", active: isParticulier },
+    { label: "Services pour entreprises", href: "/entreprise", active: !isParticulier },
     { label: "Espace employé", href: "#" },
-    { label: "Espace client", href: "#" },
     { label: "Contactez-nous", href: "#" },
   ];
 
@@ -22,19 +21,19 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background shadow-sm">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-background shadow-sm border-b">
+      <div className="container flex h-20 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logoPlaceholder} alt="Agence Ménage" className="h-12 w-auto" />
+          <img src={logoPlaceholder} alt="Agence Ménage" className="h-16 w-auto" />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
             <Link
               key={item.label}
               to={item.href}
-              className={`text-sm font-bold transition-colors hover:text-primary ${item.active
+              className={`text-base font-bold transition-colors hover:text-primary ${item.active
                   ? "text-primary border-b-2 border-primary pb-1"
                   : "text-foreground"
                 }`}

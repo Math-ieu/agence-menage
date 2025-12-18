@@ -40,7 +40,7 @@ const HeroSection = () => {
                       : "bg-transparent text-foreground hover:bg-muted"
                     }`}
                 >
-                  Service<br />pour particuliers
+                  Services<br />pour particuliers
                 </button>
               </Link>
               <Link to="/entreprise">
@@ -50,7 +50,7 @@ const HeroSection = () => {
                       : "bg-transparent text-foreground hover:bg-muted"
                     }`}
                 >
-                  Service<br />pour entreprises
+                  Services<br />pour entreprises
                 </button>
               </Link>
             </div>

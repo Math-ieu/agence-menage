@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 
 interface ServiceCardProps {
   title: string;
-  subtitle: string;
-  color: "green" | "orange" | "purple" | "yellow" | "blue";
+  subtitle?: string;
+  color: "green" | "orange" | "purple" | "yellow" | "blue" | string;
   image?: string;
   url?: string;
 }
@@ -18,21 +18,26 @@ const colorClasses = {
 };
 
 const ServiceCard = ({ title, subtitle, color, image, url }: ServiceCardProps) => {
+  const isHexColor = color.startsWith("#");
+
   const cardContent = (
     <div
       className={cn(
         "relative rounded-3xl h-40 md:h-56 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl overflow-hidden flex",
-        colorClasses[color]
+        !isHexColor && colorClasses[color as keyof typeof colorClasses]
       )}
+      style={isHexColor ? { backgroundColor: color } : {}}
     >
       {/* Left side - Color background with text */}
       <div className="flex-1 p-6 flex flex-col justify-start z-10">
         <h3 className="text-foreground font-[900] text-2xl md:text-[38px] leading-tight">
           {title}
         </h3>
-        <p className="text-foreground/70 text-base md:text-lg mt-1 leading-[38px]">
-          {subtitle}
-        </p>
+        {subtitle && (
+          <p className="text-foreground/70 text-base md:text-lg mt-1 leading-[38px]">
+            {subtitle}
+          </p>
+        )}
       </div>
 
       {/* Right side - Image */}

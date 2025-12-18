@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="flex flex-col items-start">
-            <img src={logoPlaceholder} alt="Agence Ménage" className="h-14 w-auto mb-6 brightness-0 invert" />
+            <img src={logoPlaceholder} alt="Agence Ménage" className="h-16 w-auto mb-6 brightness-0 invert" />
             <p className="text-primary-foreground/80 text-sm leading-relaxed">
               Votre partenaire de confiance pour un espace propre et serein.
             </p>
@@ -30,12 +30,12 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <Link to="/" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm">
-                  SERVICE POUR PARTICULIER
+                  SERVICES POUR PARTICULIERS
                 </Link>
               </li>
               <li>
                 <Link to="/entreprise" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm">
-                  SERVICE POUR ENTREPRISE
+                  SERVICES POUR ENTREPRISES
                 </Link>
               </li>
             </ul>

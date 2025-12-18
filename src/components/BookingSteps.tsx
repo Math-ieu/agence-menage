@@ -1,3 +1,5 @@
+import { Button } from "./ui/button";
+
 const BookingSteps = () => {
   const steps = [
     {
@@ -15,15 +17,21 @@ const BookingSteps = () => {
       <div className="container">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-primary mb-12">
           Réservez votre ménage en 3 clics
-        </h2> 
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto mb-10">
           {steps.map((step, index) => (
             <div key={index} className="text-center md:text-left">
               <h3 className="font-semibold text-foreground mb-2">{step.title}</h3>
               <p className="text-muted-foreground text-sm">{step.description}</p>
             </div>
           ))}
+        </div>
+
+        <div className="flex justify-center">
+          <Button size="lg" className="rounded-full px-8 text-lg font-bold">
+            Réservez maintenant
+          </Button>
         </div>
       </div>
     </section>

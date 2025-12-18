@@ -13,27 +13,24 @@ interface ServicesGridProps {
 }
 
 const particulierServices = [
-  { title: "Ménage", subtitle: "Ponctuel", color: "orange" as const, image: serviceMenagePonctuel },
-  { title: "Ménage", subtitle: "dans les Airbnb", color: "yellow" as const, image: serviceAirbnb },
-  { title: "Ménage", subtitle: "fin de chantier", color: "purple" as const, image: serviceChantier },
-  { title: "Ménage", subtitle: "Prédéménagement", color: "green" as const, image: serviceDemenagement },
-  { title: "Ménage", subtitle: "régulier avec abonnement", color: "blue" as const, image: serviceRegulier, url: "/services/menage-regulier" },
-  { title: "Grand", subtitle: "ménage", color: "orange" as const, image: serviceGrandMenage, url: "/services/grand-menage" },
-  { title: "Garde malade", subtitle: "à la journée", color: "yellow" as const, image: serviceGardeMalade },
-  { title: "Garde malade", subtitle: "régulier", color: "purple" as const, image: serviceGardeMalade, url: "/services/garde-malade" },
+  { title: "Ménage", subtitle: "standard", color: "#287271", image: serviceRegulier, url: "/services/menage-regulier" },
+  { title: "Grand", subtitle: "ménage", color: "#e6dec7", image: serviceGrandMenage, url: "/services/grand-menage" },
+  { title: "Ménage", subtitle: "dans les Airbnb", color: "#9ed2ce", image: serviceAirbnb },
+  { title: "Ménage", subtitle: "de fin de chantier", color: "#e9f6e9", image: serviceChantier },
+  { title: "Ménage", subtitle: "pré-déménagement", color: "#d1a246", image: serviceDemenagement },
+  { title: "Garde", subtitle: "malade", color: "#b46d2f", image: serviceGardeMalade, url: "/services/garde-malade" },
 ];
 
 const entrepriseServices = [
-  { title: "Ménage", subtitle: "Bureaux", color: "orange" as const, image: serviceBureaux, url: "/services/menage-bureaux" },
-  { title: "Grand Ménage", subtitle: "des locaux", color: "yellow" as const, image: serviceGrandMenage },
-  { title: "Ménage", subtitle: "régulier/abonnement", color: "purple" as const, image: serviceRegulier },
-  { title: "Placement", subtitle: "de femme de ménage", color: "green" as const, image: serviceMenagePonctuel },
-  { title: "Ménage", subtitle: "fin de chantier", color: "blue" as const, image: serviceChantier },
+  { title: "Ménage", subtitle: "Bureaux", color: "#05b5a0", image: serviceBureaux, url: "/services/menage-bureaux" },
+  { title: "Grand ménage", subtitle: "Bureaux", color: "#52bc7e", image: serviceGrandMenage },
+  { title: "Placement", subtitle: "de femme de ménage", color: "#bfd1a7", image: serviceMenagePonctuel },
+  { title: "Ménage", subtitle: "de fin de chantier", color: "#f5cf90", image: serviceChantier },
 ];
 
 const ServicesGrid = ({ type }: ServicesGridProps) => {
   const services = type === "particulier" ? particulierServices : entrepriseServices;
-  const title = type === "particulier" ? "Services particulier" : "Services entreprise";
+  const title = type === "particulier" ? "Services pour particuliers" : "Services pour entreprises";
 
   return (
     <section className="py-16 bg-background">
@@ -41,12 +38,12 @@ const ServicesGrid = ({ type }: ServicesGridProps) => {
         <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
           {title}
         </h2>
-        
+
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {services.map((service, index) => (
-              <div 
-                key={`${service.title}-${service.subtitle}`}
+            {services.map((service: any, index: number) => (
+              <div
+                key={`${service.title}-${service.subtitle || index}`}
                 className="animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
