@@ -16,7 +16,8 @@ import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 const GrandMenage = () => {
   const [formData, setFormData] = useState({
     propertyType: "studio",
-    frequency: "2foisMois",
+    frequency: "oneshot",
+    subFrequency: "",
     duration: 4,
     numberOfPeople: 1,
     city: "",
@@ -70,14 +71,46 @@ const GrandMenage = () => {
   const incrementDuration = () => setFormData({ ...formData, duration: formData.duration + 1 });
   const decrementDuration = () => setFormData({ ...formData, duration: Math.max(1, formData.duration - 1) });
 
-  const updateRoomCount = (room: string, increment: boolean) => {
-    setFormData({
-      ...formData,
-      rooms: {
-        ...formData.rooms,
-        [room]: Math.max(0, formData.rooms[room as keyof typeof formData.rooms] + (increment ? 1 : -1))
-      }
+  const calculateEstimation = (rooms: typeof formData.rooms) => {
+    const roomTimes: { [key: string]: number } = {
+      sallePrincipale: 90,
+      salleSansBain: 60,
+      salleDeBain: 40,
+      chambre: 50,
+      salonMezzanine: 40,
+      salonEuropeen: 40,
+      toilettesLavabo: 30,
+      cour: 30,
+      escalier: 30,
+      menageRangement: 45
+    };
+
+    let totalMinutes = 0;
+    Object.entries(rooms).forEach(([key, count]) => {
+      totalMinutes += (roomTimes[key] || 0) * count;
     });
+
+    const calculatedHours = Math.ceil(totalMinutes / 60);
+    const finalDuration = Math.max(4, calculatedHours);
+
+    // Heuristic: 1 person for 4h, 2 people if > 6h
+    const finalPeople = finalDuration > 6 ? 2 : 1;
+
+    setFormData(prev => ({
+      ...prev,
+      duration: finalDuration,
+      numberOfPeople: finalPeople,
+      rooms
+    }));
+  };
+
+  const updateRoomCount = (room: string, increment: boolean) => {
+    const newCount = Math.max(0, formData.rooms[room as keyof typeof formData.rooms] + (increment ? 1 : -1));
+    const newRooms = {
+      ...formData.rooms,
+      [room]: newCount
+    };
+    calculateEstimation(newRooms);
   };
 
   const frequencies = [
@@ -91,9 +124,10 @@ const GrandMenage = () => {
     { value: "1foisAn", label: "1 fois par an" }
   ];
 
-  const getFrequencyLabel = (value: string) => {
-    const freq = frequencies.find(f => f.value === value);
-    return freq ? freq.label : "Ponctuel";
+  const getFrequencyLabel = (value: string, subValue: string) => {
+    if (value === "oneshot") return "One shot";
+    const freq = frequencies.find(f => f.value === subValue);
+    return freq ? `Abonnement - ${freq.label}` : "Abonnement";
   };
 
   return (
@@ -141,28 +175,95 @@ const GrandMenage = () => {
                     <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                       Choisissez la fréquence
                     </h3>
-                    <div className="p-4 bg-muted/30 rounded">
-                      <Select
+                    <div className="p-4 bg-muted/30 rounded space-y-4">
+                      <RadioGroup
                         value={formData.frequency}
-                        onValueChange={(value) => setFormData({ ...formData, frequency: value })}
+                        onValueChange={(value) => setFormData({ ...formData, frequency: value, subFrequency: value === "oneshot" ? "" : formData.subFrequency })}
+                        className="flex gap-4"
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Sélectionnez une fréquence" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {frequencies.map((freq) => (
-                            <SelectItem key={freq.value} value={freq.value}>
-                              {freq.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="oneshot" id="gm-oneshot" />
+                          <Label htmlFor="gm-oneshot">One shot</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="subscription" id="gm-subscription" />
+                          <Label htmlFor="gm-subscription">Abonnement</Label>
+                        </div>
+                      </RadioGroup>
+
+                      {formData.frequency === "subscription" && (
+                        <Select
+                          value={formData.subFrequency}
+                          onValueChange={(value) => setFormData({ ...formData, subFrequency: value })}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Sélectionnez une fréquence" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {frequencies.map((freq) => (
+                              <SelectItem key={freq.value} value={freq.value}>
+                                {freq.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
                     </div>
                   </div>
 
                   <div>
                     <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                      Durée Estimée en heures
+                      Présentez-nous votre domicile ainsi que les pièces qu'il contient
+                    </h3>
+                    <div className="space-y-4 p-4 bg-muted/30 rounded">
+                      {[
+                        { key: "sallePrincipale", label: "Salle principale + salle de bain", time: "75 min - 90 min" },
+                        { key: "salleSansBain", label: "Salle principale sans salle de bain", time: "45 min - 60 min" },
+                        { key: "salleDeBain", label: "Salle de bain", time: "20 min - 40 min" },
+                        { key: "chambre", label: "Chambre/Pièce/bureau/chambre d'enfant", time: "30 min - 50 min" },
+                        { key: "salonMezzanine", label: "Salon Mezzanine", time: "30 min - 40 min" },
+                        { key: "salonEuropeen", label: "Salon Européen", time: "30 min - 40 min" },
+                        { key: "toilettesLavabo", label: "Toilettes lavabo", time: "20 min - 30 min" },
+                        { key: "cour", label: "Cour/Terrasse", time: "20 min - 30 min" },
+                        { key: "escalier", label: "Escalier", time: "20 min - 30 min" },
+                        { key: "menageRangement", label: "Ménage / rangement", time: "30 min - 45 min" }
+                      ].map((room) => (
+                        <div key={room.key} className="flex items-center justify-between border-b pb-2">
+                          <div className="flex-1">
+                            <div className="font-medium">{room.label}</div>
+                            <div className="text-sm text-muted-foreground">{room.time}</div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
+                              onClick={() => updateRoomCount(room.key, false)}
+                            >
+                              -
+                            </Button>
+                            <span className="w-8 text-center font-semibold">
+                              {formData.rooms[room.key as keyof typeof formData.rooms]}
+                            </span>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
+                              onClick={() => updateRoomCount(room.key, true)}
+                            >
+                              +
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                      Durée estimée
                     </h3>
                     <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
                       <Button
@@ -171,6 +272,7 @@ const GrandMenage = () => {
                         size="icon"
                         className="rounded-full"
                         onClick={decrementDuration}
+                        disabled={formData.duration <= 4}
                       >
                         -
                       </Button>
@@ -188,6 +290,7 @@ const GrandMenage = () => {
                       </Button>
                     </div>
                   </div>
+
 
                   <div>
                     <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
@@ -242,56 +345,6 @@ const GrandMenage = () => {
                         onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                         className="mt-2"
                       />
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                      Présentez-nous votre domicile ainsi que les pièces qu'il contient
-                    </h3>
-                    <div className="space-y-4 p-4 bg-muted/30 rounded">
-                      {[
-                        { key: "sallePrincipale", label: "Salle principale + salle de bain", time: "75 min - 90 min" },
-                        { key: "salleSansBain", label: "Salle principale sans salle de bain", time: "45 min - 60 min" },
-                        { key: "salleDeBain", label: "Salle de bain", time: "20 min - 40 min" },
-                        { key: "chambre", label: "Chambre/Pièce/bureau/chambre d'enfant", time: "30 min - 50 min" },
-                        { key: "salonMezzanine", label: "Salon Mezzanine", time: "30 min - 40 min" },
-                        { key: "salonEuropeen", label: "Salon Européen", time: "30 min - 40 min" },
-                        { key: "toilettesLavabo", label: "Toilettes lavabo", time: "20 min - 30 min" },
-                        { key: "cour", label: "Cour/Terrasse", time: "20 min - 30 min" },
-                        { key: "escalier", label: "Escalier", time: "20 min - 30 min" },
-                        { key: "menageRangement", label: "Ménage / rangement", time: "30 min - 45 min" }
-                      ].map((room) => (
-                        <div key={room.key} className="flex items-center justify-between border-b pb-2">
-                          <div className="flex-1">
-                            <div className="font-medium">{room.label}</div>
-                            <div className="text-sm text-muted-foreground">{room.time}</div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
-                              onClick={() => updateRoomCount(room.key, false)}
-                            >
-                              -
-                            </Button>
-                            <span className="w-8 text-center font-semibold">
-                              {formData.rooms[room.key as keyof typeof formData.rooms]}
-                            </span>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
-                              onClick={() => updateRoomCount(room.key, true)}
-                            >
-                              +
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
                     </div>
                   </div>
 
@@ -426,7 +479,7 @@ const GrandMenage = () => {
                       </div>
                       <div className="flex justify-between gap-4">
                         <span className="text-muted-foreground">Fréquence:</span>
-                        <span className="font-medium text-right">{getFrequencyLabel(formData.frequency)}</span>
+                        <span className="font-medium text-right text-sm">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
                       </div>
                       <div className="flex justify-between gap-4">
                         <span className="text-muted-foreground">Durée:</span>

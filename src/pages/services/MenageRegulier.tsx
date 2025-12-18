@@ -262,7 +262,7 @@ const MenageRegulier = () => {
 
                 <div>
                   <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                    Durée Estimée
+                    Durée estimée
                   </h3>
                   <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
                     <Button
