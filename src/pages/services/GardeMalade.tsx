@@ -104,7 +104,7 @@ const GardeMalade = () => {
 
       <div style={{ "--primary": "28 59% 45%" } as React.CSSProperties}>
         <ServiceHeroSection
-          title="Garde Malade Régulier"
+          title="Garde Malade"
           description="Un accompagnement professionnel et bienveillant pour vos proches. Nos auxiliaires de vie qualifiés offrent une assistance adaptée aux besoins spécifiques de chaque patient, avec douceur et respect, pour garantir leur bien-être et leur confort au quotidien."
           image={serviceGardeMalade}
           primaryColor="#b46d2f"
