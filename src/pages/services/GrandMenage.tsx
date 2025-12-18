@@ -463,13 +463,22 @@ const GrandMenage = () => {
                     </div>
                   </div>
 
+                  <div className="flex justify-center pt-8">
+                    <Button
+                      type="submit"
+                      className="w-full md:w-auto px-12 bg-primary hover:bg-primary/90 text-white py-6 text-lg font-bold"
+                    >
+                      Confirmer ma réservation
+                    </Button>
+                  </div>
+
                 </div>
               </div>
 
               <div className="lg:col-span-1">
                 <div className="sticky top-24 space-y-6">
-                  <div className="bg-card rounded-lg border shadow-sm p-6 space-y-4">
-                    <h3 className="text-xl font-bold text-primary border-b pb-2">
+                  <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4">
+                    <h3 className="text-xl font-bold text-primary border-b pb-2 text-center">
                       Ma Réservation
                     </h3>
                     <div className="space-y-3">
@@ -500,16 +509,10 @@ const GrandMenage = () => {
                     </div>
 
                     <div className="pt-4 border-t">
-                      <div className="flex justify-between items-center mb-6">
+                      <div className="flex justify-between items-center">
                         <span className="text-lg font-bold">Total</span>
                         <span className="text-2xl font-bold text-primary">{totalPrice} DH</span>
                       </div>
-                      <Button
-                        type="submit"
-                        className="w-full bg-primary hover:bg-primary/90 text-white py-6 text-lg font-bold"
-                      >
-                        Confirmer ma réservation
-                      </Button>
                     </div>
                   </div>
                 </div>
