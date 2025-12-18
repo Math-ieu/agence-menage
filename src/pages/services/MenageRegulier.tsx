@@ -94,15 +94,15 @@ const MenageRegulier = () => {
   const getFrequencyLabel = (value: string) => {
     const freq = frequencies.find(f => f.value === value);
     return freq ? freq.label : "Ponctuel";
-  };
+  }; 
 
   return (
     <div className="min-h-screen flex flex-col" style={{ "--primary": "179 48% 30%" } as React.CSSProperties}>
       <Header />
 
       <ServiceHeroSection
-        title="Ménage Régulier"
-        description="Un service de ménage professionnel et régulier pour maintenir votre espace toujours propre. Nos équipes qualifiées interviennent à la fréquence de votre choix pour un confort optimal au quotidien."
+        title="Ménage standard"
+        description="Un service de ménage professionnel et ponctuel pour maintenir votre espace toujours propre. Nos équipes qualifiées interviennent à la fréquence de votre choix pour un confort optimal au quotidien."
         image={serviceRegulier}
         primaryColor="#287271"
       />
@@ -156,7 +156,7 @@ const MenageRegulier = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div>   
                 </div>
 
                 <div className="bg-primary/10 rounded-lg p-4 space-y-3">
