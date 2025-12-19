@@ -6,12 +6,13 @@ import { Menu, X } from "lucide-react";
 const Header = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isParticulier = location.pathname === "/";
+  const isParticulier = location.pathname === "/" || location.pathname.startsWith("/services/particulier");
+  const isEntreprise = location.pathname === "/entreprise" || location.pathname.startsWith("/services/entreprise");
 
   const navItems = [
     { label: "Accueil", href: "/" },
     { label: "Services pour particuliers", href: "/", active: isParticulier },
-    { label: "Services pour entreprises", href: "/entreprise", active: !isParticulier },
+    { label: "Services pour entreprises", href: "/entreprise", active: isEntreprise },
     { label: "Espace employé", href: "#" },
     { label: "Contactez-nous", href: "#" },
   ];
@@ -34,8 +35,8 @@ const Header = () => {
               key={item.label}
               to={item.href}
               className={`text-base font-bold transition-colors hover:text-primary ${item.active
-                  ? "text-primary border-b-2 border-primary pb-1"
-                  : "text-foreground"
+                ? "text-primary border-b-2 border-primary pb-1"
+                : "text-foreground"
                 }`}
             >
               {item.label}
@@ -62,8 +63,8 @@ const Header = () => {
                 key={item.label}
                 to={item.href}
                 className={`text-base font-medium transition-colors hover:text-primary p-2 rounded-md hover:bg-accent ${item.active
-                    ? "text-primary bg-accent/50"
-                    : "text-foreground"
+                  ? "text-primary bg-accent/50"
+                  : "text-foreground"
                   }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >

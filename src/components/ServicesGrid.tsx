@@ -13,17 +13,17 @@ interface ServicesGridProps {
 }
 
 const particulierServices = [
-  { title: "Ménage", subtitle: "standard", color: "#287271", image: serviceRegulier, url: "/services/menage-standard" },
-  { title: "Grand", subtitle: "ménage", color: "#e6dec7", image: serviceGrandMenage, url: "/services/grand-menage" },
+  { title: "Ménage", subtitle: "standard", color: "#287271", image: serviceRegulier, url: "/services/particulier/menage-standard" },
+  { title: "Grand", subtitle: "ménage", color: "#e6dec7", image: serviceGrandMenage, url: "/services/particulier/grand-menage" },
   { title: "Ménage", subtitle: "dans les Airbnb", color: "#9ed2ce", image: serviceAirbnb },
   { title: "Ménage", subtitle: "de fin de chantier", color: "#e9f6e9", image: serviceChantier },
   { title: "Ménage", subtitle: "pré-déménagement", color: "#d1a246", image: serviceDemenagement },
-  { title: "Garde", subtitle: "malade", color: "#b46d2f", image: serviceGardeMalade, url: "/services/garde-malade" },
+  { title: "Garde", subtitle: "malade", color: "#b46d2f", image: serviceGardeMalade, url: "/services/particulier/garde-malade" },
 ];
 
 const entrepriseServices = [
-  { title: "Ménage", subtitle: "Bureaux", color: "#05b5a0", image: serviceBureaux, url: "/services/menage-bureaux" },
-  { title: "Grand ménage", subtitle: "Bureaux", color: "#52bc7e", image: serviceGrandMenage },
+  { title: "Ménage", subtitle: "Bureaux", color: "#05b5a0", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
+  { title: "Grand ménage", subtitle: "Bureaux", color: "#52bc7e", image: serviceGrandMenage, url: "/services/entreprise/grand-menage-bureaux" },
   { title: "Placement", subtitle: "de femme de ménage", color: "#bfd1a7", image: serviceMenagePonctuel },
   { title: "Ménage", subtitle: "de fin de chantier", color: "#f5cf90", image: serviceChantier },
 ];
