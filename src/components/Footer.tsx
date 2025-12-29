@@ -46,15 +46,15 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-primary-foreground/80 text-sm">
                 <Phone className="w-4 h-4" />
-                +33 1 23 45 67 89
+                +212 6 12 34 56 78
               </li>
               <li className="flex items-center gap-2 text-primary-foreground/80 text-sm">
                 <Mail className="w-4 h-4" />
-                contact@agence-menage.fr
+                contact@agence-menage.com
               </li>
               <li className="flex items-start gap-2 text-primary-foreground/80 text-sm">
                 <MapPin className="w-4 h-4 mt-0.5" />
-                123 Rue du Ménage, Paris
+                123 Rue de George Sand, Casablanca, Maroc
               </li>
             </ul>
           </div>
