@@ -33,9 +33,9 @@ const ServicesGrid = ({ type }: ServicesGridProps) => {
   const title = type === "particulier" ? "Services pour particuliers" : "Services pour entreprises";
 
   return (
-    <section className={`py-16 transition-colors duration-300 ${type === "entreprise" ? "bg-primary" : "bg-background"}`}>
+    <section className={`py-16 transition-colors duration-[2000ms] ${type === "entreprise" ? "bg-primary" : "bg-background"}`}>
       <div className="container">
-        <h2 className={`text-3xl md:text-4xl font-bold text-center mb-12 transition-colors duration-300 ${type === "entreprise" ? "text-white" : "text-foreground"
+        <h2 className={`text-3xl md:text-4xl font-bold text-center mb-12 transition-colors duration-[2000ms] ${type === "entreprise" ? "text-white" : "text-foreground"
           }`}>
           {title}
         </h2>

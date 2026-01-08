@@ -412,7 +412,7 @@ const GrandMenageBureaux = () => {
                                     <div className="flex justify-center pt-8">
                                         <Button
                                             type="submit"
-                                            className="w-full md:w-auto px-12 bg-primary hover:bg-primary/90 text-white py-6 text-lg font-bold"
+                                            className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full md:w-auto md:min-w-[250px] transition-all hover:scale-105 active:scale-95"
                                         >
                                             Confirmer ma réservation
                                         </Button>
