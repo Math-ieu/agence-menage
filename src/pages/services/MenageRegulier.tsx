@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import serviceRegulier from "@/assets/service-regulier.jpg";
 import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
+import "@/styles/sticky-summary.css";
 
 const MenageRegulier = () => {
   const [formData, setFormData] = useState({
@@ -143,13 +144,56 @@ const MenageRegulier = () => {
 
       <main className="flex-1 bg-background py-12">
         <div className="container max-w-5xl">
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-              <div className="bg-primary/10 rounded-lg p-6 text-center">
-                <h2 className="text-2xl font-bold text-primary mb-2">
-                  FORMULAIRE DE RESERVATION
-                </h2>
+          <div className="bg-primary/10 rounded-lg p-6 text-center mb-8">
+            <h2 className="text-2xl font-bold text-primary mb-2">
+              FORMULAIRE DE RESERVATION
+            </h2>
+          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
+              <div className="lg:sticky lg:top-24 space-y-6">
+                <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4">
+                  <h3 className="text-xl font-bold text-primary border-b pb-2 text-center">
+                    Ma Réservation
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between gap-4">
+                      <span className="text-muted-foreground">Service:</span>
+                      <span className="font-medium text-right">Ménage standard</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-muted-foreground">Fréquence:</span>
+                      <span className="font-medium text-right">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-muted-foreground">Durée:</span>
+                      <span className="font-medium text-right">{formData.duration} heures</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-muted-foreground">Personnes:</span>
+                      <span className="font-medium text-right">{formData.numberOfPeople}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-muted-foreground">Date:</span>
+                      <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-muted-foreground">Heure:</span>
+                      <span className="font-medium text-right">{formData.fixedTime}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-bold">Total</span>
+                      <span className="text-2xl font-bold text-primary">{totalPrice} DH</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
+
+            <div className="lg:col-span-2 space-y-8">
 
               <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
                 <div>
@@ -473,52 +517,10 @@ const MenageRegulier = () => {
                 </div>
               </div>
             </div>
-
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-6">
-                <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4">
-                  <h3 className="text-xl font-bold text-primary border-b pb-2 text-center">
-                    Ma Réservation
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">Service:</span>
-                      <span className="font-medium text-right">Ménage standard</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">Fréquence:</span>
-                      <span className="font-medium text-right">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">Durée:</span>
-                      <span className="font-medium text-right">{formData.duration} heures</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">Personnes:</span>
-                      <span className="font-medium text-right">{formData.numberOfPeople}</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">Date:</span>
-                      <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">Heure:</span>
-                      <span className="font-medium text-right">{formData.fixedTime}</span>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t">
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold">Total</span>
-                      <span className="text-2xl font-bold text-primary">{totalPrice} DH</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </form>
         </div>
       </main>
+
       <Footer />
     </div>
   );

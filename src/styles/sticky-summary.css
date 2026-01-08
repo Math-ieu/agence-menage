@@ -1,0 +1,43 @@
+@media (max-width: 1023px) {
+  .sticky-reservation-summary-container {
+    position: sticky;
+    top: 5rem;
+    z-index: 40;
+    background-color: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid hsl(var(--primary) / 0.2);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    margin: 0 -1rem 1rem -1rem;
+    padding: 0.4rem 1rem;
+  }
+
+  /* Target nested elements to reduce font size and spacing by ~20% */
+  .sticky-reservation-summary-container .bg-primary\/5 {
+    padding: 1rem !important;
+    /* Reduced from default p-6 */
+    space-y: 2 !important;
+    /* Reduced from space-y-4 */
+  }
+
+  .sticky-reservation-summary-container h3 {
+    font-size: 1rem !important;
+    /* Reduced from text-xl */
+    margin-bottom: 0.5rem !important;
+  }
+
+  .sticky-reservation-summary-container .space-y-3 {
+    margin-top: 0.5rem !important;
+  }
+
+  .sticky-reservation-summary-container .space-y-3>div {
+    font-size: 0.8rem !important;
+    /* Reduced font size */
+    margin-bottom: 0.25rem !important;
+  }
+
+  .sticky-reservation-summary-container .text-2xl {
+    font-size: 1.25rem !important;
+    /* Reduced from text-2xl */
+  }
+}
