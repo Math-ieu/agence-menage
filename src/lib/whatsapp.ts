@@ -43,3 +43,38 @@ ${details}
 --------------------------------
 Ceci est une simulation de réservation.`;
 };
+
+export const formatCandidateMessage = (data: any): string => {
+    return `*Nouvelle Candidature - Espace Employé*
+
+*Nom:* ${data.lastName}
+*Prénom:* ${data.firstName}
+*Téléphone:* ${data.phoneNumber}
+*WhatsApp:* ${data.whatsappNumber || "Non spécifié"}
+
+*Poste:* ${data.position}
+*Expérience:* ${data.experience}
+*Langues:* ${data.languages.join(", ")}
+*Nationalité:* ${data.nationality}
+
+*Ville:* ${data.city}
+*Quartier:* ${data.neighborhood}
+
+--------------------------------
+Envoyé depuis l'Espace Employé.`;
+};
+
+export const formatContactMessage = (data: any): string => {
+    return `*Nouveau Message - Contact*
+
+*Nom:* ${data.name}
+*Email:* ${data.email}
+*Téléphone:* ${data.phoneNumber}
+*WhatsApp:* ${data.whatsappNumber || "Non spécifié"}
+
+*Message:*
+${data.message}
+
+--------------------------------
+Envoyé depuis la page Contact.`;
+};

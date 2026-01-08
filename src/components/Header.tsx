@@ -13,8 +13,8 @@ const Header = () => {
     { label: "Accueil", href: "/" },
     { label: "Services pour particuliers", href: "/", active: isParticulier },
     { label: "Services pour entreprises", href: "/entreprise", active: isEntreprise },
-    { label: "Espace employé", href: "#" },
-    { label: "Contactez-nous", href: "#" },
+    { label: "Espace employé", href: "/espace-employe", active: location.pathname === "/espace-employe" },
+    { label: "Contactez-nous", href: "/contact", active: location.pathname === "/contact" },
   ];
 
   const toggleMobileMenu = () => {
@@ -40,8 +40,8 @@ const Header = () => {
               key={item.label}
               to={item.href}
               className={`text-base font-bold transition-colors ${isEntreprise
-                  ? `hover:text-white/80 ${item.active ? "text-white border-b-2 border-white pb-1" : "text-white/90"}`
-                  : `hover:text-primary ${item.active ? "text-primary border-b-2 border-primary pb-1" : "text-foreground"}`
+                ? `hover:text-white/80 ${item.active ? "text-white border-b-2 border-white pb-1" : "text-white/90"}`
+                : `hover:text-primary ${item.active ? "text-primary border-b-2 border-primary pb-1" : "text-foreground"}`
                 }`}
             >
               {item.label}
@@ -69,8 +69,8 @@ const Header = () => {
                 key={item.label}
                 to={item.href}
                 className={`text-base font-medium transition-colors p-2 rounded-md ${isEntreprise
-                    ? `hover:bg-white/10 ${item.active ? "text-white bg-white/20" : "text-white/90"}`
-                    : `hover:text-primary hover:bg-accent ${item.active ? "text-primary bg-accent/50" : "text-foreground"}`
+                  ? `hover:bg-white/10 ${item.active ? "text-white bg-white/20" : "text-white/90"}`
+                  : `hover:text-primary hover:bg-accent ${item.active ? "text-primary bg-accent/50" : "text-foreground"}`
                   }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >

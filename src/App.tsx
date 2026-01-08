@@ -11,6 +11,8 @@ import GrandMenage from "./pages/services/GrandMenage";
 import GardeMalade from "./pages/services/GardeMalade";
 import MenageBureaux from "./pages/services/MenageBureaux";
 import GrandMenageBureaux from "./pages/services/GrandMenageBureaux";
+import EspaceEmploye from "./pages/EspaceEmploye";
+import Contact from "./pages/Contact";
 import { Analytics } from "@vercel/analytics/react"
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/entreprise" element={<Entreprise />} />
+          <Route path="/espace-employe" element={<EspaceEmploye />} />
+          <Route path="/contact" element={<Contact />} />
 
           {/* Particulier Services */}
           <Route path="/services/particulier/menage-standard" element={<MenageRegulier />} />
