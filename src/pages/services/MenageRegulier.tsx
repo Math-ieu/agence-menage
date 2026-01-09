@@ -9,8 +9,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import serviceRegulier from "@/assets/service-regulier.jpg";
+import cleaningProduct from "@/assets/cleaning-product.png";
 import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
@@ -24,16 +26,16 @@ const MenageRegulier = () => {
     city: "",
     neighborhood: "",
     rooms: {
-      sallePrincipale: 0,
-      salleSansBain: 0,
+      cuisine: 0,
+      suiteAvecBain: 0,
+      suiteSansBain: 0,
       salleDeBain: 0,
       chambre: 0,
       salonMezzanine: 0,
       salonEuropeen: 0,
       toilettesLavabo: 0,
-      cour: 0,
-      escalier: 0,
-      menageRangement: 0
+      rooftop: 0,
+      escalier: 0
     },
     schedulingTime: "morning",
     schedulingHours: "09:00 - 12:00",
@@ -49,7 +51,8 @@ const MenageRegulier = () => {
     changeRepereNotes: ""
   });
 
-  const totalPrice = formData.duration * 85;
+  const totalPrice = (formData.duration * 85) + (formData.additionalServices.produitsEtOutils ? 90 : 0);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,16 +77,16 @@ const MenageRegulier = () => {
 
   const calculateEstimation = (rooms: typeof formData.rooms) => {
     const roomTimes: Record<string, number> = {
-      sallePrincipale: 82.5,
-      salleSansBain: 52.5,
+      cuisine: 45,
+      suiteAvecBain: 75,
+      suiteSansBain: 45,
       salleDeBain: 30,
       chambre: 40,
       salonMezzanine: 35,
       salonEuropeen: 35,
       toilettesLavabo: 25,
-      cour: 25,
-      escalier: 25,
-      menageRangement: 37.5
+      rooftop: 30,
+      escalier: 25
     };
 
     let totalMinutes = 0;
@@ -144,8 +147,8 @@ const MenageRegulier = () => {
 
       <main className="flex-1 bg-background py-12">
         <div className="container max-w-5xl">
-          <div className="bg-primary/10 rounded-lg p-6 text-center mb-8">
-            <h2 className="text-2xl font-bold text-primary mb-2">
+          <div className="bg-[#e9f2f2] rounded-lg p-6 text-center mb-8 border border-[#d1e0e0]">
+            <h2 className="text-2xl font-bold text-[#1c6664] mb-2">
               FORMULAIRE DE RESERVATION
             </h2>
           </div>
@@ -197,40 +200,40 @@ const MenageRegulier = () => {
 
               <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-t-lg">
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg mb-4 text-center">
                     Type d'habitation
                   </h3>
                   <RadioGroup
                     value={formData.propertyType}
                     onValueChange={(value) => setFormData({ ...formData, propertyType: value })}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/30"
+                    className="flex flex-wrap gap-8 p-4"
                   >
                     {["Studio", "Appartement", "Duplex", "Villa", "Maison"].map((type) => (
-                      <div key={type} className="flex items-center space-x-2">
-                        <RadioGroupItem value={type.toLowerCase()} id={type} />
-                        <Label htmlFor={type}>{type}</Label>
+                      <div key={type} className="flex items-center space-x-3">
+                        <RadioGroupItem value={type.toLowerCase()} id={type} className="border-[#1c6664] text-[#1c6664]" />
+                        <Label htmlFor={type} className="font-medium text-slate-700">{type}</Label>
                       </div>
                     ))}
                   </RadioGroup>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg mb-4 text-center">
                     Choisissez la fréquence
                   </h3>
-                  <div className="p-4 bg-muted/30 rounded space-y-4">
+                  <div className="p-4 space-y-4">
                     <RadioGroup
                       value={formData.frequency}
                       onValueChange={(value) => setFormData({ ...formData, frequency: value, subFrequency: value === "oneshot" ? "" : formData.subFrequency })}
-                      className="flex gap-4"
+                      className="flex gap-8"
                     >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="oneshot" id="oneshot" />
-                        <Label htmlFor="oneshot">One shot</Label>
+                      <div className="flex items-center space-x-3">
+                        <RadioGroupItem value="oneshot" id="oneshot" className="border-[#1c6664] text-[#1c6664]" />
+                        <Label htmlFor="oneshot" className="font-medium text-slate-700">Une fois</Label>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="subscription" id="subscription" />
-                        <Label htmlFor="subscription">Abonnement</Label>
+                      <div className="flex items-center space-x-3">
+                        <RadioGroupItem value="subscription" id="subscription" className="border-[#1c6664] text-[#1c6664]" />
+                        <Label htmlFor="subscription" className="font-medium text-slate-700">Abonnement</Label>
                       </div>
                     </RadioGroup>
 
@@ -255,49 +258,64 @@ const MenageRegulier = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                    Présentez-nous votre domicile ainsi que les pièces qu'il contient
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg text-center mb-2">
+                    Merci de nous décrire votre domicile ainsi que les différentes pièces qui le composent
                   </h3>
-                  <div className="space-y-4 p-4 bg-muted/30 rounded">
+                  <p className="text-red-500 text-xs text-right mb-4">
+                    cliquez sur + ou - pour décrire les pièces de votre logement
+                  </p>
+                  <div className="space-y-4 p-4 border rounded-xl bg-white">
                     {[
-                      { key: "sallePrincipale", label: "Salle principale + salle de bain", time: "75 min - 90 min" },
-                      { key: "salleSansBain", label: "Salle principale sans salle de bain", time: "45 min - 60 min" },
-                      { key: "salleDeBain", label: "Salle de bain", time: "20 min - 40 min" },
-                      { key: "chambre", label: "Chambre/Pièce/bureau/chambre d'enfant", time: "30 min - 50 min" },
-                      { key: "salonMezzanine", label: "Salon Mezzanine", time: "30 min - 40 min" },
-                      { key: "salonEuropeen", label: "Salon Européen", time: "30 min - 40 min" },
-                      { key: "toilettesLavabo", label: "Toilettes lavabo", time: "20 min - 30 min" },
-                      { key: "cour", label: "Cour/Terrasse", time: "20 min - 30 min" },
-                      { key: "escalier", label: "Escalier", time: "20 min - 30 min" },
-                      { key: "menageRangement", label: "Ménage / rangement", time: "30 min - 45 min" }
+                      { key: "cuisine", label: "Cuisine", time: "45 min" },
+                      { key: "suiteAvecBain", label: "Suite parentale avec salle de bain", time: "75 min" },
+                      { key: "suiteSansBain", label: "Suite parentale sans salle de bain", time: "45 min" },
+                      { key: "salleDeBain", label: "Salle de bain", time: "30 min" },
+                      { key: "chambre", label: "Chambre/pièce/bureau/chambre d'enfant", time: "40 min" },
+                      { key: "salonMezzanine", label: "salon Mezzanine", time: "35 min" },
+                      { key: "salonEuropeen", label: "salon européen", time: "35 min" },
+                      { key: "toilettesLavabo", label: "toilette Lavabo", time: "25 min" },
+                      { key: "rooftop", label: "Rooftop", time: "30 min", type: "checkbox" },
+                      { key: "escalier", label: "Escalier", time: "25 min", type: "checkbox" }
                     ].map((room) => (
-                      <div key={room.key} className="flex items-center justify-between border-b pb-2">
+                      <div key={room.key} className="flex items-center justify-between border-b border-dashed pb-3 last:border-0 last:pb-0">
                         <div className="flex-1">
-                          <div className="font-medium">{room.label}</div>
-                          <div className="text-sm text-muted-foreground">{room.time}</div>
+                          <div className="font-bold text-slate-800">{room.label}</div>
+                          <div className="text-xs text-slate-400 italic">{room.time}</div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
-                            onClick={() => updateRoomCount(room.key, false)}
-                          >
-                            -
-                          </Button>
-                          <span className="w-8 text-center font-semibold">
-                            {formData.rooms[room.key as keyof typeof formData.rooms]}
-                          </span>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 rounded-full bg-primary/20 hover:bg-primary/30 text-foreground"
-                            onClick={() => updateRoomCount(room.key, true)}
-                          >
-                            +
-                          </Button>
+                        <div className="flex items-center gap-4">
+                          {room.type === "checkbox" ? (
+                            <Checkbox
+                              checked={formData.rooms[room.key as keyof typeof formData.rooms] > 0}
+                              onCheckedChange={(checked) => {
+                                updateRoomCount(room.key, !!checked);
+                              }}
+                              className="h-6 w-6 rounded border-slate-300 data-[state=checked]:bg-[#1c6664] data-[state=checked]:border-[#1c6664]"
+                            />
+                          ) : (
+                            <div className="flex items-center gap-3 bg-[#f0f7f7] rounded-full p-1">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 rounded-full bg-slate-200 text-[#1c6664] hover:bg-slate-300"
+                                onClick={() => updateRoomCount(room.key, false)}
+                              >
+                                -
+                              </Button>
+                              <span className="w-4 text-center font-bold text-[#1c6664] text-sm">
+                                {formData.rooms[room.key as keyof typeof formData.rooms]}
+                              </span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 rounded-full bg-slate-200 text-[#1c6664] hover:bg-slate-300"
+                                onClick={() => updateRoomCount(room.key, true)}
+                              >
+                                +
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -305,203 +323,247 @@ const MenageRegulier = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                    Durée estimée
+                  <div className="bg-[#f8fafc] border border-slate-200 rounded-xl p-6 flex flex-col items-center justify-center space-y-2 mb-8 shadow-inner">
+                    <p className="text-red-500 text-xs text-center font-medium">
+                      D'après les options choisies, nous recommandons {formData.duration} heures pour un ménage total.
+                    </p>
+                    <div className="bg-[#94a3a3] text-white text-3xl font-bold px-10 py-3 rounded-full shadow-lg">
+                      {formData.duration}H : 00
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg text-center mb-2">
+                    Précisez le temps qui vous convient le mieux.
                   </h3>
-                  <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
+                  <p className="text-red-500 text-[10px] text-center mb-4">
+                    La durée initiale de votre ménage est de {formData.duration} h
+                  </p>
+                  <div className="flex items-center justify-center gap-8 p-4">
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
-                      className="rounded-full"
+                      className="h-10 w-10 rounded-full bg-[#f0f7f7] text-[#1c6664] hover:bg-[#e0eded] shadow-sm border border-slate-100"
                       onClick={decrementDuration}
-                      disabled={formData.duration <= 4}
+                      disabled={formData.duration <= 1}
                     >
-                      -
+                      <span className="text-2xl">-</span>
                     </Button>
-                    <span className="text-xl font-semibold min-w-[60px] text-center">
+                    <span className="text-2xl font-bold text-[#1c6664] min-w-[40px] text-center">
                       {formData.duration}
                     </span>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
-                      className="rounded-full"
+                      className="h-10 w-10 rounded-full bg-[#f0f7f7] text-[#1c6664] hover:bg-[#e0eded] shadow-sm border border-slate-100"
                       onClick={incrementDuration}
                     >
-                      +
+                      <span className="text-2xl">+</span>
                     </Button>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg text-center mb-4">
                     Nombre de personne
                   </h3>
-                  <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
+                  <div className="flex items-center justify-center gap-8 p-4">
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
-                      className="rounded-full"
+                      className="h-10 w-10 rounded-full bg-[#f0f7f7] text-[#1c6664] hover:bg-[#e0eded] shadow-sm border border-slate-100"
                       onClick={decrementPeople}
                     >
-                      -
+                      <span className="text-2xl">-</span>
                     </Button>
-                    <span className="text-xl font-semibold min-w-[60px] text-center">
+                    <span className="text-2xl font-bold text-[#1c6664] min-w-[40px] text-center">
                       {formData.numberOfPeople}
                     </span>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
-                      className="rounded-full"
+                      className="h-10 w-10 rounded-full bg-[#f0f7f7] text-[#1c6664] hover:bg-[#e0eded] shadow-sm border border-slate-100"
                       onClick={incrementPeople}
                     >
-                      +
+                      <span className="text-2xl">+</span>
                     </Button>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                    Où aura lieu votre ménage ?
-                  </h3>
-                  <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded">
-                    <Input
-                      placeholder="Ville , Casablanca"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    />
-                    <Input
-                      placeholder="Quartier : j'inscris le nom"
-                      value={formData.neighborhood}
-                      onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-                    />
-                  </div>
-                  <div className="mt-4 p-4 bg-muted/20 rounded">
-                    <Label className="font-semibold">Champs de repère</Label>
-                    <Textarea
-                      placeholder="Donnez-nous des repères pour faciliter le travail de ménage (points de référence pour la tournée du nettoyeur) après les points de repère"
-                      value={formData.changeRepereNotes}
-                      onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-
-
-
-                <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg mb-4 text-center">
                     Planning pour votre demande
                   </h3>
-                  <div className="grid md:grid-cols-3 gap-6 p-4 bg-muted/30 rounded">
-                    <div className="text-center">
-                      <div className="font-semibold mb-2">Je souhaite une heure fixe</div>
+                  <div className="grid md:grid-cols-3 gap-6 p-4 border rounded-xl bg-white">
+                    <div className="text-center space-y-3">
+                      <div className="font-bold text-[#1c6664] text-sm">Je souhaite une heure fixe</div>
                       <div className="flex justify-center">
                         <Input
                           type="time"
                           value={formData.fixedTime}
                           onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
-                          className="w-32 text-center text-xl font-bold h-12"
+                          className="w-32 text-center text-xl font-bold h-12 border-[#1c6664]/30"
                         />
                       </div>
                     </div>
-                    <div className="text-center">
-                      <div className="font-semibold mb-2">Je suis flexible et disponible</div>
+                    <div className="text-center space-y-3">
+                      <div className="font-bold text-[#1c6664] text-sm">Je suis flexible et disponible</div>
                       <RadioGroup
                         value={formData.schedulingTime}
                         onValueChange={(value) => setFormData({ ...formData, schedulingTime: value })}
-                        className="space-y-2"
+                        className="space-y-2 text-left inline-block"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="morning" id="morning" />
-                          <Label htmlFor="morning">Le matin (09h 00 - 12h 00)</Label>
+                          <RadioGroupItem value="morning" id="morning" className="border-[#1c6664] text-[#1c6664]" />
+                          <Label htmlFor="morning" className="text-sm font-medium">Le matin (09h - 12h)</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="afternoon" id="afternoon" />
-                          <Label htmlFor="afternoon">L'après midi (13h 00 - 18h 00)</Label>
+                          <RadioGroupItem value="afternoon" id="afternoon" className="border-[#1c6664] text-[#1c6664]" />
+                          <Label htmlFor="afternoon" className="text-sm font-medium">L'après midi (13h - 18h)</Label>
                         </div>
                       </RadioGroup>
                     </div>
-                    <div className="text-center">
-                      <div className="font-semibold mb-2">Quand souhaitez-vous votre premier ménage ?</div>
+                    <div className="text-center space-y-3">
+                      <div className="font-bold text-[#1c6664] text-sm">Premier ménage ?</div>
                       <Input
                         type="date"
                         value={formData.schedulingDate}
                         onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
-                        className="w-full"
+                        className="w-full border-slate-300"
                       />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg mb-4 text-center">
                     Services optionnels
                   </h3>
-                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded">
-                    <div className="flex items-center gap-3">
-                      <span className="text-4xl">🧴</span>
-                      <span className="font-medium">Produits et outils + 150dh</span>
+                  <div className="p-6 border rounded-xl bg-slate-50/50 space-y-4">
+                    <div className="text-center font-bold text-[#1c6664] mb-4">
+                      Produit fournis par l'agence ménage :
                     </div>
-                    <Switch
-                      checked={formData.additionalServices.produitsEtOutils}
-                      onCheckedChange={(checked) =>
-                        setFormData({
-                          ...formData,
-                          additionalServices: { ...formData.additionalServices, produitsEtOutils: checked }
-                        })
-                      }
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto mb-6">
+                      {[
+                        "Chiffon microfibre",
+                        "Produit multi surface",
+                        "Nettoyant sanitaire",
+                        "Nettoyant dégraissant",
+                        "Nettoyant vitre & miroir"
+                      ].map((item) => (
+                        <div key={item} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#1c6664]" />
+                          <span className="text-sm font-medium text-slate-700">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={cleaningProduct}
+                          alt="Produits"
+                          className="w-12 h-12 object-contain"
+                        />
+                        <span className="font-bold text-[#1c6664]">Produit : + 90 dh</span>
+                      </div>
+                      <Switch
+                        checked={formData.additionalServices.produitsEtOutils}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            additionalServices: { ...formData.additionalServices, produitsEtOutils: checked }
+                          })
+                        }
+                        className="data-[state=checked]:bg-[#1c6664]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg mb-4 text-center">
+                    Où aura lieu votre ménage ?
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4 p-4 border rounded-xl bg-white mb-4">
+                    <Input
+                      placeholder="Ville , Casablanca"
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      className="border-slate-300"
+                    />
+                    <Input
+                      placeholder="Quartier : j'inscris le nom"
+                      value={formData.neighborhood}
+                      onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
+                      className="border-slate-300"
+                    />
+                  </div>
+                  <div className="p-4 border rounded-xl bg-white">
+                    <Label className="font-bold text-[#1c6664]">Champs de repère</Label>
+                    <Textarea
+                      placeholder="Donnez-nous des repères pour faciliter le travail de ménage (points de référence pour la tournée du nettoyeur) après les points de repère"
+                      value={formData.changeRepereNotes}
+                      onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
+                      className="mt-2 border-slate-300"
                     />
                   </div>
                 </div>
 
-                <div className="bg-muted/30 rounded-lg p-6">
-                  <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4 -m-6 mb-4">
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                  <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 text-center">
                     Mes informations
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Numéro de téléphone*</Label>
-                      <div className="flex gap-2 mt-1">
-                        <Input value="+212" disabled className="w-20" />
+                  <div className="p-6 grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="font-bold text-[#1c6664] text-sm">Numéro de téléphone*</Label>
+                      <div className="flex gap-2">
+                        <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#1c6664] flex items-center">
+                          +212
+                        </div>
                         <Input
                           placeholder="6 12 00 00 00"
                           value={formData.phoneNumber}
                           onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                           required
+                          className="border-slate-300 h-11"
                         />
                       </div>
                     </div>
-                    <div>
-                      <Label>Numéro whatsapp*</Label>
-                      <div className="flex gap-2 mt-1">
-                        <Input value="+212" disabled className="w-20" />
+                    <div className="space-y-2">
+                      <Label className="font-bold text-[#1c6664] text-sm">Numéro whatsapp</Label>
+                      <div className="flex gap-2">
+                        <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#1c6664] flex items-center">
+                          +212
+                        </div>
                         <Input
                           placeholder="6 12 00 00 00"
                           value={formData.whatsappNumber}
                           onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
+                          className="border-slate-300 h-11"
                         />
                       </div>
                     </div>
-                    <div>
-                      <Label>Nom*</Label>
+                    <div className="space-y-2">
+                      <Label className="font-bold text-[#1c6664] text-sm">Nom*</Label>
                       <Input
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                         required
-                        className="mt-1"
+                        className="mt-1 border-slate-300 h-11"
+                        placeholder="Votre nom"
                       />
                     </div>
-                    <div>
-                      <Label>Prénom*</Label>
+                    <div className="space-y-2">
+                      <Label className="font-bold text-[#1c6664] text-sm">Prénom*</Label>
                       <Input
                         value={formData.firstName}
                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                         required
-                        className="mt-1"
+                        className="mt-1 border-slate-300 h-11"
+                        placeholder="Votre prénom"
                       />
                     </div>
                   </div>
