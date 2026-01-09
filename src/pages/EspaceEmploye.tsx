@@ -126,7 +126,7 @@ const EspaceEmploye = () => {
                 {/* Form Section */}
                 <section className="py-16 px-4 bg-slate-50">
                     <div className="container max-w-4xl">
-                        <div className="bg-white p-6 md:p-12 rounded-3xl shadow-xl border border-slate-100">
+                        <div className="bg-card p-6 rounded-lg shadow-sm border border-slate-100">
                             <div className="text-center mb-10">
                                 <h2 className="text-3xl font-bold text-slate-800 mb-2">Formulaire de candidature</h2>
                                 <p className="text-slate-500">Remplissez les informations ci-dessous pour postuler</p>
@@ -286,7 +286,7 @@ const EspaceEmploye = () => {
                                 <div className="flex justify-center pt-6">
                                     <Button
                                         type="submit"
-                                        className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg h-auto rounded-full w-full md:w-auto md:min-w-[250px]"
+                                        className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full md:w-auto md:min-w-[250px] transition-all hover:scale-105 active:scale-95"
                                     >
                                         Soumettre ma candidature
                                     </Button>

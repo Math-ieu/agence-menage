@@ -47,7 +47,7 @@ const Contact = () => {
                 {/* Form Section */}
                 <section className="py-16 px-4 bg-slate-50">
                     <div className="container max-w-4xl">
-                        <div className="bg-white p-6 md:p-12 rounded-3xl shadow-xl border border-slate-100">
+                        <div className="bg-card p-6 rounded-lg shadow-sm border border-slate-100">
                             <div className="text-center mb-10">
                                 <h2 className="text-3xl font-bold text-slate-800 mb-2">Ecrivez-nous</h2>
                                 <p className="text-slate-500">Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais</p>
