@@ -107,7 +107,25 @@ const GrandMenage = () => {
       <div style={{ "--primary": "45 30% 82%" } as React.CSSProperties}>
         <ServiceHeroSection
           title="Grand Ménage"
-          description="Un nettoyage en profondeur de votre espace pour un résultat impeccable. Notre service de grand ménage comprend un nettoyage minutieux de toutes les surfaces, coins et recoins pour un environnement parfaitement propre et sain."
+          description={`Le grand ménage a pour objectif d’assurer la propreté et l’entretien courant des espaces attribués.
+Il comprend le :
+- Nettoyage de cuisine
+- Lavage de vaisselle
+- Balayage du sol et des tapis
+- Nettoyage du sol
+- Nettoyage des portes de placard
+- Nettoyage des chambres
+- Nettoyages des salles de bains et toilettes
+- Depoussierage des meubles
+- Nettoyage de vitres intérieures accessibles
+- Changement des draps
+- Rangement de la vaisselle
+- Vidage et nettoyage de la poubelle
+- Lessivage murs
+- Nettoyage des dessous de lits et canapés
+- Nettoyage des placards de cuisine
+- Organisation du dressing
+- Nettoyage du frigo`}
           image={serviceGrandMenage}
           primaryColor="#e2d9c2"
         />

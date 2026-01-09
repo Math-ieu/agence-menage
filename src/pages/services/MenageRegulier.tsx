@@ -140,7 +140,21 @@ const MenageRegulier = () => {
 
       <ServiceHeroSection
         title="Ménage standard"
-        description="Un service de ménage professionnel et ponctuel pour maintenir votre espace toujours propre. Nos équipes qualifiées interviennent à la fréquence de votre choix pour un confort optimal au quotidien."
+        description={`Le ménage standard a pour objectif d’assurer la propreté et l’entretien courant des espaces attribués.
+Il comprend le :
+
+- Nettoyage de cuisine
+- Lavage de vaisselle
+- Balayage du sol et des tapis
+- Nettoyage du sol
+- Nettoyage des portes de placard
+- Nettoyage des chambres
+- Nettoyages des salles de bains et toilettes
+- Depoussierage des meubles
+- Nettoyage des vitres intérieurs accessibles
+- Changement des draps
+- Rangement de la vaisselle
+- Vidage et nettoyage de la poubelle`}
         image={serviceRegulier}
         primaryColor="#287271"
       />
