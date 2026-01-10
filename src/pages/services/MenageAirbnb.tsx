@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import serviceAirbnb from "@/assets/service-airbnb.jpg";
+import serviceAirbnb from "@/assets/service-airbnb-new.png";
 import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 

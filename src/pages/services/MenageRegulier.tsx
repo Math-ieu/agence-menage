@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import serviceRegulier from "@/assets/service-regulier.jpg";
+import serviceRegulier from "@/assets/service-standard-new.png";
 import cleaningProduct from "@/assets/cleaning-product.png";
 import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";

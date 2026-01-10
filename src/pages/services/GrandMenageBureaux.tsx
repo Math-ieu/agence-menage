@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import serviceGrandMenage from "@/assets/service-grand-menage.jpg";
+import serviceGrandMenage from "@/assets/service-grand-new.png";
 import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 

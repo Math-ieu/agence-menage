@@ -10,16 +10,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import serviceBureaux from "@/assets/service-bureaux.jpg";
+import serviceBureaux from "@/assets/service-bureaux-new.png";
 import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
 const MenageBureaux = () => {
   const [formData, setFormData] = useState({
-    officeSurface: "",
+    officeSurface: "0-70",
     frequency: "oneshot",
     subFrequency: "",
-    duration: 4,
+    duration: 2,
     numberOfPeople: 1,
     city: "",
     neighborhood: "",
@@ -28,21 +28,45 @@ const MenageBureaux = () => {
     schedulingDate: "",
     fixedTime: "14:00",
     additionalServices: {
-      produitsEtOutils: false
+      produitsEtOutils: false,
+      torchonsEtSerpierres: false
     },
     phoneNumber: "",
     whatsappNumber: "",
-    firstName: "",
-    lastName: "",
+    entityName: "",
+    contactPerson: "",
+    email: "",
     changeRepereNotes: ""
   });
 
-  const totalPrice = Number(formData.officeSurface) * 10;
+  const calculateResources = (range: string) => {
+    switch (range) {
+      case "0-70": return { duration: 2, people: 1 };
+      case "71-150": return { duration: 4, people: 1 };
+      case "151-300": return { duration: 8, people: 1 };
+      case "300+": return { duration: 8, people: 2 };
+      default: return { duration: 2, people: 1 };
+    }
+  };
+
+  const handleSurfaceChange = (range: string) => {
+    const { duration, people } = calculateResources(range);
+    setFormData({
+      ...formData,
+      officeSurface: range,
+      duration,
+      numberOfPeople: people
+    });
+  };
+
+  const basePrice = formData.duration * formData.numberOfPeople * 60;
+  const productsPrice = formData.additionalServices.produitsEtOutils ? 60 : 0;
+  const totalPrice = basePrice + productsPrice;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
+    if (!formData.entityName || !formData.contactPerson || !formData.phoneNumber) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
@@ -52,22 +76,6 @@ const MenageBureaux = () => {
 
     window.open(whatsappLink, '_blank');
     toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
-  };
-
-  const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
-  const decrementPeople = () => setFormData({ ...formData, numberOfPeople: Math.max(1, formData.numberOfPeople - 1) });
-
-  const incrementDuration = () => setFormData({ ...formData, duration: formData.duration + 1 });
-  const decrementDuration = () => setFormData({ ...formData, duration: Math.max(4, formData.duration - 1) });
-
-  const handleSurfaceChange = (surface: string) => {
-    const numericSurface = Number(surface);
-    const suggestedPeople = numericSurface > 150 ? 2 : 1;
-    setFormData({
-      ...formData,
-      officeSurface: surface,
-      numberOfPeople: suggestedPeople
-    });
   };
 
   const frequencies = [
@@ -94,15 +102,15 @@ const MenageBureaux = () => {
       <div style={{ "--primary": "173 95% 36%" } as React.CSSProperties}>
         <ServiceHeroSection
           title="Ménage Bureaux"
-          description="Un service de nettoyage professionnel adapté aux besoins de votre entreprise. Nos équipes spécialisées garantissent un environnement de travail propre, sain et accueillant pour vos collaborateurs et clients, avec des solutions flexibles adaptées à vos horaires."
+          description="Nettoyage des espaces de travail afin de garantir un environnement propre, sain et agréable pour les employés et les visiteurs. La prestation comprend : Le dépoussiérage des bureaux, plans de travail et surfaces accessibles, Le nettoyage des sols (balayage, serpière…), Le vidage des poubelles, Le nettoyage des vitres accessibles, L’entretien des espaces communs (salles de réunion, couloirs, cuisine, escaliers), nettoyage des bureaux, chaises, sols, toilettes… ainsi que les balcons, escaliers lorsqu’ils sont accessibles."
           image={serviceBureaux}
           primaryColor="#05b5a0"
         />
 
         <main className="flex-1 bg-background py-12">
           <div className="container max-w-5xl">
-            <div className="bg-primary/10 rounded-lg p-6 text-center mb-8">
-              <h2 className="text-2xl font-bold text-primary mb-2">
+            <div className="bg-[#e0f2f1] rounded-lg p-6 text-center mb-8 border border-[#b2dfdb]">
+              <h2 className="text-2xl font-bold text-primary mb-2 uppercase tracking-wide">
                 FORMULAIRE DE RESERVATION
               </h2>
             </div>
@@ -114,23 +122,31 @@ const MenageBureaux = () => {
                       Ma Réservation
                     </h3>
                     <div className="space-y-3">
-                      <div className="flex justify-between gap-4">
+                      <div className="flex justify-between gap-4 border-b border-primary/10 pb-2">
                         <span className="text-muted-foreground">Service:</span>
                         <span className="font-medium text-right">Ménage Bureaux</span>
                       </div>
                       <div className="flex justify-between gap-4">
                         <span className="text-muted-foreground">Fréquence:</span>
-                        <span className="font-medium text-right">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
+                        <span className="font-medium text-right text-sm">
+                          {getFrequencyLabel(formData.frequency, formData.subFrequency)}
+                        </span>
                       </div>
                       <div className="flex justify-between gap-4">
                         <span className="text-muted-foreground">Superficie:</span>
-                        <span className="font-medium text-right">{formData.officeSurface} m²</span>
+                        <span className="font-medium text-right">
+                          {formData.officeSurface === "300+" ? "300m² et plus" : `${formData.officeSurface} m²`}
+                        </span>
                       </div>
                       <div className="flex justify-between gap-4">
                         <span className="text-muted-foreground">Personnes:</span>
                         <span className="font-medium text-right">{formData.numberOfPeople}</span>
                       </div>
                       <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Durée:</span>
+                        <span className="font-medium text-right">{formData.duration}h</span>
+                      </div>
+                      <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
                         <span className="text-muted-foreground">Date:</span>
                         <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
                       </div>
@@ -154,16 +170,34 @@ const MenageBureaux = () => {
 
                 <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
                   <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg text-center mb-4 uppercase">
                       Superficie de votre cadre en M²
                     </h3>
-                    <div className="p-4 bg-muted/30 rounded">
-                      <Input
-                        placeholder="55 m²"
-                        value={formData.officeSurface}
-                        onChange={(e) => handleSurfaceChange(e.target.value)}
-                        type="number"
-                      />
+                    <div className="p-6 bg-muted/30 rounded-xl border border-muted">
+                      <p className="text-center text-red-500 text-xs font-bold mb-4 italic">
+                        *(cliquez sur une superficie afin d'avoir un prix approximatif sur votre prestation)*
+                      </p>
+                      <div className="grid grid-cols-2 gap-6">
+                        {[
+                          { range: "0-70", label: "0m² - 70 m²" },
+                          { range: "71-150", label: "71m² - 150 m²" },
+                          { range: "151-300", label: "151m² - 300 m²" },
+                          { range: "300+", label: "300m² et plus" }
+                        ].map((item) => (
+                          <div
+                            key={item.range}
+                            className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all cursor-pointer group ${formData.officeSurface === item.range ? 'border-primary bg-white shadow-md' : 'border-transparent bg-white/50 hover:bg-white'}`}
+                            onClick={() => handleSurfaceChange(item.range)}
+                          >
+                            <div className={`w-4 h-4 rounded-full border-2 mb-2 flex items-center justify-center ${formData.officeSurface === item.range ? 'border-primary bg-primary' : 'border-muted-foreground'}`}>
+                              {formData.officeSurface === item.range && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                            </div>
+                            <span className={`font-bold text-sm ${formData.officeSurface === item.range ? 'text-primary' : 'text-muted-foreground'}`}>
+                              {item.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
@@ -222,88 +256,63 @@ const MenageBureaux = () => {
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg text-center mb-4 uppercase">
                       Durée estimée
                     </h3>
-                    <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full"
-                        onClick={decrementDuration}
-                        disabled={formData.duration <= 4}
-                      >
-                        -
-                      </Button>
-                      <span className="text-xl font-semibold min-w-[60px] text-center">
-                        {formData.duration}
-                      </span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full"
-                        onClick={incrementDuration}
-                      >
-                        +
-                      </Button>
+                    <div className="flex items-center justify-center p-6 bg-muted/30 rounded-xl border border-muted">
+                      <div className="bg-white px-8 py-4 rounded-full border border-muted shadow-sm flex items-center gap-4">
+                        <span className="text-3xl font-black text-primary">{formData.duration}</span>
+                        <span className="text-sm font-bold text-muted-foreground uppercase pt-1">Heures</span>
+                      </div>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg text-center mb-4 uppercase">
                       Nombre de personne
                     </h3>
-                    <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full"
-                        onClick={decrementPeople}
-                      >
-                        -
-                      </Button>
-                      <span className="text-xl font-semibold min-w-[60px] text-center">
-                        {formData.numberOfPeople}
-                      </span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full"
-                        onClick={incrementPeople}
-                      >
-                        +
-                      </Button>
+                    <div className="flex items-center justify-center p-6 bg-muted/30 rounded-xl border border-muted">
+                      <div className="bg-white px-8 py-4 rounded-full border border-muted shadow-sm flex items-center gap-4">
+                        <span className="text-3xl font-black text-primary">{formData.numberOfPeople}</span>
+                        <span className="text-sm font-bold text-muted-foreground uppercase pt-1">Personne(s)</span>
+                      </div>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg text-center mb-4 uppercase">
                       Où aura lieu votre ménage ?
                     </h3>
-                    <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded">
-                      <Input
-                        placeholder="Ville , Casablanca"
-                        value={formData.city}
-                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      />
-                      <Input
-                        placeholder="Quartier : j'inscris le nom"
-                        value={formData.neighborhood}
-                        onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-                      />
-                    </div>
-                    <div className="mt-4 p-4 bg-muted/20 rounded">
-                      <Label className="font-semibold">Champs de repère</Label>
-                      <Textarea
-                        placeholder="Donnez-nous des repères pour faciliter le travail de ménage"
-                        value={formData.changeRepereNotes}
-                        onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
-                        className="mt-2"
-                      />
+                    <div className="p-6 bg-muted/30 rounded-xl border border-muted space-y-6">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold text-muted-foreground uppercase">Ville</Label>
+                          <Input
+                            placeholder="ex: Casablanca"
+                            value={formData.city}
+                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                            className="bg-white"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold text-muted-foreground uppercase">Quartier</Label>
+                          <Input
+                            placeholder="ex: Maarif"
+                            value={formData.neighborhood}
+                            onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
+                            className="bg-white"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-muted-foreground uppercase">Champs de repère</Label>
+                        <Textarea
+                          placeholder="Donnez-nous des repères visuels proches (Mosquée, École, Pharmacie...)"
+                          value={formData.changeRepereNotes}
+                          onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
+                          className="bg-white min-h-[80px] text-sm resize-none"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -355,70 +364,118 @@ const MenageBureaux = () => {
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg text-center mb-4 uppercase">
                       Services optionnels
                     </h3>
-                    <div className="flex items-center justify-between p-4 bg-muted/30 rounded">
-                      <div className="flex items-center gap-3">
-                        <span className="text-4xl">🧴</span>
-                        <span className="font-medium">Produits et outils + 150dh</span>
+                    <div className="p-6 bg-muted/30 rounded-xl border border-muted space-y-6">
+                      <div className="bg-white p-6 rounded-xl border border-muted flex flex-col items-center gap-4 text-center">
+                        <div className="flex flex-col items-center">
+                          <p className="text-sm font-bold text-slate-800 mb-1">Produit fournis par l'agence ménage :</p>
+                          <p className="text-[10px] text-slate-500 italic max-w-xs">• Nettoyant multi-usage • Nettoyant vitres • Désinfectants • Produit sols • Kit de nettoyage complet</p>
+                        </div>
+                        <div className="flex items-center justify-between w-full pt-4 border-t">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center">
+                              <span className="text-2xl">🧴</span>
+                            </div>
+                            <div className="text-left">
+                              <p className="text-sm font-bold text-slate-700 leading-tight">Prix HT : 60 dh</p>
+                            </div>
+                          </div>
+                          <Switch
+                            checked={formData.additionalServices.produitsEtOutils}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                additionalServices: { ...formData.additionalServices, produitsEtOutils: checked }
+                              })
+                            }
+                          />
+                        </div>
                       </div>
-                      <Switch
-                        checked={formData.additionalServices.produitsEtOutils}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            additionalServices: { ...formData.additionalServices, produitsEtOutils: checked }
-                          })
-                        }
-                      />
+
+                      <div className="bg-[#f0f9ff] p-4 rounded-xl border border-blue-100 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <span className="text-2xl">🧹</span>
+                          </div>
+                          <p className="text-sm font-bold text-slate-700">Torchons et serpières</p>
+                        </div>
+                        <Switch
+                          checked={formData.additionalServices.torchonsEtSerpierres}
+                          onCheckedChange={(checked) =>
+                            setFormData({
+                              ...formData,
+                              additionalServices: { ...formData.additionalServices, torchonsEtSerpierres: checked }
+                            })
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="bg-muted/30 rounded-lg p-6">
-                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4 -m-6 mb-4">
-                      Mes informations
+                  <div className="bg-muted/30 rounded-xl p-6 border border-muted">
+                    <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg text-center mb-6 uppercase">
+                      Les informations
                     </h3>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Numéro de téléphone*</Label>
-                        <div className="flex gap-2 mt-1">
-                          <Input value="+212" disabled className="w-20" />
+                    <p className="text-xs font-bold text-center text-slate-500 mb-6 uppercase tracking-wider">
+                      Un chargé de clientèle prendra contact avec vous dans les plus brefs délais.
+                    </p>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-muted-foreground uppercase">Nom de l'entreprise*</Label>
+                        <Input
+                          placeholder="Nom de votre société"
+                          value={formData.entityName}
+                          onChange={(e) => setFormData({ ...formData, entityName: e.target.value })}
+                          required
+                          className="bg-white h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-muted-foreground uppercase">Personne à contacter*</Label>
+                        <Input
+                          placeholder="Votre nom complet"
+                          value={formData.contactPerson}
+                          onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
+                          required
+                          className="bg-white h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-muted-foreground uppercase">Numéro de téléphone*</Label>
+                        <div className="flex gap-2">
+                          <div className="bg-slate-100 border rounded-lg w-20 flex items-center justify-center font-bold text-primary">+212</div>
                           <Input
                             placeholder="6 12 00 00 00"
                             value={formData.phoneNumber}
                             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                             required
+                            className="bg-white h-12"
                           />
                         </div>
                       </div>
-                      <div>
-                        <Label>Numéro whatsapp*</Label>
-                        <div className="flex gap-2 mt-1">
-                          <Input value="+212" disabled className="w-20" />
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-muted-foreground uppercase">Numéro whatsapp*</Label>
+                        <div className="flex gap-2">
+                          <div className="bg-slate-100 border rounded-lg w-20 flex items-center justify-center font-bold text-primary">+212</div>
                           <Input
                             placeholder="6 12 00 00 00"
                             value={formData.whatsappNumber}
                             onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
+                            className="bg-white h-12"
                           />
                         </div>
                       </div>
-                      <div>
-                        <Label>Nom*</Label>
+                      <div className="md:col-span-2 space-y-2">
+                        <Label className="text-xs font-bold text-muted-foreground uppercase">Email*</Label>
                         <Input
-                          value={formData.lastName}
-                          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                          type="email"
+                          placeholder="votre@email.com"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label>Prénom*</Label>
-                        <Input
-                          value={formData.firstName}
-                          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                          required
-                          className="mt-1"
+                          className="bg-white h-12"
                         />
                       </div>
                     </div>

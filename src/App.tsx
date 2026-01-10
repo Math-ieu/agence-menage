@@ -14,6 +14,8 @@ import GrandMenageBureaux from "./pages/services/GrandMenageBureaux";
 import MenageDemenagement from "./pages/services/MenageDemenagement";
 import MenageAirbnb from "./pages/services/MenageAirbnb";
 import MenageFinChantier from "./pages/services/MenageFinChantier";
+import MenageFinChantierEntreprise from "./pages/services/MenageFinChantierEntreprise";
+import PlacementEntreprise from "./pages/services/PlacementEntreprise";
 import EspaceEmploye from "./pages/EspaceEmploye";
 import Contact from "./pages/Contact";
 import { Analytics } from "@vercel/analytics/react"
@@ -43,6 +45,8 @@ const App = () => (
           {/* Entreprise Services */}
           <Route path="/services/entreprise/menage-bureaux" element={<MenageBureaux />} />
           <Route path="/services/entreprise/grand-menage-bureaux" element={<GrandMenageBureaux />} />
+          <Route path="/services/entreprise/menage-fin-chantier" element={<MenageFinChantierEntreprise />} />
+          <Route path="/services/entreprise/placement" element={<PlacementEntreprise />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

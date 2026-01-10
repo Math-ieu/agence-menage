@@ -1,12 +1,14 @@
 import ServiceCard from "./ServiceCard";
-import serviceMenagePonctuel from "@/assets/service-menage-ponctuel.jpg";
-import serviceAirbnb from "@/assets/service-airbnb.jpg";
-import serviceChantier from "@/assets/service-chantier.jpg";
-import serviceDemenagement from "@/assets/service-demenagement.jpg";
-import serviceRegulier from "@/assets/service-regulier.jpg";
-import serviceGrandMenage from "@/assets/service-grand-menage.jpg";
-import serviceGardeMalade from "@/assets/service-garde-malade.jpg";
-import serviceBureaux from "@/assets/service-bureaux.jpg";
+import { cn } from "@/lib/utils";
+import serviceAirbnb from "@/assets/service-airbnb-new.png";
+import serviceChantierParticulier from "@/assets/service-chantier-particulier-new.png";
+import serviceChantierEntreprise from "@/assets/service-chantier-entreprise-new.png";
+import serviceDemenagement from "@/assets/service-demenagement-new.png";
+import serviceRegulier from "@/assets/service-standard-new.png";
+import serviceGrandMenage from "@/assets/service-grand-new.png";
+import serviceGardeMalade from "@/assets/service-garde-malade-new.png";
+import serviceBureaux from "@/assets/service-bureaux-new.png";
+import servicePlacement from "@/assets/service-placement-new.png";
 
 interface ServicesGridProps {
   type: "particulier" | "entreprise";
@@ -16,16 +18,15 @@ const particulierServices = [
   { title: "Ménage", subtitle: "standard", color: "#287271", image: serviceRegulier, url: "/services/particulier/menage-standard" },
   { title: "Grand", subtitle: "ménage", color: "#e6dec7", image: serviceGrandMenage, url: "/services/particulier/grand-menage" },
   { title: "Ménage", subtitle: "dans les Airbnb", color: "#9ed2ce", image: serviceAirbnb, url: "/services/particulier/menage-airbnb" },
-  { title: "Ménage", subtitle: "de fin de chantier", color: "#e9f6e9", image: serviceChantier, url: "/services/particulier/menage-fin-chantier" },
+  { title: "Ménage", subtitle: "de fin de chantier", color: "#e9f6e9", image: serviceChantierParticulier, url: "/services/particulier/menage-fin-chantier" },
   { title: "Ménage", subtitle: "post - déménagement", color: "#d1a246", image: serviceDemenagement, url: "/services/particulier/menage-demenagement" },
   { title: "Garde", subtitle: "malade", color: "#b46d2f", image: serviceGardeMalade, url: "/services/particulier/garde-malade" },
 ];
 
 const entrepriseServices = [
-  { title: "Ménage", subtitle: "Bureaux", color: "#05b5a0", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
-  { title: "Grand ménage", subtitle: "Bureaux", color: "#52bc7e", image: serviceGrandMenage, url: "/services/entreprise/grand-menage-bureaux" },
-  { title: "Placement", subtitle: "de femme de ménage", color: "#bfd1a7", image: serviceMenagePonctuel },
-  { title: "Ménage", subtitle: "de fin de chantier", color: "#f5cf90", image: serviceChantier },
+  { title: "Ménage", subtitle: "Bureaux", color: "#1caf9a", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
+  { title: "Placement & Gestion", subtitle: "de propriété", color: "#5bbd82", image: servicePlacement, url: "/services/entreprise/placement" },
+  { title: "Ménage", subtitle: "de fin de chantier", color: "#f3d299", image: serviceChantierEntreprise, url: "/services/entreprise/menage-fin-chantier" },
 ];
 
 const ServicesGrid = ({ type }: ServicesGridProps) => {
@@ -40,12 +41,15 @@ const ServicesGrid = ({ type }: ServicesGridProps) => {
           {title}
         </h2>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="max-w-5xl mx-auto">
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${type === "entreprise" ? "md:max-w-4xl mx-auto" : ""}`}>
             {services.map((service: any, index: number) => (
               <div
                 key={`${service.title}-${service.subtitle || index}`}
-                className="animate-fade-in"
+                className={cn(
+                  "animate-fade-in",
+                  type === "entreprise" && index === 2 && "md:col-span-2 md:w-1/2 md:mx-auto"
+                )}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <ServiceCard

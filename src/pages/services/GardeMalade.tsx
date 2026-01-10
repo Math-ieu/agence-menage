@@ -12,7 +12,7 @@ import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
 // New assets
-import gardeMaladeHero from "@/assets/garde-malade-hero.png";
+import gardeMaladeHero from "@/assets/service-garde-malade-new.png";
 import handsCare from "@/assets/hands-care.png";
 import caregiverVisit from "@/assets/caregiver-visit.png";
 

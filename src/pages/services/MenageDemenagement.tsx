@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import serviceDemenagement from "@/assets/service-demenagement.jpg";
+import serviceDemenagement from "@/assets/service-demenagement-new.png";
 import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
