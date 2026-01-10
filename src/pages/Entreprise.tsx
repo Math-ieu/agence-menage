@@ -5,6 +5,7 @@ import HeroSection from "@/components/HeroSection";
 import ServicesGrid from "@/components/ServicesGrid";
 import AboutSection from "@/components/AboutSection";
 import BookingSteps from "@/components/BookingSteps";
+import TeamReviews from "@/components/TeamReviews";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Footer from "@/components/Footer";
 
@@ -18,6 +19,7 @@ const Entreprise = () => {
         <AboutSection />
         <BookingSteps />
         <WhyChooseUs />
+        <TeamReviews />
       </main>
       <Footer />
     </div>
