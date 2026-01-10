@@ -11,6 +11,9 @@ import GrandMenage from "./pages/services/GrandMenage";
 import GardeMalade from "./pages/services/GardeMalade";
 import MenageBureaux from "./pages/services/MenageBureaux";
 import GrandMenageBureaux from "./pages/services/GrandMenageBureaux";
+import MenageDemenagement from "./pages/services/MenageDemenagement";
+import MenageAirbnb from "./pages/services/MenageAirbnb";
+import MenageFinChantier from "./pages/services/MenageFinChantier";
 import EspaceEmploye from "./pages/EspaceEmploye";
 import Contact from "./pages/Contact";
 import { Analytics } from "@vercel/analytics/react"
@@ -32,6 +35,9 @@ const App = () => (
           {/* Particulier Services */}
           <Route path="/services/particulier/menage-standard" element={<MenageRegulier />} />
           <Route path="/services/particulier/grand-menage" element={<GrandMenage />} />
+          <Route path="/services/particulier/menage-demenagement" element={<MenageDemenagement />} />
+          <Route path="/services/particulier/menage-airbnb" element={<MenageAirbnb />} />
+          <Route path="/services/particulier/menage-fin-chantier" element={<MenageFinChantier />} />
           <Route path="/services/particulier/garde-malade" element={<GardeMalade />} />
 
           {/* Entreprise Services */}

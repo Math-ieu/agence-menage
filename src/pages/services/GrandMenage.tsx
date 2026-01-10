@@ -42,7 +42,12 @@ const GrandMenage = () => {
     changeRepereNotes: ""
   });
 
-  const totalPrice = (formData.duration * 100) + (formData.additionalServices.produitsEtOutils ? 90 : 0);
+  const baseRate = 65;
+  const discountRate = formData.frequency === "subscription" ? 0.1 : 0;
+  const subtotal = formData.duration * baseRate * formData.numberOfPeople;
+  const discountAmount = subtotal * discountRate;
+  const totalServicePrice = subtotal - discountAmount;
+  const totalPrice = totalServicePrice + (formData.additionalServices.produitsEtOutils ? 90 : 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,14 +71,22 @@ const GrandMenage = () => {
   const decrementDuration = () => setFormData({ ...formData, duration: Math.max(1, formData.duration - 1) });
 
   const calculateEstimation = (surface: number) => {
-    // Estimations base: 50m2 = 4h
-    // Beyond 50m2, we add ~1h for every 40m2
-    // For < 50m2, we still keep a minimum of 4h
-    const baseHours = 4;
-    const extraHours = Math.floor(Math.max(0, surface - 50) / 40);
-    const finalDuration = Math.max(baseHours, baseHours + extraHours);
+    let finalDuration = 4;
+    let finalPeople = 1;
 
-    const finalPeople = Math.max(1, Math.ceil(finalDuration / 6));
+    if (surface <= 70) {
+      finalDuration = 6;
+      finalPeople = 1;
+    } else if (surface <= 150) {
+      finalDuration = 4;
+      finalPeople = 2;
+    } else if (surface <= 300) {
+      finalDuration = 8;
+      finalPeople = 2;
+    } else {
+      finalDuration = 8;
+      finalPeople = 3;
+    }
 
     setFormData(prev => ({
       ...prev,
@@ -84,6 +97,7 @@ const GrandMenage = () => {
   };
 
   const frequencies = [
+    { value: "1foisSemaine", label: "Une fois par semaine" },
     { value: "2foisMois", label: "2 fois par mois" },
     { value: "1foisMois", label: "Une fois par mois - Recommandé" },
     { value: "5foisSemaine", label: "5 fois par semaine" },
@@ -104,7 +118,7 @@ const GrandMenage = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <div style={{ "--primary": "45 30% 82%" } as React.CSSProperties}>
+      <div style={{ "--primary": "45 30% 35%", "--secondary": "45 30% 90%" } as React.CSSProperties}>
         <ServiceHeroSection
           title="Grand Ménage"
           description={`Le grand ménage a pour objectif d’assurer la propreté et l’entretien courant des espaces attribués.
@@ -145,7 +159,7 @@ Il comprend le :
                       Ma Réservation
                     </h3>
                     <div className="space-y-3">
-                      <div className="flex justify-between gap-4">
+                      <div className="flex justify-between gap-4 border-b border-[#e2d9c2]/20 pb-2">
                         <span className="text-muted-foreground">Service:</span>
                         <span className="font-medium text-right">Grand Ménage</span>
                       </div>
@@ -161,7 +175,13 @@ Il comprend le :
                         <span className="text-muted-foreground">Personnes:</span>
                         <span className="font-medium text-right">{formData.numberOfPeople}</span>
                       </div>
-                      <div className="flex justify-between gap-4">
+                      {discountRate > 0 && (
+                        <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded">
+                          <span>Réduction (10%):</span>
+                          <span>-{discountAmount} DH</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between gap-4 border-t border-[#e2d9c2]/20 pt-2">
                         <span className="text-muted-foreground">Date:</span>
                         <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
                       </div>
@@ -184,7 +204,7 @@ Il comprend le :
               <div className="lg:col-span-2 space-y-8">
                 <div className="bg-card rounded-lg p-8 border shadow-sm space-y-10">
                   <div>
-                    <h3 className="text-xl font-bold bg-[#e2d9c2] text-[#4a4a4a] p-3 rounded-lg text-center mb-4">
+                    <h3 className="text-xl font-bold bg-[#e2d9c2] text-[#4a4a4a] p-3 rounded-lg text-center mb-4 uppercase">
                       Type d'habitation
                     </h3>
                     <RadioGroup
@@ -206,21 +226,25 @@ Il comprend le :
                       Indiquez la superficie de votre espace en m².
                     </h3>
                     <div className="px-8 py-10 border rounded-xl bg-white shadow-sm space-y-8">
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="text-sm font-bold text-slate-400">0 m²</span>
-                        <div className="text-3xl font-extrabold text-[#c5b89a] bg-[#fdfcf9] px-8 py-3 rounded-full border border-[#e2d9c2]/30 shadow-inner">
-                          {formData.surfaceArea} m²
+                      <div className="relative pt-6">
+                        <div className="absolute -top-4 left-0 transition-all duration-200" style={{ left: `${(formData.surfaceArea / 5000) * 100}%`, transform: 'translateX(-50%)' }}>
+                          <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-full text-sm border border-primary/20 whitespace-nowrap">
+                            {formData.surfaceArea}m²
+                          </span>
                         </div>
-                        <span className="text-sm font-bold text-slate-400">5000 m²</span>
+                        <Slider
+                          value={[formData.surfaceArea]}
+                          onValueChange={(value) => calculateEstimation(value[0])}
+                          max={5000}
+                          min={0}
+                          step={1}
+                          className="cursor-pointer"
+                        />
+                        <div className="flex justify-between mt-4 text-xs font-medium text-slate-400">
+                          <span>0m²</span>
+                          <span>5000m²</span>
+                        </div>
                       </div>
-                      <Slider
-                        value={[formData.surfaceArea]}
-                        onValueChange={(value) => calculateEstimation(value[0])}
-                        max={5000}
-                        min={0}
-                        step={10}
-                        className="py-4"
-                      />
                       <p className="text-[10px] text-red-500 text-center font-medium leading-tight px-10">
                         Selon la superficie indiquée, le système détermine automatiquement la durée et
                         l’effectif minimum requis ; ces minimums ne peuvent pas être réduits.
@@ -232,41 +256,56 @@ Il comprend le :
                     <h3 className="text-xl font-bold bg-[#e2d9c2] text-[#4a4a4a] p-3 rounded-lg text-center mb-4">
                       Choisissez la fréquence
                     </h3>
-                    <div className="bg-white border rounded-xl p-4">
-                      <RadioGroup
-                        value={formData.frequency}
-                        onValueChange={(value) => setFormData({ ...formData, frequency: value, subFrequency: value === "oneshot" ? "" : formData.subFrequency })}
-                        className="flex items-center justify-center gap-12 p-4"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <RadioGroupItem value="oneshot" id="gm-oneshot" className="border-[#e2d9c2] text-[#e2d9c2]" />
-                          <Label htmlFor="gm-oneshot" className="font-bold text-slate-700">Une fois</Label>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <RadioGroupItem value="subscription" id="gm-subscription" className="border-[#e2d9c2] text-[#e2d9c2]" />
-                          <Label htmlFor="gm-subscription" className="font-bold text-slate-700">Abonnement</Label>
-                        </div>
-                      </RadioGroup>
-
-                      {formData.frequency === "subscription" && (
-                        <div className="mt-4 px-10">
-                          <Select
-                            value={formData.subFrequency}
-                            onValueChange={(value) => setFormData({ ...formData, subFrequency: value })}
+                    <div className="p-4 space-y-4">
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="flex bg-slate-100 p-1 rounded-full w-full max-w-md mx-auto">
+                          <button
+                            type="button"
+                            className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.frequency === "oneshot"
+                              ? "bg-primary text-white shadow-sm"
+                              : "text-slate-500 hover:text-primary"
+                              }`}
+                            onClick={() => setFormData({ ...formData, frequency: "oneshot", subFrequency: "" })}
                           >
-                            <SelectTrigger className="w-full border-[#e2d9c2]/50">
-                              <SelectValue placeholder="Sélectionnez une fréquence" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {frequencies.map((freq) => (
-                                <SelectItem key={freq.value} value={freq.value}>
-                                  {freq.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            une fois
+                          </button>
+                          <button
+                            type="button"
+                            className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.frequency === "subscription"
+                              ? "bg-primary text-white shadow-sm"
+                              : "text-slate-500 hover:text-primary"
+                              }`}
+                            onClick={() => setFormData({ ...formData, frequency: "subscription" })}
+                          >
+                            Abonnement
+                          </button>
                         </div>
-                      )}
+
+                        {formData.frequency === "subscription" && (
+                          <div className="w-full space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="flex justify-center">
+                              <span className="text-red-600 font-bold px-3 py-1 bg-red-50 rounded-full text-xs animate-pulse">
+                                -10 % de réduction sur l'abonnement
+                              </span>
+                            </div>
+                            <Select
+                              value={formData.subFrequency}
+                              onValueChange={(value) => setFormData({ ...formData, subFrequency: value })}
+                            >
+                              <SelectTrigger className="w-full border-primary/20">
+                                <SelectValue placeholder="Sélectionnez une fréquence" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {frequencies.map((freq) => (
+                                  <SelectItem key={freq.value} value={freq.value}>
+                                    {freq.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -281,7 +320,7 @@ Il comprend le :
                         size="icon"
                         className="h-10 w-10 rounded-full bg-slate-100 text-[#c5b89a] hover:bg-slate-200 border border-slate-200 shadow-sm"
                         onClick={decrementDuration}
-                        disabled={formData.duration <= 4}
+                        disabled={true}
                       >
                         <span className="text-2xl">-</span>
                       </Button>
@@ -294,6 +333,7 @@ Il comprend le :
                         size="icon"
                         className="h-10 w-10 rounded-full bg-slate-100 text-[#c5b89a] hover:bg-slate-200 border border-slate-200 shadow-sm"
                         onClick={incrementDuration}
+                        disabled={true}
                       >
                         <span className="text-2xl">+</span>
                       </Button>
@@ -311,6 +351,7 @@ Il comprend le :
                         size="icon"
                         className="h-10 w-10 rounded-full bg-slate-100 text-[#c5b89a] hover:bg-slate-200 border border-slate-200 shadow-sm"
                         onClick={decrementPeople}
+                        disabled={true}
                       >
                         <span className="text-2xl">-</span>
                       </Button>
@@ -323,6 +364,7 @@ Il comprend le :
                         size="icon"
                         className="h-10 w-10 rounded-full bg-slate-100 text-[#c5b89a] hover:bg-slate-200 border border-slate-200 shadow-sm"
                         onClick={incrementPeople}
+                        disabled={true}
                       >
                         <span className="text-2xl">+</span>
                       </Button>

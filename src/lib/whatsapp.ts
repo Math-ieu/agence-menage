@@ -3,7 +3,7 @@ export const createWhatsAppLink = (phoneNumber: string, message: string): string
     return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 };
 
-export const formatBookingMessage = (serviceName: string, data: any, price: number): string => {
+export const formatBookingMessage = (serviceName: string, data: any, price: number | string): string => {
     let details = "";
 
     // Common fields

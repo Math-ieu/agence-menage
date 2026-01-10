@@ -172,39 +172,51 @@ const GrandMenageBureaux = () => {
                                         <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
                                             Choisissez la fréquence
                                         </h3>
-                                        <div className="p-4 bg-muted/30 rounded space-y-4">
-                                            <RadioGroup
-                                                value={formData.frequency}
-                                                onValueChange={(value) => setFormData({ ...formData, frequency: value, subFrequency: value === "oneshot" ? "" : formData.subFrequency })}
-                                                className="flex gap-4"
-                                            >
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="oneshot" id="gm-bureau-oneshot" />
-                                                    <Label htmlFor="gm-bureau-oneshot">One shot</Label>
+                                        <div className="p-4 space-y-4">
+                                            <div className="flex flex-col items-center gap-4">
+                                                <div className="flex bg-slate-100 p-1 rounded-full w-full max-w-md mx-auto">
+                                                    <button
+                                                        type="button"
+                                                        className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.frequency === "oneshot"
+                                                            ? "bg-primary text-white shadow-sm"
+                                                            : "text-slate-500 hover:text-primary"
+                                                            }`}
+                                                        onClick={() => setFormData({ ...formData, frequency: "oneshot", subFrequency: "" })}
+                                                    >
+                                                        une fois
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.frequency === "subscription"
+                                                            ? "bg-primary text-white shadow-sm"
+                                                            : "text-slate-500 hover:text-primary"
+                                                            }`}
+                                                        onClick={() => setFormData({ ...formData, frequency: "subscription" })}
+                                                    >
+                                                        Abonnement
+                                                    </button>
                                                 </div>
-                                                <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="subscription" id="gm-bureau-subscription" />
-                                                    <Label htmlFor="gm-bureau-subscription">Abonnement</Label>
-                                                </div>
-                                            </RadioGroup>
 
-                                            {formData.frequency === "subscription" && (
-                                                <Select
-                                                    value={formData.subFrequency}
-                                                    onValueChange={(value) => setFormData({ ...formData, subFrequency: value })}
-                                                >
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Sélectionnez un abonnement" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {frequencies.map((freq) => (
-                                                            <SelectItem key={freq.value} value={freq.value}>
-                                                                {freq.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            )}
+                                                {formData.frequency === "subscription" && (
+                                                    <div className="w-full animate-in fade-in slide-in-from-top-2 duration-300">
+                                                        <Select
+                                                            value={formData.subFrequency}
+                                                            onValueChange={(value) => setFormData({ ...formData, subFrequency: value })}
+                                                        >
+                                                            <SelectTrigger className="w-full border-primary/20">
+                                                                <SelectValue placeholder="Sélectionnez un abonnement" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {frequencies.map((freq) => (
+                                                                    <SelectItem key={freq.value} value={freq.value}>
+                                                                        {freq.label}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 
