@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import serviceRegulier from "@/assets/service-standard-new.png";
 import cleaningProduct from "@/assets/cleaning-product.png";
-import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
 const MenageRegulier = () => {
@@ -67,7 +67,7 @@ const MenageRegulier = () => {
     }
 
     const message = formatBookingMessage("Ménage Régulier", formData, totalPrice);
-    const whatsappLink = createWhatsAppLink("212669372603", message);
+    const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
     window.open(whatsappLink, '_blank');
     toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
@@ -617,7 +617,7 @@ Il comprend le :
                   <div className="flex justify-center pt-8">
                     <Button
                       type="submit"
-                      className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full md:w-auto md:min-w-[250px] transition-all hover:scale-105 active:scale-95"
+                      className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                     >
                       Confirmer ma réservation
                     </Button>

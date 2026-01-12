@@ -12,7 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import serviceDemenagement from "@/assets/service-demenagement-new.png";
-import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
 const MenageDemenagement = () => {
@@ -66,7 +66,7 @@ const MenageDemenagement = () => {
         }
 
         const message = formatBookingMessage("Ménage post-déménagement", formData, totalPrice || "Sur devis");
-        const whatsappLink = createWhatsAppLink("212669372603", message);
+        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         window.open(whatsappLink, '_blank');
         toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
@@ -160,7 +160,7 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                                     {totalPrice > 0 ? `${totalPrice} DH` : "SUR DEVIS"}
                                                 </span>
                                             </div>
-                                            <div className="text-[10px] text-muted-foreground/60 leading-tight italic text-center border-t pt-2 border-primary/10">
+                                            <div className="text-[10px] text-muted-foreground font-medium leading-tight italic text-center border-t pt-2 border-primary/10">
                                                 Prestation tout compris : main-d'œuvre, produits et équipements de ménage.
                                             </div>
                                         </div>
@@ -307,11 +307,11 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                                 </div>
                                                 <div className="flex items-center space-x-3">
                                                     <RadioGroupItem value="intensif" id="intensif" className="border-[#d1a246] text-[#d1a246]" />
-                                                    <Label htmlFor="intensif" className="font-bold text-slate-700 flex items-center gap-2">
-                                                        Intensif
+                                                    <Label htmlFor="intensif" className="font-bold text-slate-700 flex flex-col items-start gap-1">
+                                                        <span>Intensif</span>
                                                         {formData.cleanlinessType === "intensif" && (
-                                                            <span className="text-red-500 text-[10px] font-medium leading-tight">
-                                                                calcaire marqué, cuisine très encrassée, poussière lourde
+                                                            <span className="text-red-600 text-[11px] font-bold leading-tight italic">
+                                                                (calcaire marqué, cuisine très encrassée, poussière lourde)
                                                             </span>
                                                         )}
                                                     </Label>
@@ -491,7 +491,7 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                     <div className="flex justify-center pt-8">
                                         <Button
                                             type="submit"
-                                            className="bg-[#d1a246] hover:bg-[#b88c3a] text-white px-10 py-4 text-lg font-bold shadow-lg shadow-[#d1a246]/20 h-auto rounded-full w-full md:w-auto md:min-w-[300px] transition-all hover:scale-105 active:scale-95 uppercase tracking-wider"
+                                            className="bg-[#d1a246] hover:bg-[#b88c3a] text-white px-8 py-4 text-base font-bold shadow-lg shadow-[#d1a246]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                                         >
                                             Confirmer ma réservation
                                         </Button>

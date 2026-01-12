@@ -1,6 +1,9 @@
+export const DESTINATION_PHONE_NUMBER = "+212669372603";
+
 export const createWhatsAppLink = (phoneNumber: string, message: string): string => {
+    const cleanPhoneNumber = phoneNumber.replace(/[^0-9]/g, '');
     const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    return `https://wa.me/${cleanPhoneNumber}?text=${encodedMessage}`;
 };
 
 export const formatBookingMessage = (serviceName: string, data: any, price: number | string): string => {
@@ -10,6 +13,7 @@ export const formatBookingMessage = (serviceName: string, data: any, price: numb
     const commonDetails = `
 *Client:* ${data.firstName} ${data.lastName}
 *Téléphone:* ${data.phoneNumber}
+*WhatsApp:* ${data.whatsappNumber || "Non spécifié"}
 *Ville:* ${data.city} (${data.neighborhood})
 *Fréquence:* ${data.frequency}
 *Date souhaitée:* ${data.schedulingDate || "Non spécifiée"}

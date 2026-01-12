@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
 // New assets
@@ -62,7 +62,7 @@ const GardeMalade = () => {
     }
 
     const message = formatBookingMessage("Garde Malade", formData, "Sur devis");
-    const whatsappLink = createWhatsAppLink("212669372603", message);
+    const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
     window.open(whatsappLink, '_blank');
     toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
@@ -117,7 +117,7 @@ const GardeMalade = () => {
                 <div className="flex justify-start">
                   <Button
                     onClick={scrollToForm}
-                    className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-xl font-bold rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 h-auto uppercase"
+                    className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-base font-bold rounded-full shadow-lg shadow-[#b46d2f]/20 transition-all hover:scale-105 active:scale-95 h-auto text-center"
                   >
                     Contactez-nous
                   </Button>
@@ -589,10 +589,10 @@ const GardeMalade = () => {
                       </div>
                     </div>
 
-                    <div className="flex justify-center pt-6">
+                    <div className="flex justify-center pt-8">
                       <Button
                         type="submit"
-                        className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-base font-bold shadow-lg h-auto rounded-full w-full md:w-auto md:min-w-[250px] transition-all hover:scale-105 active:scale-95 uppercase tracking-wide"
+                        className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-base font-bold shadow-lg shadow-[#b46d2f]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                       >
                         Demander un devis
                       </Button>

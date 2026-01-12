@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import serviceGrandMenage from "@/assets/service-grand-new.png";
 import cleaningProduct from "@/assets/cleaning-product.png";
 import cleaningClothsMop from "@/assets/cleaning-cloths-mop.png";
-import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
 const GrandMenage = () => {
@@ -58,7 +58,7 @@ const GrandMenage = () => {
     }
 
     const message = formatBookingMessage("Grand Ménage", formData, totalPrice);
-    const whatsappLink = createWhatsAppLink("212669372603", message);
+    const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
     window.open(whatsappLink, '_blank');
     toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
@@ -575,10 +575,10 @@ Il comprend le :
                     </div>
                   </div>
 
-                  <div className="flex justify-center pt-8">
+                  <div className="flex justify-center">
                     <Button
                       type="submit"
-                      className="bg-[#c5b89a] hover:bg-[#b8a985] text-white px-10 py-4 text-lg font-bold shadow-lg shadow-[#c5b89a]/20 h-auto rounded-full w-full md:w-auto md:min-w-[300px] transition-all hover:scale-105 active:scale-95 uppercase tracking-wider"
+                      className="bg-[#f3d299] hover:bg-[#f2ca85] text-slate-800 px-8 py-4 text-base font-bold shadow-lg shadow-[#f3d299]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                     >
                       Confirmer ma réservation
                     </Button>

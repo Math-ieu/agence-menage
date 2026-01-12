@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import serviceMenagePonctuel from "@/assets/service-placement-new.png";
 import "@/styles/sticky-summary.css";
 
@@ -52,7 +52,7 @@ const PlacementEntreprise = () => {
         }
 
         const message = formatBookingMessage("Placement & Gestion de Propreté", formData, "Sur devis");
-        const whatsappLink = createWhatsAppLink("212669372603", message);
+        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         window.open(whatsappLink, '_blank');
         toast.success("Redirection vers WhatsApp pour finaliser la demande de devis...");
@@ -158,7 +158,7 @@ const PlacementEntreprise = () => {
                     <div className="flex justify-center mb-16">
                         <Button
                             onClick={scrollToForm}
-                            className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-base font-bold rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 h-auto uppercase"
+                            className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-base font-bold rounded-full shadow-lg shadow-[#b46d2f]/20 transition-all hover:scale-105 active:scale-95 h-auto"
                         >
                             Contactez-nous
                         </Button>
@@ -446,7 +446,7 @@ const PlacementEntreprise = () => {
                                             <div className="flex justify-center pt-8">
                                                 <Button
                                                     type="submit"
-                                                    className="bg-[#5bbd82] hover:bg-[#4a9d6d] text-white px-8 py-4 text-base font-bold shadow-lg shadow-[#5bbd82]/20 h-auto rounded-full w-full md:w-auto md:min-w-[250px] transition-all hover:scale-105 active:scale-95 uppercase"
+                                                    className="bg-[#5bbd82] hover:bg-[#4a9d6d] text-white px-8 py-4 text-base font-bold shadow-lg shadow-[#5bbd82]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                                                 >
                                                     Demander un devis
                                                 </Button>

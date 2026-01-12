@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { createWhatsAppLink, formatContactMessage } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatContactMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -20,7 +20,7 @@ const Contact = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const whatsappMessage = formatContactMessage(formData);
-        const whatsappLink = createWhatsAppLink("212600000000", whatsappMessage); // Target number
+        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, whatsappMessage); // Target number
         window.open(whatsappLink, "_blank");
         toast.success("Votre message a été préparé pour WhatsApp.");
     };
@@ -127,12 +127,12 @@ const Contact = () => {
                                     />
                                 </div>
 
-                                <div className="flex justify-center pt-6">
+                                <div className="flex justify-center pt-8">
                                     <Button
                                         type="submit"
-                                        className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full md:w-auto md:min-w-[250px] transition-all hover:scale-105 active:scale-95"
+                                        className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                                     >
-                                        Envoyez
+                                        Envoyer le message
                                     </Button>
                                 </div>
                             </form>

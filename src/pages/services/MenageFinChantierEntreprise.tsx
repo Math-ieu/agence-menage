@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import serviceChantier from "@/assets/service-chantier-entreprise-new.png";
-import { createWhatsAppLink, formatBookingMessage } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
 
 const MenageFinChantierEntreprise = () => {
@@ -41,7 +41,7 @@ const MenageFinChantierEntreprise = () => {
         }
 
         const message = formatBookingMessage("Ménage Fin de chantier (Entreprise)", formData, "Sur devis");
-        const whatsappLink = createWhatsAppLink("212669372603", message);
+        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         window.open(whatsappLink, '_blank');
         toast.success("Redirection vers WhatsApp pour finaliser la demande de devis...");
@@ -83,14 +83,6 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-muted-foreground">Surface:</span>
                                                 <span className="font-medium text-right">{formData.surfaceArea} m²</span>
-                                            </div>
-                                            <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
-                                                <span className="text-muted-foreground">Date:</span>
-                                                <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
-                                            </div>
-                                            <div className="flex justify-between gap-4">
-                                                <span className="text-muted-foreground">Heure:</span>
-                                                <span className="font-medium text-right">{formData.fixedTime}</span>
                                             </div>
                                         </div>
 
@@ -258,7 +250,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                     <div className="flex justify-center pt-8">
                                         <Button
                                             type="submit"
-                                            className="bg-[#f3d299] hover:bg-[#eac485] text-slate-800 px-8 py-4 text-base font-bold shadow-lg shadow-[#f3d299]/20 h-auto rounded-full w-full md:w-auto md:min-w-[250px] transition-all hover:scale-105 active:scale-95 uppercase"
+                                            className="bg-[#f3d299] hover:bg-[#eac485] text-slate-800 px-8 py-4 text-base font-bold shadow-lg shadow-[#f3d299]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                                         >
                                             Demander un devis
                                         </Button>
