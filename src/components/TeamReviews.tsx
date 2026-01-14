@@ -33,6 +33,34 @@ const TeamReviews = () => {
         setActiveIndex((prev) => (prev + 1) % teamData.length);
     };
 
+    const prevSlide = () => {
+        if (isTransitioning) return;
+        setIsTransitioning(true);
+        setActiveIndex((prev) => (prev - 1 + teamData.length) % teamData.length);
+    };
+
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.targetTouches[0].clientY);
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStart === null) return;
+        const touchEnd = e.changedTouches[0].clientY;
+        const diff = touchStart - touchEnd;
+
+        // Threshold of 50px for swipe detection
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }
+        setTouchStart(null);
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => setIsTransitioning(false), 600);
         return () => clearTimeout(timer);
@@ -93,7 +121,11 @@ const TeamReviews = () => {
                         </div>
 
                         {/* Column 3: Main Profile Image */}
-                        <div className="w-full md:w-[320px] lg:w-[380px] h-[400px] md:h-[500px] lg:h-[580px] relative overflow-hidden rounded-xl shadow-2xl bg-slate-100 flex-shrink-0">
+                        <div
+                            className="w-full md:w-[320px] lg:w-[380px] h-[400px] md:h-[500px] lg:h-[580px] relative overflow-hidden rounded-xl shadow-2xl bg-slate-100 flex-shrink-0 touch-none"
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                        >
                             <div
                                 className="absolute inset-0 transition-transform duration-1000 cubic-bezier(0.23, 1, 0.32, 1) flex flex-col"
                                 style={{ transform: `translateY(-${activeIndex * 100}%)` }}

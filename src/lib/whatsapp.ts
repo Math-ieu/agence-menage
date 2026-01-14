@@ -1,4 +1,5 @@
 export const DESTINATION_PHONE_NUMBER = "+212664331463";
+export const CUSTOMER_SERVICE_NUMBERS = ["0664331463", "0664226790"];
 
 export const createWhatsAppLink = (phoneNumber: string, message: string): string => {
     const cleanPhoneNumber = phoneNumber.replace(/[^0-9]/g, '');
@@ -6,46 +7,51 @@ export const createWhatsAppLink = (phoneNumber: string, message: string): string
     return `https://wa.me/${cleanPhoneNumber}?text=${encodedMessage}`;
 };
 
-export const formatBookingMessage = (serviceName: string, data: any, price: number | string): string => {
-    let details = "";
+export const getConfirmationMessage = (clientName: string, isDevis: boolean): string => {
+    const numbers = CUSTOMER_SERVICE_NUMBERS.join(" / ");
+    if (isDevis) {
+        return `Bonjour ${clientName}, Nous confirmons la bonne réception de votre réservation. Un conseiller clientèle vous contactera dans les plus brefs délais pour la validation de la demande et la transmission du devis correspondant. Pour toute question, contactez-nous au ${numbers}. Cordialement`;
+    }
+    return `Bonjour ${clientName}, Merci pour votre réservation Elle a bien été reçue. Notre équipe vous contactera très bientôt pour confirmer les détails. Vous pouvez nous joindre au ${numbers}. Cordialement.`;
+};
 
-    // Common fields
-    const commonDetails = `
-*Client:* ${data.firstName} ${data.lastName}
-*Téléphone:* ${data.phoneNumber}
-*WhatsApp:* ${data.whatsappNumber || "Non spécifié"}
-*Ville:* ${data.city} (${data.neighborhood})
-*Fréquence:* ${data.frequency}
-*Date souhaitée:* ${data.schedulingDate || "Non spécifiée"}
-*Heure:* ${data.fixedTime || data.schedulingTime || "Non spécifiée"}
-*Prix estimé:* ${price} DH
-`;
+export const formatBookingMessage = (serviceName: string, data: any, price: number | string, isEntreprise: boolean = false): string => {
+    const sectionTitle = isEntreprise ? "SERVICES POUR ENTREPRISE" : "SERVICES POUR PARTICULIER";
+    const priceLabel = typeof price === "string" && price.toUpperCase().includes("DEVIS") ? "Sur DEVIS" : `${price} DH`;
 
-    // Service specific details
+    let serviceSpecificDetails = "";
+
     if (serviceName === "Ménage Bureaux") {
-        details = `
-*Surface:* ${data.officeSurface} m²
-*Durée:* ${data.duration}h
-${commonDetails}`;
+        serviceSpecificDetails = `*Surface en m2 :* ${data.officeSurface || "-"} m2
+*Durée :* ${data.duration || "-"} heures`;
     } else if (serviceName === "Garde Malade") {
-        details = `
-*Patient:* ${data.patientGender}, ${data.patientAge} ans
-*Mobilité:* ${data.mobility}
-*Lieu:* ${data.careLocation}
-*Durée:* ${data.duration}h
-${commonDetails}`;
+        serviceSpecificDetails = `*Patient :* ${data.patientGender || "-"}, ${data.patientAge || "-"} ans
+*Mobilité :* ${data.mobility || "-"}
+*Lieu :* ${data.careLocation || "-"}
+*Durée :* ${data.duration || "-"} heures`;
     } else {
-        // Standard cleaning services
-        details = `
-*Durée:* ${data.duration}h
-*Nombre de personnes:* ${data.numberOfPeople}
-${commonDetails}`;
+        serviceSpecificDetails = `*Durée :* ${data.duration || "-"} heures
+*Nbre de personne :* ${data.numberOfPeople || "-"}`;
     }
 
-    return `*Nouvelle demande de réservation - ${serviceName}*
-${details}
+    return `*RESERVATION*
+*${sectionTitle}*
+
+*Ma Réservation*
 --------------------------------
-Ceci est une simulation de réservation.`;
+*Nom & prénom :* ${data.firstName} ${data.lastName}
+*Numéro de téléphone :* ${data.phoneNumber}
+*Numéro whatsapp :* ${data.whatsappNumber || "-"}
+
+*Service :* ${serviceName}
+*Fréquence :* ${data.frequency || "-"}
+${serviceSpecificDetails}
+*Service optionel :* -
+
+*Date :* ${data.schedulingDate || "Non définie"}
+*Heure :* ${data.fixedTime || data.schedulingTime || "14:00"}
+--------------------------------
+*Total :* *${priceLabel}*`;
 };
 
 export const formatCandidateMessage = (data: any): string => {

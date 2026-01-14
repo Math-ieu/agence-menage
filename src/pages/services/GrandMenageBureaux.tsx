@@ -12,11 +12,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import serviceGrandMenage from "@/assets/service-grand-menage.png";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import "@/styles/sticky-summary.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 const GrandMenageBureaux = () => {
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [formData, setFormData] = useState({
         officeSurface: "50",
         frequency: "oneshot",
@@ -83,11 +93,14 @@ const GrandMenageBureaux = () => {
                 : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
         };
 
-        const message = formatBookingMessage("Grand Ménage Bureaux", bookingData, totalPrice);
+        const message = formatBookingMessage("Grand Ménage Bureaux", bookingData, totalPrice, true);
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+        // Send email notification (async)
+        sendBookingEmail("Grand Ménage Bureaux", bookingData, totalPrice).catch(console.error);
+
         window.open(whatsappLink, '_blank');
-        toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
+        setShowConfirmation(true);
     };
 
     const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
@@ -542,6 +555,25 @@ const GrandMenageBureaux = () => {
             </div>
 
             <Footer />
+
+            <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+                <DialogContent className="sm:max-w-md bg-primary/5 border-primary/20 text-center">
+                    <DialogHeader>
+                        <DialogTitle className="text-primary text-2xl font-bold">Confirmation</DialogTitle>
+                        <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+                            {getConfirmationMessage(`${formData.firstName} ${formData.lastName}`, false)}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-6 flex justify-center sm:justify-center">
+                        <Button
+                            onClick={() => setShowConfirmation(false)}
+                            className="bg-primary hover:bg-primary/90 text-white rounded-full px-8"
+                        >
+                            Fermer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

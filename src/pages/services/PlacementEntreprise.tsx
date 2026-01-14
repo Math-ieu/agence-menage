@@ -9,12 +9,22 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import { Checkbox } from "@/components/ui/checkbox";
 import serviceMenagePonctuel from "@/assets/service-placement-gestion.png";
 import "@/styles/sticky-summary.css";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 const PlacementEntreprise = () => {
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const formRef = useRef<HTMLDivElement>(null);
 
@@ -63,11 +73,14 @@ const PlacementEntreprise = () => {
                 : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
         };
 
-        const message = formatBookingMessage("Placement & Gestion de Propreté", bookingData, "Sur devis");
+        const message = formatBookingMessage("Placement & Gestion de Propreté", bookingData, "Sur devis", true);
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+        // Send email notification (async)
+        sendBookingEmail("Placement & Gestion de Propreté", bookingData, "Sur devis").catch(console.error);
+
         window.open(whatsappLink, '_blank');
-        toast.success("Redirection vers WhatsApp pour finaliser la demande de devis...");
+        setShowConfirmation(true);
     };
 
     const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
@@ -520,6 +533,25 @@ const PlacementEntreprise = () => {
             </main>
 
             <Footer />
+
+            <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+                <DialogContent className="sm:max-w-md bg-[#f0f9f4] border-[#5bbd82]/20">
+                    <DialogHeader>
+                        <DialogTitle className="text-[#2d5a3f] text-2xl font-bold">Confirmation</DialogTitle>
+                        <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+                            {getConfirmationMessage(formData.contactPerson, true)}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-6">
+                        <Button
+                            onClick={() => setShowConfirmation(false)}
+                            className="bg-[#5bbd82] hover:bg-[#4a9d6d] text-white rounded-full px-8"
+                        >
+                            Fermer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

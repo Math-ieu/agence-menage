@@ -11,11 +11,21 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import serviceBureaux from "@/assets/service-menage-bureaux.png";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import "@/styles/sticky-summary.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const MenageBureaux = () => {
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
     officeSurface: "0-70",
     frequency: "oneshot",
@@ -129,11 +139,14 @@ const MenageBureaux = () => {
         : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
     };
 
-    const message = formatBookingMessage("Ménage Bureaux", bookingData, totalPrice);
+    const message = formatBookingMessage("Ménage Bureaux", bookingData, totalPrice, true);
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+    // Send email notification (async)
+    sendBookingEmail("Ménage Bureaux", bookingData, totalPrice).catch(console.error);
+
     window.open(whatsappLink, '_blank');
-    toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
+    setShowConfirmation(true);
   };
 
   const frequencies = [
@@ -655,6 +668,25 @@ const MenageBureaux = () => {
       </div>
 
       <Footer />
+
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent className="sm:max-w-md bg-[#fdf8f1] border-primary/20">
+          <DialogHeader>
+            <DialogTitle className="text-primary text-2xl font-bold">Confirmation</DialogTitle>
+            <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+              {getConfirmationMessage(formData.contactPerson, false)}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-6">
+            <Button
+              onClick={() => setShowConfirmation(false)}
+              className="bg-primary hover:bg-primary/90 text-white rounded-full px-8"
+            >
+              Fermer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

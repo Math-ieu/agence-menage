@@ -13,8 +13,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import serviceRegulier from "@/assets/service-menage-standard.png";
 import cleaningProduct from "@/assets/cleaning-product.png";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import "@/styles/sticky-summary.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const PRODUCTS_LIST = [
   "Nettoyant multi-usage",
@@ -25,6 +34,7 @@ const PRODUCTS_LIST = [
 ];
 
 const MenageRegulier = () => {
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
     propertyType: "studio",
     frequency: "oneshot",
@@ -131,11 +141,14 @@ const MenageRegulier = () => {
         : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
     };
 
-    const message = formatBookingMessage("Ménage Régulier", bookingData, totalPrice);
+    const message = formatBookingMessage("Ménage Régulier", bookingData, totalPrice, false);
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+    // Send email notification (async)
+    sendBookingEmail("Ménage Régulier", bookingData, totalPrice).catch(console.error);
+
     window.open(whatsappLink, '_blank');
-    toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
+    setShowConfirmation(true);
   };
 
   const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
@@ -765,6 +778,25 @@ Il comprend le :
       </div>
 
       <Footer />
+
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent className="sm:max-w-md bg-[#fdf8f1] border-primary/20">
+          <DialogHeader>
+            <DialogTitle className="text-primary text-2xl font-bold">Confirmation</DialogTitle>
+            <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+              {getConfirmationMessage(`${formData.firstName} ${formData.lastName}`, false)}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-6">
+            <Button
+              onClick={() => setShowConfirmation(false)}
+              className="bg-primary hover:bg-primary/90 text-white rounded-full px-8"
+            >
+              Fermer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

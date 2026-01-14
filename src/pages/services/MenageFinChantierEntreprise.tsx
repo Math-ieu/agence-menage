@@ -10,11 +10,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import serviceChantier from "@/assets/service-fin-chantier-entreprise.png";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import "@/styles/sticky-summary.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 const MenageFinChantierEntreprise = () => {
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [formData, setFormData] = useState({
         propertyType: "studio",
         surfaceArea: 50,
@@ -44,11 +54,14 @@ const MenageFinChantierEntreprise = () => {
             return;
         }
 
-        const message = formatBookingMessage("Ménage Fin de chantier (Entreprise)", formData, "Sur devis");
+        const message = formatBookingMessage("Ménage Fin de chantier (Entreprise)", formData, "Sur devis", true);
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+        // Send email notification (async)
+        sendBookingEmail("Ménage Fin de chantier (Entreprise)", formData, "Sur devis").catch(console.error);
+
         window.open(whatsappLink, '_blank');
-        toast.success("Redirection vers WhatsApp pour finaliser la demande de devis...");
+        setShowConfirmation(true);
     };
 
     return (
@@ -305,6 +318,25 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
             </div>
 
             <Footer />
+
+            <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+                <DialogContent className="sm:max-w-md bg-[#fdf3e7] border-[#f3d299]/20">
+                    <DialogHeader>
+                        <DialogTitle className="text-primary text-2xl font-bold">Confirmation</DialogTitle>
+                        <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+                            {getConfirmationMessage(formData.contactPerson, true)}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-6">
+                        <Button
+                            onClick={() => setShowConfirmation(false)}
+                            className="bg-primary hover:bg-primary/90 text-white rounded-full px-8"
+                        >
+                            Fermer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

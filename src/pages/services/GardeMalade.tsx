@@ -8,9 +8,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import "@/styles/sticky-summary.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // New assets
 import gardeMaladeHero from "@/assets/service-garde-malade.png";
@@ -19,6 +28,7 @@ import caregiverVisit from "@/assets/caregiver-visit.png";
 
 const GardeMalade = () => {
   const [showForm, setShowForm] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -96,11 +106,16 @@ const GardeMalade = () => {
         : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
     };
 
-    const message = formatBookingMessage("Garde Malade", bookingData, "Sur devis");
+    const isDevis = totalPrice === 0;
+    const priceValue = isDevis ? "Sur devis" : totalPrice;
+    const message = formatBookingMessage("Garde Malade", bookingData, priceValue, false);
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+    // Send email notification (async)
+    sendBookingEmail("Garde Malade", bookingData, priceValue).catch(console.error);
+
     window.open(whatsappLink, '_blank');
-    toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
+    setShowConfirmation(true);
   };
 
   const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
@@ -698,6 +713,25 @@ const GardeMalade = () => {
       </main>
 
       <Footer />
+
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent className="sm:max-w-md bg-[#fdf8f1] border-[#b46d2f]/20">
+          <DialogHeader>
+            <DialogTitle className="text-[#b46d2f] text-2xl font-bold">Confirmation</DialogTitle>
+            <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+              {getConfirmationMessage(`${formData.firstName} ${formData.lastName}`, totalPrice === 0)}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-6">
+            <Button
+              onClick={() => setShowConfirmation(false)}
+              className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white rounded-full px-8"
+            >
+              Fermer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

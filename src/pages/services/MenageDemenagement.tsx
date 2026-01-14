@@ -12,11 +12,21 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import serviceDemenagement from "@/assets/service-menage-demenagement.png";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import "@/styles/sticky-summary.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 const MenageDemenagement = () => {
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [formData, setFormData] = useState({
         propertyType: "studio",
         frequency: "oneshot",
@@ -96,11 +106,14 @@ const MenageDemenagement = () => {
                 : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
         };
 
-        const message = formatBookingMessage("Ménage post-déménagement", bookingData, totalPrice || "Sur devis");
+        const message = formatBookingMessage("Ménage post-déménagement", bookingData, totalPrice || "Sur devis", false);
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+        // Send email notification (async)
+        sendBookingEmail("Ménage post-déménagement", bookingData, totalPrice || "Sur devis").catch(console.error);
+
         window.open(whatsappLink, '_blank');
-        toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
+        setShowConfirmation(true);
     };
 
     const frequencies = [
@@ -529,6 +542,25 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
             </div>
 
             <Footer />
+
+            <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+                <DialogContent className="sm:max-w-md bg-[#fdfaf1] border-[#d1a246]/20">
+                    <DialogHeader>
+                        <DialogTitle className="text-[#8a6d2f] text-2xl font-bold">Confirmation</DialogTitle>
+                        <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+                            {getConfirmationMessage(`${formData.firstName} ${formData.lastName}`, totalPrice === 0)}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-6">
+                        <Button
+                            onClick={() => setShowConfirmation(false)}
+                            className="bg-[#d1a246] hover:bg-[#b88c3a] text-white rounded-full px-8"
+                        >
+                            Fermer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
