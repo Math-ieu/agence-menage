@@ -10,9 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // New assets
-import gardeMaladeHero from "@/assets/service-garde-malade-new.png";
+import gardeMaladeHero from "@/assets/service-garde-malade.png";
 import handsCare from "@/assets/hands-care.png";
 import caregiverVisit from "@/assets/caregiver-visit.png";
 
@@ -39,12 +40,38 @@ const GardeMalade = () => {
     numberOfDays: 1,
     additionalNotes: "",
     phoneNumber: "",
+    phonePrefix: "+212",
+    useWhatsappForPhone: true,
+    whatsappPrefix: "+212",
     whatsappNumber: "",
     firstName: "",
     lastName: ""
   });
 
-  const totalPrice = formData.numberOfDays * 500;
+  const perVisitPrice = formData.numberOfDays * 500;
+  let totalPrice = 0;
+  let discountAmount = 0;
+  const discountRate = 0.1;
+
+  if (formData.frequency === "subscription") {
+    const visitsMap: Record<string, number> = {
+      "4foisSemaine": 4,
+      "3foisSemaine": 3,
+      "1foisSemaine": 1,
+      "5foisSemaine": 5,
+      "6foisSemaine": 6,
+      "7foisSemaine": 7,
+      "2foisSemaine": 2,
+      "1semaine2": 0.5,
+      "1foisMois": 0.25
+    };
+    const visitsPerWeek = visitsMap[formData.subFrequency] || 1;
+    const subtotalMonthly = perVisitPrice * visitsPerWeek * 4;
+    discountAmount = subtotalMonthly * discountRate;
+    totalPrice = subtotalMonthly - discountAmount;
+  } else {
+    totalPrice = perVisitPrice;
+  }
 
   const scrollToForm = () => {
     setShowForm(true);
@@ -56,12 +83,20 @@ const GardeMalade = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
+    if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
 
-    const message = formatBookingMessage("Garde Malade", formData, "Sur devis");
+    const bookingData = {
+      ...formData,
+      phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+      whatsappNumber: formData.useWhatsappForPhone
+        ? `${formData.phonePrefix} ${formData.phoneNumber}`
+        : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+    };
+
+    const message = formatBookingMessage("Garde Malade", bookingData, "Sur devis");
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
     window.open(whatsappLink, '_blank');
@@ -75,6 +110,7 @@ const GardeMalade = () => {
   const decrementDays = () => setFormData({ ...formData, numberOfDays: Math.max(1, formData.numberOfDays - 1) });
 
   const frequencies = [
+    { value: "4foisSemaine", label: "4 fois par semaine" },
     { value: "3foisSemaine", label: "3 fois par semaine" },
     { value: "1foisSemaine", label: "Une fois par semaine" },
     { value: "5foisSemaine", label: "5 fois par semaine" },
@@ -220,9 +256,19 @@ const GardeMalade = () => {
                       </div>
 
                       <div className="pt-4 border-t border-[#b46d2f]/20">
+                        {formData.frequency === "subscription" && discountAmount > 0 && (
+                          <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded mb-4 text-xs">
+                            <span>Réduction (10%):</span>
+                            <span>-{Math.round(discountAmount)} DH</span>
+                          </div>
+                        )}
                         <div className="flex justify-between items-center bg-[#b46d2f]/5 p-3 rounded-lg border border-[#b46d2f]/10">
-                          <span className="text-xs font-bold text-[#b46d2f] uppercase tracking-wider">Tarification</span>
-                          <span className="text-lg font-black text-[#b46d2f]">SUR DEVIS</span>
+                          <span className="text-xs font-bold text-[#b46d2f] uppercase tracking-wider">
+                            {formData.frequency === "subscription" ? "Mensuel HT" : "Total HT"}
+                          </span>
+                          <span className="text-lg font-black text-[#b46d2f]">
+                            {totalPrice > 0 ? `${Math.round(totalPrice)} DH` : "SUR DEVIS"}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -542,26 +588,72 @@ const GardeMalade = () => {
                         <div className="grid md:grid-cols-2 gap-6">
                           <div className="space-y-2">
                             <Label className="text-sm font-bold text-slate-600">Téléphone*</Label>
-                            <div className="flex gap-2">
-                              <div className="bg-slate-100 border rounded-lg w-16 flex items-center justify-center font-bold text-[#b46d2f] text-xs">+212</div>
-                              <Input
-                                placeholder="6 00 00 00 00"
-                                value={formData.phoneNumber}
-                                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                required
-                                className="h-10"
-                              />
+                            <div className="space-y-3">
+                              <div className="flex gap-2">
+                                <Input
+                                  value={formData.phonePrefix}
+                                  onChange={(e) => setFormData(prev => ({
+                                    ...prev,
+                                    phonePrefix: e.target.value,
+                                    whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                                  }))}
+                                  className="w-20 font-bold text-[#b46d2f] text-xs text-center"
+                                  placeholder="+212"
+                                />
+                                <Input
+                                  placeholder="6 00 00 00 00"
+                                  value={formData.phoneNumber}
+                                  onChange={(e) => {
+                                    const newVal = e.target.value;
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      phoneNumber: newVal,
+                                      whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                    }));
+                                  }}
+                                  required
+                                  className="h-10 flex-1"
+                                />
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Checkbox
+                                  id="useWhatsapp"
+                                  checked={formData.useWhatsappForPhone}
+                                  onCheckedChange={(checked) => {
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      useWhatsappForPhone: !!checked,
+                                      whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                      whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                    }));
+                                  }}
+                                  className="data-[state=checked]:bg-[#b46d2f] border-[#b46d2f]"
+                                />
+                                <label
+                                  htmlFor="useWhatsapp"
+                                  className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                                >
+                                  Utilisez-vous ce numéro pour WhatsApp ?
+                                </label>
+                              </div>
                             </div>
                           </div>
                           <div className="space-y-2">
                             <Label className="text-sm font-bold text-slate-600">WhatsApp*</Label>
                             <div className="flex gap-2">
-                              <div className="bg-slate-100 border rounded-lg w-16 flex items-center justify-center font-bold text-[#b46d2f] text-xs">+212</div>
+                              <Input
+                                value={formData.whatsappPrefix}
+                                onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                                className="bg-slate-100 border rounded-lg w-20 text-center font-bold text-[#b46d2f] text-xs"
+                                placeholder="+212"
+                                disabled={formData.useWhatsappForPhone}
+                              />
                               <Input
                                 placeholder="6 00 00 00 00"
                                 value={formData.whatsappNumber}
                                 onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                                 className="h-10"
+                                disabled={formData.useWhatsappForPhone}
                               />
                             </div>
                           </div>

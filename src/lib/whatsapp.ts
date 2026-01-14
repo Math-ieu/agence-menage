@@ -1,4 +1,4 @@
-export const DESTINATION_PHONE_NUMBER = "+212669372603";
+export const DESTINATION_PHONE_NUMBER = "+212664331463";
 
 export const createWhatsAppLink = (phoneNumber: string, message: string): string => {
     const cleanPhoneNumber = phoneNumber.replace(/[^0-9]/g, '');

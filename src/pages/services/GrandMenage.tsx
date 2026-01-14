@@ -11,11 +11,20 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import serviceGrandMenage from "@/assets/service-grand-new.png";
+import serviceGrandMenage from "@/assets/service-grand-menage.png";
 import cleaningProduct from "@/assets/cleaning-product.png";
 import cleaningClothsMop from "@/assets/cleaning-cloths-mop.png";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const PRODUCTS_LIST = [
+  "Nettoyant multi-usage",
+  "Prdt vitre, dégraissant",
+  "Prdt de vaisselle",
+  "Prdt bois et parqués",
+  "Neutralisant d’odeur"
+];
 
 const GrandMenage = () => {
   const [formData, setFormData] = useState({
@@ -36,6 +45,9 @@ const GrandMenage = () => {
       torchonsEtSerpieres: false
     },
     phoneNumber: "",
+    phonePrefix: "+212",
+    useWhatsappForPhone: true,
+    whatsappPrefix: "+212",
     whatsappNumber: "",
     firstName: "",
     lastName: "",
@@ -43,21 +55,60 @@ const GrandMenage = () => {
   });
 
   const baseRate = 65;
-  const discountRate = formData.frequency === "subscription" ? 0.1 : 0;
-  const subtotal = formData.duration * baseRate * formData.numberOfPeople;
-  const discountAmount = subtotal * discountRate;
-  const totalServicePrice = subtotal - discountAmount;
-  const totalPrice = totalServicePrice + (formData.additionalServices.produitsEtOutils ? 90 : 0);
+  let visitsPerWeek = 1;
+  let discountRate = 0;
+  let discountAmount = 0;
+  let totalServicePrice = 0;
+
+  if (formData.frequency === "subscription") {
+    const visitsMap: Record<string, number> = {
+      "4foisSemaine": 4,
+      "1foisSemaine": 1,
+      "2foisMois": 0.5,
+      "1foisMois": 0.25,
+      "5foisSemaine": 5,
+      "6foisSemaine": 6,
+      "7foisSemaine": 7,
+      "3foisSemaine": 3,
+      "1semaine2": 0.5,
+      "1foisAn": 1 / 52
+    };
+    visitsPerWeek = visitsMap[formData.subFrequency] || 1;
+    discountRate = 0.1;
+    const monthlyHours = formData.duration * visitsPerWeek * 4;
+    const subtotalMonthly = monthlyHours * baseRate * formData.numberOfPeople;
+    discountAmount = subtotalMonthly * discountRate;
+    totalServicePrice = subtotalMonthly - discountAmount;
+  } else {
+    totalServicePrice = formData.duration * baseRate * formData.numberOfPeople;
+  }
+
+  const calculateTotal = () => {
+    let price = totalServicePrice;
+    if (formData.additionalServices.produitsEtOutils) price += 90;
+    if (formData.additionalServices.torchonsEtSerpieres) price += 40;
+    return price;
+  };
+
+  const totalPrice = calculateTotal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
+    if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
 
-    const message = formatBookingMessage("Grand Ménage", formData, totalPrice);
+    const bookingData = {
+      ...formData,
+      phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+      whatsappNumber: formData.useWhatsappForPhone
+        ? `${formData.phonePrefix} ${formData.phoneNumber}`
+        : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+    };
+
+    const message = formatBookingMessage("Grand Ménage", bookingData, totalPrice);
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
     window.open(whatsappLink, '_blank');
@@ -80,7 +131,7 @@ const GrandMenage = () => {
     } else if (surface <= 150) {
       finalDuration = 4;
       finalPeople = 2;
-    } else if (surface <= 300) {
+    } else if (surface < 300) {
       finalDuration = 8;
       finalPeople = 2;
     } else {
@@ -97,6 +148,7 @@ const GrandMenage = () => {
   };
 
   const frequencies = [
+    { value: "4foisSemaine", label: "4 fois par semaine" },
     { value: "1foisSemaine", label: "Une fois par semaine" },
     { value: "2foisMois", label: "2 fois par mois" },
     { value: "1foisMois", label: "Une fois par mois - Recommandé" },
@@ -148,7 +200,7 @@ Il comprend le :
           <div className="container max-w-5xl">
             <div className="bg-[#f3efdf] rounded-lg p-6 text-center mb-8 border border-[#e2d9c2]">
               <h2 className="text-2xl font-bold text-[#4a4a4a] mb-2 uppercase tracking-wide">
-                FORMULAIRE DE RESERVATION/GRAND MENAGE
+                FORMULAIRE DE RESERVATION
               </h2>
             </div>
             <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
@@ -175,6 +227,18 @@ Il comprend le :
                         <span className="text-muted-foreground">Personnes:</span>
                         <span className="font-medium text-right">{formData.numberOfPeople}</span>
                       </div>
+                      {formData.additionalServices.produitsEtOutils && (
+                        <div className="flex justify-between gap-4 text-xs">
+                          <span className="text-muted-foreground">Produits:</span>
+                          <span className="font-medium text-right">+90 DH</span>
+                        </div>
+                      )}
+                      {formData.additionalServices.torchonsEtSerpieres && (
+                        <div className="flex justify-between gap-4 text-xs">
+                          <span className="text-muted-foreground">Torchons:</span>
+                          <span className="font-medium text-right">+40 DH</span>
+                        </div>
+                      )}
                       {discountRate > 0 && (
                         <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded">
                           <span>Réduction (10%):</span>
@@ -193,8 +257,10 @@ Il comprend le :
 
                     <div className="pt-4 border-t">
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold">Total</span>
-                        <span className="text-2xl font-bold text-[#c5b89a]">{totalPrice} DH</span>
+                        <span className="text-lg font-bold">
+                          {formData.frequency === "subscription" ? "Total Mensuel" : "Total"}
+                        </span>
+                        <span className="text-2xl font-bold text-[#c5b89a]">{Math.round(totalPrice)} DH</span>
                       </div>
                     </div>
                   </div>
@@ -227,22 +293,22 @@ Il comprend le :
                     </h3>
                     <div className="px-8 py-10 border rounded-xl bg-white shadow-sm space-y-8">
                       <div className="relative pt-6">
-                        <div className="absolute -top-4 left-0 transition-all duration-200" style={{ left: `${(formData.surfaceArea / 5000) * 100}%`, transform: 'translateX(-50%)' }}>
+                        <div className="absolute -top-4 left-0 transition-all duration-200" style={{ left: `${(formData.surfaceArea / 300) * 100}%`, transform: 'translateX(-50%)' }}>
                           <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-full text-sm border border-primary/20 whitespace-nowrap">
-                            {formData.surfaceArea}m²
+                            {formData.surfaceArea === 300 ? "300m² et plus" : `${formData.surfaceArea}m²`}
                           </span>
                         </div>
                         <Slider
                           value={[formData.surfaceArea]}
                           onValueChange={(value) => calculateEstimation(value[0])}
-                          max={5000}
+                          max={300}
                           min={0}
                           step={1}
                           className="cursor-pointer"
                         />
                         <div className="flex justify-between mt-4 text-xs font-medium text-slate-400">
                           <span>0m²</span>
-                          <span>5000m²</span>
+                          <span>300m² et plus</span>
                         </div>
                       </div>
                       <p className="text-[10px] text-red-500 text-center font-medium leading-tight px-10">
@@ -426,11 +492,7 @@ Il comprend le :
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-2 gap-x-4 max-w-2xl mx-auto mb-6 text-center">
                         {[
-                          "Nettoyage cuisine",
-                          "Entretien des sols",
-                          "Salle de bain",
-                          "Produit multi surface",
-                          "Nettoyage sanitaire"
+                          ...PRODUCTS_LIST
                         ].map((item) => (
                           <div key={item} className="flex items-center justify-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#c5b89a]" />
@@ -472,7 +534,7 @@ Il comprend le :
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <span className="font-bold text-[#c5b89a] text-sm">Torchons et serpières</span>
+                            <span className="font-bold text-[#c5b89a] text-sm">Torchons et serpillères : + 40 dh</span>
                           </div>
                           <Switch
                             checked={formData.additionalServices.torchonsEtSerpieres}
@@ -525,30 +587,68 @@ Il comprend le :
                     <div className="p-6 grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label className="font-bold text-[#c5b89a] text-xs uppercase">Numéro de téléphone*</Label>
-                        <div className="flex gap-2">
-                          <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#c5b89a] flex items-center">
-                            +212
+                        <div className="space-y-3">
+                          <div className="flex gap-2">
+                            <Input
+                              value={formData.phonePrefix}
+                              onChange={(e) => setFormData({ ...formData, phonePrefix: e.target.value })}
+                              className="w-20 border-slate-300 font-bold text-[#c5b89a] text-center"
+                              placeholder="+212"
+                            />
+                            <Input
+                              placeholder="6 12 00 00 00"
+                              value={formData.phoneNumber}
+                              onChange={(e) => {
+                                const newVal = e.target.value;
+                                setFormData(prev => ({
+                                  ...prev,
+                                  phoneNumber: newVal,
+                                  whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                }));
+                              }}
+                              required
+                              className="border-slate-300 h-11 flex-1"
+                            />
                           </div>
-                          <Input
-                            placeholder="6 12 00 00 00"
-                            value={formData.phoneNumber}
-                            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                            required
-                            className="border-slate-300 h-11"
-                          />
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="useWhatsapp"
+                              checked={formData.useWhatsappForPhone}
+                              onCheckedChange={(checked) => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  useWhatsappForPhone: !!checked,
+                                  whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                  whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                }));
+                              }}
+                              className="data-[state=checked]:bg-[#c5b89a] border-[#c5b89a]"
+                            />
+                            <label
+                              htmlFor="useWhatsapp"
+                              className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                            >
+                              Utilisez-vous ce numéro pour WhatsApp ?
+                            </label>
+                          </div>
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="font-bold text-[#c5b89a] text-xs uppercase">Numéro whatsapp</Label>
                         <div className="flex gap-2">
-                          <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#c5b89a] flex items-center">
-                            +212
-                          </div>
+                          <Input
+                            value={formData.whatsappPrefix}
+                            onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                            className="w-20 border-slate-300 font-bold text-[#c5b89a] text-center"
+                            placeholder="+212"
+                            disabled={formData.useWhatsappForPhone}
+                          />
                           <Input
                             placeholder="6 12 00 00 00"
                             value={formData.whatsappNumber}
                             onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                             className="border-slate-300 h-11"
+                            disabled={formData.useWhatsappForPhone}
                           />
                         </div>
                       </div>

@@ -1,32 +1,32 @@
 import ServiceCard from "./ServiceCard";
 import { cn } from "@/lib/utils";
-import serviceAirbnb from "@/assets/service-airbnb-new.png";
-import serviceChantierParticulier from "@/assets/service-chantier-particulier-new.png";
-import serviceChantierEntreprise from "@/assets/service-chantier-entreprise-new.png";
-import serviceDemenagement from "@/assets/service-demenagement-new.png";
-import serviceRegulier from "@/assets/service-standard-new.png";
-import serviceGrandMenage from "@/assets/service-grand-new.png";
-import serviceGardeMalade from "@/assets/service-garde-malade-new.png";
-import serviceBureaux from "@/assets/service-bureaux-new.png";
-import servicePlacement from "@/assets/service-placement-new.png";
+import serviceAirbnb from "@/assets/service-menage-airbnb.png";
+import serviceChantierParticulier from "@/assets/service-fin-chantier-particulier.png";
+import serviceChantierEntreprise from "@/assets/service-fin-chantier-entreprise.png";
+import serviceDemenagement from "@/assets/service-menage-demenagement.png";
+import serviceRegulier from "@/assets/service-menage-standard.png";
+import serviceGrandMenage from "@/assets/service-grand-menage.png";
+import serviceGardeMalade from "@/assets/service-garde-malade.png";
+import serviceBureaux from "@/assets/service-menage-bureaux.png";
+import servicePlacement from "@/assets/service-placement-gestion.png";
 
 interface ServicesGridProps {
   type: "particulier" | "entreprise";
 }
 
 const particulierServices = [
-  { title: "Ménage", subtitle: "standard", color: "#287271", image: serviceRegulier, url: "/services/particulier/menage-standard" },
-  { title: "Grand", subtitle: "ménage", color: "#e6dec7", image: serviceGrandMenage, url: "/services/particulier/grand-menage" },
-  { title: "Ménage", subtitle: "dans les Airbnb", color: "#9ed2ce", image: serviceAirbnb, url: "/services/particulier/menage-airbnb" },
-  { title: "Ménage", subtitle: "de fin de chantier", color: "#e9f6e9", image: serviceChantierParticulier, url: "/services/particulier/menage-fin-chantier" },
-  { title: "Ménage", subtitle: "post - déménagement", color: "#d1a246", image: serviceDemenagement, url: "/services/particulier/menage-demenagement" },
-  { title: "Garde", subtitle: "malade", color: "#b46d2f", image: serviceGardeMalade, url: "/services/particulier/garde-malade" },
+  { title: "Ménage standard", subtitle: "", color: "#287271", image: serviceRegulier, url: "/services/particulier/menage-standard" },
+  { title: "Grand ménage", subtitle: "", color: "#e6dec7", image: serviceGrandMenage, url: "/services/particulier/grand-menage" },
+  { title: "Ménage Airbnb", subtitle: "", color: "#9ed2ce", image: serviceAirbnb, url: "/services/particulier/menage-airbnb" },
+  { title: "Fin de chantier", subtitle: "", color: "#e9f6e9", image: serviceChantierParticulier, url: "/services/particulier/menage-fin-chantier" },
+  { title: "Ménage post déména-\n gement", subtitle: "", color: "#d1a246", image: serviceDemenagement, url: "/services/particulier/menage-demenagement" },
+  { title: "Auxiliaire de vie / garde malade", subtitle: "", color: "#b46d2f", image: serviceGardeMalade, url: "/services/particulier/garde-malade" },
 ];
 
 const entrepriseServices = [
-  { title: "Ménage", subtitle: "Bureaux", color: "#1caf9a", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
-  { title: "Placement & Gestion", subtitle: "de propriété", color: "#5bbd82", image: servicePlacement, url: "/services/entreprise/placement" },
-  { title: "Ménage", subtitle: "de fin de chantier", color: "#f3d299", image: serviceChantierEntreprise, url: "/services/entreprise/menage-fin-chantier" },
+  { title: "Ménages bureaux", subtitle: "", color: "#1caf9a", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
+  { title: "Placement & gestion de propriété", subtitle: "", color: "#5bbd82", image: servicePlacement, url: "/services/entreprise/placement" },
+  { title: "Fin de chantier", subtitle: "", color: "#f3d299", image: serviceChantierEntreprise, url: "/services/entreprise/menage-fin-chantier" },
 ];
 
 const ServicesGrid = ({ type }: ServicesGridProps) => {
@@ -34,7 +34,10 @@ const ServicesGrid = ({ type }: ServicesGridProps) => {
   const title = type === "particulier" ? "Services pour particuliers" : "Services pour entreprises";
 
   return (
-    <section className={`py-16 transition-colors duration-[2000ms] ${type === "entreprise" ? "bg-primary" : "bg-background"}`}>
+    <section
+      id={type === "particulier" ? "services-particuliers" : "services-entreprises"}
+      className={`py-16 transition-colors duration-[2000ms] ${type === "entreprise" ? "bg-primary" : "bg-background"}`}
+    >
       <div className="container">
         <h2 className={`text-3xl md:text-4xl font-bold text-center mb-12 transition-colors duration-[2000ms] ${type === "entreprise" ? "text-white" : "text-foreground"
           }`}>

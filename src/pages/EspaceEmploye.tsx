@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { createWhatsAppLink, formatCandidateMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import heroImage from "@/assets/hero-espace-employe.png";
+
 import { GraduationCap, Clock, MapPin, Heart, Users } from "lucide-react";
 
 const EspaceEmploye = () => {
@@ -90,13 +92,20 @@ const EspaceEmploye = () => {
 
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="bg-primary/5 py-16 px-4">
-                    <div className="container max-w-5xl text-center">
+                <section className="relative py-36 px-4 overflow-hidden">
+                    <div
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                        style={{ backgroundImage: `url(${heroImage})` }}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-white/60" />
+                    </div>
+
+                    <div className="relative container max-w-5xl text-center">
                         <h1 className="text-3xl md:text-5xl font-extrabold text-primary mb-6">Espace employé</h1>
                         <p className="text-xl md:text-2xl font-bold text-slate-800 mb-4 max-w-3xl mx-auto">
                             Rejoignez une équipe qui vous accompagne et vous forme
                         </p>
-                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                        <p className="text-lg text-slate-800 font-medium max-w-2xl mx-auto">
                             Vous êtes femme de ménage, aide à domicile ou intervenante auprès de seniors ?
                             Que vous soyez débutante ou expérimentée, nous vous accompagnons.
                         </p>

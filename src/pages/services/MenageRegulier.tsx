@@ -11,10 +11,18 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import serviceRegulier from "@/assets/service-standard-new.png";
+import serviceRegulier from "@/assets/service-menage-standard.png";
 import cleaningProduct from "@/assets/cleaning-product.png";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+
+const PRODUCTS_LIST = [
+  "Nettoyant multi-usage",
+  "Prdt vitre, dégraissant",
+  "Prdt de vaisselle",
+  "Prdt bois et parqués",
+  "Neutralisant d’odeur"
+];
 
 const MenageRegulier = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +30,7 @@ const MenageRegulier = () => {
     frequency: "oneshot",
     subFrequency: "",
     duration: 4,
+    recommendedDuration: 4,
     numberOfPeople: 1,
     city: "",
     neighborhood: "",
@@ -31,7 +40,7 @@ const MenageRegulier = () => {
       suiteSansBain: 0,
       salleDeBain: 0,
       chambre: 0,
-      salonMezzanine: 0,
+      salonMarocain: 0,
       salonEuropeen: 0,
       toilettesLavabo: 0,
       rooftop: 0,
@@ -42,9 +51,13 @@ const MenageRegulier = () => {
     schedulingDate: "",
     fixedTime: "14:00",
     additionalServices: {
-      produitsEtOutils: false
+      produitsEtOutils: false,
+      torchonsEtSerpierres: false
     },
     phoneNumber: "",
+    phonePrefix: "+212",
+    useWhatsappForPhone: true,
+    whatsappPrefix: "+212",
     whatsappNumber: "",
     firstName: "",
     lastName: "",
@@ -52,21 +65,73 @@ const MenageRegulier = () => {
   });
 
   const baseRate = 60;
-  const discountRate = formData.frequency === "subscription" ? 0.1 : 0;
-  const subtotal = formData.duration * baseRate * formData.numberOfPeople;
-  const discountAmount = subtotal * discountRate;
-  const totalServicePrice = subtotal - discountAmount;
-  const totalPrice = totalServicePrice + (formData.additionalServices.produitsEtOutils ? 90 : 0);
+
+  // Pricing Logic
+  let totalServicePrice = 0;
+  let visitsPerWeek = 1;
+  let discountRate = 0;
+  let discountAmount = 0;
+
+  if (formData.frequency === "subscription") {
+    // Determine visits per week from subFrequency
+    const visitsMap: Record<string, number> = {
+      "1fois": 1,
+      "2fois": 2,
+      "3fois": 3,
+      "4fois": 4,
+      "5fois": 5,
+      "6fois": 6,
+      "7fois": 7,
+      "3foisMois": 3 / 4, // Approximation for average weekly
+      "1semaine2": 0.5,
+      "1foisMois": 0.25
+    };
+    visitsPerWeek = visitsMap[formData.subFrequency] || 1;
+
+    discountRate = 0.1;
+    // Formula: Hours * Visits/Week * 4 weeks * Rate * (1 - discount)
+    const monthlyHours = formData.duration * visitsPerWeek * 4;
+    const subtotalMonthly = monthlyHours * baseRate * formData.numberOfPeople;
+    discountAmount = subtotalMonthly * discountRate;
+    totalServicePrice = subtotalMonthly - discountAmount;
+  } else {
+    // One-shot: Hours * Rate * People
+    totalServicePrice = formData.duration * baseRate * formData.numberOfPeople;
+  }
+
+  const calculateTotal = () => {
+    let price = totalServicePrice;
+    if (formData.additionalServices.produitsEtOutils) price += 90;
+    if (formData.additionalServices.torchonsEtSerpierres) price += 40;
+    return price;
+  };
+
+  const totalPrice = calculateTotal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if any room is selected
+    const roomsSelected = Object.values(formData.rooms).some(count => count > 0);
+    if (!roomsSelected) {
+      toast.error("Veuillez décrire les pièces de votre logement avant de continuer");
+      return;
+    }
 
     if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
 
-    const message = formatBookingMessage("Ménage Régulier", formData, totalPrice);
+    const bookingData = {
+      ...formData,
+      phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+      whatsappNumber: formData.useWhatsappForPhone
+        ? `${formData.phonePrefix} ${formData.phoneNumber}`
+        : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+    };
+
+    const message = formatBookingMessage("Ménage Régulier", bookingData, totalPrice);
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
     window.open(whatsappLink, '_blank');
@@ -86,7 +151,7 @@ const MenageRegulier = () => {
       suiteSansBain: 45,
       salleDeBain: 30,
       chambre: 40,
-      salonMezzanine: 35,
+      salonMarocain: 35,
       salonEuropeen: 35,
       toilettesLavabo: 25,
       rooftop: 30,
@@ -95,19 +160,16 @@ const MenageRegulier = () => {
 
     let totalMinutes = 0;
     Object.entries(rooms).forEach(([key, count]) => {
-      totalMinutes += (roomTimes[key] || 0) * count;
+      totalMinutes += (roomTimes[key] || 0) * (count as number);
     });
 
     const calculatedHours = Math.ceil(totalMinutes / 60);
-    const finalDuration = Math.max(4, calculatedHours);
+    const recommendedDuration = Math.max(4, calculatedHours);
 
-    // Logic for number of people: 1 person for <= 6 hours, 2 for > 6 hours
-    const finalPeople = finalDuration > 6 ? 2 : 1;
-
+    // Only update recommendedDuration, do NOT overwrite manual duration
     setFormData(prev => ({
       ...prev,
-      duration: finalDuration,
-      numberOfPeople: finalPeople,
+      recommendedDuration,
       rooms
     }));
   };
@@ -125,6 +187,7 @@ const MenageRegulier = () => {
     { value: "1fois", label: "Une fois par semaine" },
     { value: "2fois", label: "2 fois par semaine" },
     { value: "3fois", label: "3 fois par semaine - Recommandé" },
+    { value: "4fois", label: "4 fois par semaine" },
     { value: "5fois", label: "5 fois par semaine" },
     { value: "6fois", label: "6 fois par semaine" },
     { value: "7fois", label: "7 fois par semaine" },
@@ -134,7 +197,7 @@ const MenageRegulier = () => {
   ];
 
   const getFrequencyLabel = (value: string, subValue: string) => {
-    if (value === "oneshot") return "One shot";
+    if (value === "oneshot") return "Une fois";
     const freq = frequencies.find(f => f.value === subValue);
     return freq ? `Abonnement - ${freq.label}` : "Abonnement";
   };
@@ -189,17 +252,33 @@ Il comprend le :
                         <span className="font-medium text-right">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
                       </div>
                       <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Durée:</span>
+                        <span className="text-muted-foreground">Durée choisie:</span>
                         <span className="font-medium text-right">{formData.duration} heures</span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Temps recommandé:</span>
+                        <span className="font-medium text-right font-bold text-primary">{formData.recommendedDuration} heures</span>
                       </div>
                       <div className="flex justify-between gap-4">
                         <span className="text-muted-foreground">Personnes:</span>
                         <span className="font-medium text-right">{formData.numberOfPeople}</span>
                       </div>
+                      {formData.additionalServices.produitsEtOutils && (
+                        <div className="flex justify-between gap-4 text-xs">
+                          <span className="text-muted-foreground">Produits:</span>
+                          <span className="font-medium text-right">+90 DH</span>
+                        </div>
+                      )}
+                      {formData.additionalServices.torchonsEtSerpierres && (
+                        <div className="flex justify-between gap-4 text-xs">
+                          <span className="text-muted-foreground">Torchons:</span>
+                          <span className="font-medium text-right">+40 DH</span>
+                        </div>
+                      )}
                       {discountRate > 0 && (
                         <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded">
                           <span>Réduction (10%):</span>
-                          <span>-{discountAmount} DH</span>
+                          <span>-{Math.round(discountAmount)} DH</span>
                         </div>
                       )}
                       <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
@@ -306,7 +385,7 @@ Il comprend le :
                     <h3 className="text-xl font-bold bg-[#1c6664] text-white p-3 rounded-lg text-center mb-2">
                       Merci de nous décrire votre domicile ainsi que les différentes pièces qui le composent
                     </h3>
-                    <p className="text-red-500 text-xs text-right mb-4">
+                    <p className="text-red-500 text-xs text-right mb-4 font-bold">
                       cliquez sur + ou - pour décrire les pièces de votre logement
                     </p>
                     <div className="space-y-4 p-4 border rounded-xl bg-white">
@@ -316,7 +395,7 @@ Il comprend le :
                         { key: "suiteSansBain", label: "Suite parentale sans salle de bain", time: "45 min" },
                         { key: "salleDeBain", label: "Salle de bain", time: "30 min" },
                         { key: "chambre", label: "Chambre/pièce/bureau/chambre d'enfant", time: "40 min" },
-                        { key: "salonMezzanine", label: "salon Mezzanine", time: "35 min" },
+                        { key: "salonMarocain", label: "salon Marocain", time: "35 min" },
                         { key: "salonEuropeen", label: "salon européen", time: "35 min" },
                         { key: "toilettesLavabo", label: "toilette Lavabo", time: "25 min" },
                         { key: "rooftop", label: "Rooftop", time: "30 min", type: "checkbox" },
@@ -369,8 +448,8 @@ Il comprend le :
 
                   <div>
                     <div className="bg-[#f8fafc] border border-slate-200 rounded-xl p-6 flex flex-col items-center justify-center space-y-2 mb-8 shadow-inner">
-                      <p className="text-red-500 text-xs text-center font-medium">
-                        D'après les options choisies, nous recommandons {formData.duration} heures pour un ménage total.
+                      <p className="text-red-500 text-xs text-center font-bold italic">
+                        D'après les options choisies, nous recommandons {formData.recommendedDuration} heures pour un ménage optimal.
                       </p>
                       <div className="bg-[#94a3a3] text-white text-3xl font-bold px-10 py-3 rounded-full shadow-lg">
                         {formData.duration}H : 00
@@ -381,7 +460,7 @@ Il comprend le :
                       Précisez le temps qui vous convient le mieux.
                     </h3>
                     <p className="text-red-500 text-[10px] text-center mb-4">
-                      La durée initiale de votre ménage est de {formData.duration} h
+                      La durée initiale de votre ménage est de {formData.recommendedDuration} h
                     </p>
                     <div className="flex items-center justify-center gap-8 p-4">
                       <Button
@@ -493,11 +572,7 @@ Il comprend le :
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto mb-6">
                         {[
-                          "Chiffon microfibre",
-                          "Produit multi surface",
-                          "Nettoyant sanitaire",
-                          "Nettoyant dégraissant",
-                          "Nettoyant vitre & miroir"
+                          ...PRODUCTS_LIST
                         ].map((item) => (
                           <div key={item} className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#1c6664]" />
@@ -520,6 +595,24 @@ Il comprend le :
                             setFormData({
                               ...formData,
                               additionalServices: { ...formData.additionalServices, produitsEtOutils: checked }
+                            })
+                          }
+                          className="data-[state=checked]:bg-[#1c6664]"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center text-2xl">
+                            🧹
+                          </div>
+                          <span className="font-bold text-[#1c6664]">Torchons et serpillères : + 40 dh</span>
+                        </div>
+                        <Switch
+                          checked={formData.additionalServices.torchonsEtSerpierres}
+                          onCheckedChange={(checked) =>
+                            setFormData({
+                              ...formData,
+                              additionalServices: { ...formData.additionalServices, torchonsEtSerpierres: checked }
                             })
                           }
                           className="data-[state=checked]:bg-[#1c6664]"
@@ -564,30 +657,72 @@ Il comprend le :
                     <div className="p-6 grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label className="font-bold text-[#1c6664] text-sm">Numéro de téléphone*</Label>
-                        <div className="flex gap-2">
-                          <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#1c6664] flex items-center">
-                            +212
+                        <div className="space-y-3">
+                          <div className="flex gap-2">
+                            <Input
+                              value={formData.phonePrefix}
+                              onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                phonePrefix: e.target.value,
+                                whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                              }))}
+                              className="w-20 border-slate-300 font-bold text-[#1c6664] text-center"
+                              placeholder="+212"
+                            />
+                            <Input
+                              placeholder="6 12 00 00 00"
+                              value={formData.phoneNumber}
+                              onChange={(e) => {
+                                const newVal = e.target.value;
+                                setFormData(prev => ({
+                                  ...prev,
+                                  phoneNumber: newVal,
+                                  whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                }));
+                              }}
+                              required
+                              className="border-slate-300 h-11 flex-1"
+                            />
                           </div>
-                          <Input
-                            placeholder="6 12 00 00 00"
-                            value={formData.phoneNumber}
-                            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                            required
-                            className="border-slate-300 h-11"
-                          />
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="useWhatsapp"
+                              checked={formData.useWhatsappForPhone}
+                              onCheckedChange={(checked) => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  useWhatsappForPhone: !!checked,
+                                  whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                  whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                }));
+                              }}
+                              className="data-[state=checked]:bg-[#1c6664] border-[#1c6664]"
+                            />
+                            <label
+                              htmlFor="useWhatsapp"
+                              className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                            >
+                              Utilisez-vous ce numéro pour WhatsApp ?
+                            </label>
+                          </div>
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="font-bold text-[#1c6664] text-sm">Numéro whatsapp</Label>
                         <div className="flex gap-2">
-                          <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#1c6664] flex items-center">
-                            +212
-                          </div>
+                          <Input
+                            value={formData.whatsappPrefix}
+                            onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                            className="w-20 border-slate-300 font-bold text-[#1c6664] text-center"
+                            placeholder="+212"
+                            disabled={formData.useWhatsappForPhone}
+                          />
                           <Input
                             placeholder="6 12 00 00 00"
                             value={formData.whatsappNumber}
                             onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                             className="border-slate-300 h-11"
+                            disabled={formData.useWhatsappForPhone}
                           />
                         </div>
                       </div>

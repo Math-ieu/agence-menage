@@ -1,12 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
-import heroImage from "@/assets/hero-cleaner.jpg";
+import heroParticulier from "@/assets/hero-home-particulier.png";
+import heroEntreprise from "@/assets/hero-home-entreprise.png";
 
 const HeroSection = () => {
   const location = useLocation();
   const isEntreprise = location.pathname === "/entreprise";
+  const heroImage = isEntreprise ? heroEntreprise : heroParticulier;
 
   return (
-    <section className="relative h-[450px] md:h-[550px] overflow-hidden">
+    <section className="relative h-[550px] md:h-[650px] overflow-hidden">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}

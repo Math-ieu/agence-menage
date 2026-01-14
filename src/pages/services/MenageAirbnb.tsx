@@ -8,9 +8,10 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import serviceAirbnb from "@/assets/service-airbnb-new.png";
+import serviceAirbnb from "@/assets/service-menage-airbnb.png";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MenageAirbnb = () => {
     const [formData, setFormData] = useState({
@@ -26,6 +27,9 @@ const MenageAirbnb = () => {
         fixedTime: "14:00",
         additionalServices: {},
         phoneNumber: "",
+        phonePrefix: "+212",
+        useWhatsappForPhone: true,
+        whatsappPrefix: "+212",
         whatsappNumber: "",
         firstName: "",
         lastName: "",
@@ -35,12 +39,20 @@ const MenageAirbnb = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
+        if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
             toast.error("Veuillez remplir tous les champs obligatoires");
             return;
         }
 
-        const message = formatBookingMessage("Ménage Airbnb", formData, "Sur devis");
+        const bookingData = {
+            ...formData,
+            phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+            whatsappNumber: formData.useWhatsappForPhone
+                ? `${formData.phonePrefix} ${formData.phoneNumber}`
+                : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+        };
+
+        const message = formatBookingMessage("Ménage Airbnb", bookingData, "Sur devis");
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         window.open(whatsappLink, '_blank');
@@ -295,30 +307,72 @@ Il comprend le :
                                         <div className="p-6 grid md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <Label className="font-bold text-primary text-sm">Numéro de téléphone*</Label>
-                                                <div className="flex gap-2">
-                                                    <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-primary flex items-center">
-                                                        +212
+                                                <div className="space-y-3">
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            value={formData.phonePrefix}
+                                                            onChange={(e) => setFormData(prev => ({
+                                                                ...prev,
+                                                                phonePrefix: e.target.value,
+                                                                whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                                                            }))}
+                                                            className="w-20 border-slate-300 font-bold text-primary text-center"
+                                                            placeholder="+212"
+                                                        />
+                                                        <Input
+                                                            placeholder="6 12 00 00 00"
+                                                            value={formData.phoneNumber}
+                                                            onChange={(e) => {
+                                                                const newVal = e.target.value;
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    phoneNumber: newVal,
+                                                                    whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                                                }));
+                                                            }}
+                                                            required
+                                                            className="border-slate-300 h-11 flex-1"
+                                                        />
                                                     </div>
-                                                    <Input
-                                                        placeholder="6 12 00 00 00"
-                                                        value={formData.phoneNumber}
-                                                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                        required
-                                                        className="border-slate-300 h-11"
-                                                    />
+                                                    <div className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id="useWhatsapp"
+                                                            checked={formData.useWhatsappForPhone}
+                                                            onCheckedChange={(checked) => {
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    useWhatsappForPhone: !!checked,
+                                                                    whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                                                    whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                                                }));
+                                                            }}
+                                                            className="data-[state=checked]:bg-primary border-primary"
+                                                        />
+                                                        <label
+                                                            htmlFor="useWhatsapp"
+                                                            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                                                        >
+                                                            Utilisez-vous ce numéro pour WhatsApp ?
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="font-bold text-primary text-sm">Numéro whatsapp</Label>
                                                 <div className="flex gap-2">
-                                                    <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-primary flex items-center">
-                                                        +212
-                                                    </div>
+                                                    <Input
+                                                        value={formData.whatsappPrefix}
+                                                        onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                                                        className="w-20 border-slate-300 font-bold text-primary text-center"
+                                                        placeholder="+212"
+                                                        disabled={formData.useWhatsappForPhone}
+                                                    />
                                                     <Input
                                                         placeholder="6 12 00 00 00"
                                                         value={formData.whatsappNumber}
                                                         onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                                                         className="border-slate-300 h-11"
+                                                        disabled={formData.useWhatsappForPhone}
                                                     />
                                                 </div>
                                             </div>

@@ -36,7 +36,18 @@ const ServiceHeroSection = ({ title, description, image, primaryColor }: Service
             className="relative py-16 bg-gradient-to-br from-primary/10 to-accent"
             style={primaryColor ? { background: `linear-gradient(to bottom right, ${primaryColor}14, ${primaryColor}08)` } : {}}
         >
-            <div className="container">
+            <div className="container relative">
+                <button
+                    onClick={() => window.history.back()}
+                    className="absolute -top-8 left-0 md:-left-12 p-2 hover:bg-black/5 rounded-full transition-colors"
+                    aria-label="Retour"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 12H5" />
+                        <path d="M12 19l-7-7 7-7" />
+                    </svg>
+                </button>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="space-y-4">
                         <h1
@@ -45,7 +56,7 @@ const ServiceHeroSection = ({ title, description, image, primaryColor }: Service
                         >
                             {title}
                         </h1>
-                        <div className="space-y-1">
+                        <div className="space-y-1 font-bold">
                             {renderDescription(description)}
                         </div>
                     </div>
@@ -53,7 +64,7 @@ const ServiceHeroSection = ({ title, description, image, primaryColor }: Service
                         <img
                             src={image}
                             alt={title}
-                            className="w-full h-[300px] object-cover"
+                            className="w-full h-[300px] md:h-[500px] object-cover"
                         />
                     </div>
                 </div>

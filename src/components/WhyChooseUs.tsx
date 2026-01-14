@@ -9,10 +9,10 @@ const WhyChooseUs = () => {
     },
     {
       icon: Phone,
-      title: "Chargé de clientèle dédié 5j/7",
-      description: "Notre Service Client est disponible du Lundi au Vendredi par email ou par téléphone.",
+      title: "Chargé de clientèle dédié 6j/7",
+      description: "Notre Service Client est disponible du Lundi au Samedi par email ou par téléphone.",
     },
-    { 
+    {
       icon: Monitor,
       title: "Réservation & gestion en ligne",
       description: "Réservation et gestion des prestations: tout se fait en ligne !",
@@ -25,7 +25,7 @@ const WhyChooseUs = () => {
         <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-12">
           Pourquoi réserver votre ménage chez<br />Agence Ménage ?
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {features.map((feature, index) => (
             <div key={index} className="text-center">

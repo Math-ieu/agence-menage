@@ -12,15 +12,15 @@ export default {
         "2xl": "1280px",
       },
       extend: {
-    fontFamily: {
-      work: [
-        "Work Sans",
-        "Work Sans - fallback",
-        "Arial",
-        "sans-serif"
-      ],
-    },
-  },
+        fontFamily: {
+          work: [
+            "Work Sans",
+            "Work Sans - fallback",
+            "Arial",
+            "sans-serif"
+          ],
+        },
+      },
     },
     extend: {
       fontFamily: {
@@ -113,7 +113,7 @@ export default {
         "fade-in": "fade-in 0.5s ease-out forwards",
         "slide-in": "slide-in 0.5s ease-out forwards",
       },
-      
+
     },
   },
   plugins: [require("tailwindcss-animate")],

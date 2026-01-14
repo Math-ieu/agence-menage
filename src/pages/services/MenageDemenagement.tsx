@@ -11,9 +11,10 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import serviceDemenagement from "@/assets/service-demenagement-new.png";
+import serviceDemenagement from "@/assets/service-menage-demenagement.png";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MenageDemenagement = () => {
     const [formData, setFormData] = useState({
@@ -34,6 +35,9 @@ const MenageDemenagement = () => {
             baiesVitrees: false
         },
         phoneNumber: "",
+        phonePrefix: "+212",
+        useWhatsappForPhone: true,
+        whatsappPrefix: "+212",
         whatsappNumber: "",
         firstName: "",
         lastName: "",
@@ -52,20 +56,47 @@ const MenageDemenagement = () => {
     const basePrice = calculateBasePrice(formData.surfaceArea);
     const isIntensive = formData.cleanlinessType === "intensif";
     const intensivePrice = isIntensive && basePrice > 0 ? basePrice * 0.15 : 0;
-
     const additionalCosts = (formData.additionalServices.nettoyageTerrasse ? 500 : 0);
 
-    const totalPrice = basePrice > 0 ? basePrice + intensivePrice + additionalCosts : 0;
+    let totalPrice = 0;
+    let discountAmount = 0;
+    const discountRate = 0.1;
+
+    if (formData.frequency === "subscription") {
+        const visitsMap: Record<string, number> = {
+            "4foisSemaine": 4,
+            "1foisSemaine": 1,
+            "2foisMois": 0.5,
+            "1foisMois": 0.25,
+            "1semaine2": 0.5,
+            "1foisAn": 1 / 52 // Very low frequency, but following the pattern
+        };
+        const visitsPerWeek = visitsMap[formData.subFrequency] || 1;
+        const perVisitPrice = basePrice + intensivePrice + additionalCosts;
+        const subtotalMonthly = perVisitPrice * visitsPerWeek * 4;
+        discountAmount = subtotalMonthly * discountRate;
+        totalPrice = subtotalMonthly - discountAmount;
+    } else {
+        totalPrice = basePrice > 0 ? basePrice + intensivePrice + additionalCosts : 0;
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
+        if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
             toast.error("Veuillez remplir tous les champs obligatoires");
             return;
         }
 
-        const message = formatBookingMessage("Ménage post-déménagement", formData, totalPrice || "Sur devis");
+        const bookingData = {
+            ...formData,
+            phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+            whatsappNumber: formData.useWhatsappForPhone
+                ? `${formData.phonePrefix} ${formData.phoneNumber}`
+                : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+        };
+
+        const message = formatBookingMessage("Ménage post-déménagement", bookingData, totalPrice || "Sur devis");
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         window.open(whatsappLink, '_blank');
@@ -73,6 +104,7 @@ const MenageDemenagement = () => {
     };
 
     const frequencies = [
+        { value: "4foisSemaine", label: "4 fois par semaine" },
         { value: "1foisSemaine", label: "Une fois par par semaine" },
         { value: "2foisMois", label: "2 fois par mois" },
         { value: "1foisMois", label: "Une fois par mois" },
@@ -110,7 +142,7 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                     <div className="container max-w-5xl">
                         <div className="bg-[#f3efdf] rounded-lg p-6 text-center mb-8 border border-[#d1a246]">
                             <h2 className="text-2xl font-bold text-[#8a6d2f] mb-2 uppercase tracking-wide">
-                                FORMULAIRE DE RESERVATION/
+                                FORMULAIRE DE RESERVATION
                             </h2>
                         </div>
                         <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
@@ -126,12 +158,10 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                                 <span className="font-medium text-right">Post-déménagement</span>
                                             </div>
                                             <div className="flex justify-between gap-4">
-                                                <span className="text-muted-foreground">Fréquence:</span>
-                                                <span className="font-medium text-right text-sm">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
-                                            </div>
-                                            <div className="flex justify-between gap-4">
                                                 <span className="text-muted-foreground">Superficie:</span>
-                                                <span className="font-medium text-right">{formData.surfaceArea} m²</span>
+                                                <span className="font-medium text-right">
+                                                    {formData.surfaceArea >= 300 ? "300m² et plus" : `${formData.surfaceArea} m²`}
+                                                </span>
                                             </div>
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-muted-foreground">Salissure:</span>
@@ -157,11 +187,13 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                             <div className="flex justify-between items-center mb-4">
                                                 <span className="text-lg font-bold">Total</span>
                                                 <span className="text-2xl font-bold text-primary">
-                                                    {totalPrice > 0 ? `${totalPrice} DH` : "SUR DEVIS"}
+                                                    {totalPrice > 0 ? `${Math.round(totalPrice)} DH` : "SUR DEVIS"}
                                                 </span>
                                             </div>
-                                            <div className="text-[10px] text-muted-foreground font-medium leading-tight italic text-center border-t pt-2 border-primary/10">
-                                                Prestation tout compris : main-d'œuvre, produits et équipements de ménage.
+                                            <div className="p-3 bg-primary/10 rounded-lg border border-primary/20 text-center">
+                                                <p className="text-primary font-bold text-sm leading-tight">
+                                                    Prestation tout compris : main-d'œuvre, produits et équipements de ménage.
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -194,22 +226,22 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                         </h3>
                                         <div className="px-8 py-10 border rounded-xl bg-white shadow-sm space-y-8">
                                             <div className="relative pt-6">
-                                                <div className="absolute -top-4 left-0 transition-all duration-200" style={{ left: `${(formData.surfaceArea / 5000) * 100}%`, transform: 'translateX(-50%)' }}>
+                                                <div className="absolute -top-4 left-0 transition-all duration-200" style={{ left: `${(formData.surfaceArea / 300) * 100}%`, transform: 'translateX(-50%)' }}>
                                                     <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-full text-sm border border-primary/20 whitespace-nowrap">
-                                                        {formData.surfaceArea}m²
+                                                        {formData.surfaceArea >= 300 ? "300m² et plus" : `${formData.surfaceArea}m²`}
                                                     </span>
                                                 </div>
                                                 <Slider
                                                     value={[formData.surfaceArea]}
                                                     onValueChange={(value) => setFormData({ ...formData, surfaceArea: value[0] })}
-                                                    max={5000}
+                                                    max={300}
                                                     min={0}
                                                     step={1}
                                                     className="cursor-pointer"
                                                 />
                                                 <div className="flex justify-between mt-4 text-xs font-medium text-slate-400">
                                                     <span>0m²</span>
-                                                    <span>5000m²</span>
+                                                    <span>300m²</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -239,57 +271,6 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                         </RadioGroup>
                                     </div>
 
-                                    <div>
-                                        <h3 className="text-xl font-bold bg-[#d1a246] text-white p-3 rounded-lg text-center mb-4 uppercase">
-                                            Choisissez la fréquence
-                                        </h3>
-                                        <div className="p-4 space-y-4">
-                                            <div className="flex flex-col items-center gap-4">
-                                                <div className="flex bg-slate-100 p-1 rounded-full w-full max-w-md mx-auto">
-                                                    <button
-                                                        type="button"
-                                                        className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.frequency === "oneshot"
-                                                            ? "bg-primary text-white shadow-sm"
-                                                            : "text-slate-500 hover:text-primary"
-                                                            }`}
-                                                        onClick={() => setFormData({ ...formData, frequency: "oneshot", subFrequency: "" })}
-                                                    >
-                                                        une fois
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.frequency === "subscription"
-                                                            ? "bg-primary text-white shadow-sm"
-                                                            : "text-slate-500 hover:text-primary"
-                                                            }`}
-                                                        onClick={() => setFormData({ ...formData, frequency: "subscription" })}
-                                                    >
-                                                        Abonnement
-                                                    </button>
-                                                </div>
-
-                                                {formData.frequency === "subscription" && (
-                                                    <div className="w-full animate-in fade-in slide-in-from-top-2 duration-300">
-                                                        <Select
-                                                            value={formData.subFrequency}
-                                                            onValueChange={(value) => setFormData({ ...formData, subFrequency: value })}
-                                                        >
-                                                            <SelectTrigger className="w-full border-primary/20">
-                                                                <SelectValue placeholder="Sélectionnez un abonnement" />
-                                                            </SelectTrigger>
-                                                            <SelectContent>
-                                                                {frequencies.map((freq) => (
-                                                                    <SelectItem key={freq.value} value={freq.value}>
-                                                                        {freq.label}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div>
                                         <h3 className="text-xl font-bold bg-[#d1a246] text-white p-3 rounded-lg text-center mb-4 uppercase">
@@ -438,30 +419,72 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                         <div className="p-6 grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
                                                 <Label className="font-bold text-[#8a6d2f] text-xs uppercase">Numéro de téléphone*</Label>
-                                                <div className="flex gap-2">
-                                                    <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#8a6d2f] flex items-center">
-                                                        +212
+                                                <div className="space-y-3">
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            value={formData.phonePrefix}
+                                                            onChange={(e) => setFormData(prev => ({
+                                                                ...prev,
+                                                                phonePrefix: e.target.value,
+                                                                whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                                                            }))}
+                                                            className="w-20 border-slate-300 font-bold text-[#8a6d2f] text-center"
+                                                            placeholder="+212"
+                                                        />
+                                                        <Input
+                                                            placeholder="6 12 00 00 00"
+                                                            value={formData.phoneNumber}
+                                                            onChange={(e) => {
+                                                                const newVal = e.target.value;
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    phoneNumber: newVal,
+                                                                    whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                                                }));
+                                                            }}
+                                                            required
+                                                            className="border-slate-300 h-11 flex-1"
+                                                        />
                                                     </div>
-                                                    <Input
-                                                        placeholder="6 12 00 00 00"
-                                                        value={formData.phoneNumber}
-                                                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                        required
-                                                        className="border-slate-300 h-11"
-                                                    />
+                                                    <div className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id="useWhatsapp"
+                                                            checked={formData.useWhatsappForPhone}
+                                                            onCheckedChange={(checked) => {
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    useWhatsappForPhone: !!checked,
+                                                                    whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                                                    whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                                                }));
+                                                            }}
+                                                            className="data-[state=checked]:bg-[#8a6d2f] border-[#8a6d2f]"
+                                                        />
+                                                        <label
+                                                            htmlFor="useWhatsapp"
+                                                            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                                                        >
+                                                            Utilisez-vous ce numéro pour WhatsApp ?
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="font-bold text-[#8a6d2f] text-xs uppercase">Numéro whatsapp</Label>
                                                 <div className="flex gap-2">
-                                                    <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-[#8a6d2f] flex items-center">
-                                                        +212
-                                                    </div>
+                                                    <Input
+                                                        value={formData.whatsappPrefix}
+                                                        onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                                                        className="w-20 border-slate-300 font-bold text-[#8a6d2f] text-center"
+                                                        placeholder="+212"
+                                                        disabled={formData.useWhatsappForPhone}
+                                                    />
                                                     <Input
                                                         placeholder="6 12 00 00 00"
                                                         value={formData.whatsappNumber}
                                                         onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                                                         className="border-slate-300 h-11"
+                                                        disabled={formData.useWhatsappForPhone}
                                                     />
                                                 </div>
                                             </div>

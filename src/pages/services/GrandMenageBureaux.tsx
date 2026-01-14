@@ -9,14 +9,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import serviceGrandMenage from "@/assets/service-grand-new.png";
+import serviceGrandMenage from "@/assets/service-grand-menage.png";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const GrandMenageBureaux = () => {
     const [formData, setFormData] = useState({
-        officeSurface: "",
+        officeSurface: "50",
         frequency: "oneshot",
         subFrequency: "",
         duration: 4,
@@ -31,23 +33,57 @@ const GrandMenageBureaux = () => {
             produitsEtOutils: false
         },
         phoneNumber: "",
+        phonePrefix: "+212",
+        useWhatsappForPhone: true,
+        whatsappPrefix: "+212",
         whatsappNumber: "",
         firstName: "",
         lastName: "",
         changeRepereNotes: ""
     });
 
-    const totalPrice = Number(formData.officeSurface) * 10;
+    const perVisitPrice = Number(formData.officeSurface) * 10;
+    let totalPrice = 0;
+    let discountAmount = 0;
+    const discountRate = 0.1;
+
+    if (formData.frequency === "subscription") {
+        const visitsMap: Record<string, number> = {
+            "4foisSemaine": 4,
+            "2foisMois": 0.5,
+            "1foisSemaine": 1,
+            "5foisSemaine": 5,
+            "6foisSemaine": 6,
+            "7foisSemaine": 7,
+            "3foisSemaine": 3,
+            "1semaine2": 0.5,
+            "1foisMois": 0.25
+        };
+        const visitsPerWeek = visitsMap[formData.subFrequency] || 1;
+        const subtotalMonthly = perVisitPrice * visitsPerWeek * 4;
+        discountAmount = subtotalMonthly * discountRate;
+        totalPrice = subtotalMonthly - discountAmount;
+    } else {
+        totalPrice = perVisitPrice;
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
+        if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
             toast.error("Veuillez remplir tous les champs obligatoires");
             return;
         }
 
-        const message = formatBookingMessage("Grand Ménage Bureaux", formData, totalPrice);
+        const bookingData = {
+            ...formData,
+            phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+            whatsappNumber: formData.useWhatsappForPhone
+                ? `${formData.phonePrefix} ${formData.phoneNumber}`
+                : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+        };
+
+        const message = formatBookingMessage("Grand Ménage Bureaux", bookingData, totalPrice);
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         window.open(whatsappLink, '_blank');
@@ -71,6 +107,7 @@ const GrandMenageBureaux = () => {
     };
 
     const frequencies = [
+        { value: "4foisSemaine", label: "4 fois par semaine" },
         { value: "2foisMois", label: "2 fois par mois" },
         { value: "1foisSemaine", label: "Une fois par semaine" },
         { value: "5foisSemaine", label: "5 fois par semaine" },
@@ -125,7 +162,9 @@ const GrandMenageBureaux = () => {
                                             </div>
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-muted-foreground">Superficie:</span>
-                                                <span className="font-medium text-right">{formData.officeSurface} m²</span>
+                                                <span className="font-medium text-right">
+                                                    {formData.officeSurface === "300" ? "300 m² et plus" : `${formData.officeSurface} m²`}
+                                                </span>
                                             </div>
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-muted-foreground">Personnes:</span>
@@ -141,11 +180,17 @@ const GrandMenageBureaux = () => {
                                             </div>
                                         </div>
 
-                                        <div className="pt-4 border-t">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-lg font-bold">Total HT</span>
-                                                <span className="text-2xl font-bold text-primary">{totalPrice} DH</span>
+                                        {formData.frequency === "subscription" && discountAmount > 0 && (
+                                            <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded mb-4 text-xs">
+                                                <span>Réduction (10%):</span>
+                                                <span>-{Math.round(discountAmount)} DH</span>
                                             </div>
+                                        )}
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-lg font-bold">
+                                                {formData.frequency === "subscription" ? "Total Mensuel HT" : "Total HT"}
+                                            </span>
+                                            <span className="text-2xl font-bold text-primary">{Math.round(totalPrice)} DH</span>
                                         </div>
                                     </div>
                                 </div>
@@ -155,16 +200,29 @@ const GrandMenageBureaux = () => {
 
                                 <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
                                     <div>
-                                        <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg mb-4">
-                                            Superficie de votre cadre en M²
+                                        <h3 className="text-xl font-bold bg-primary text-white p-3 rounded-lg text-center mb-4">
+                                            Indiquez la superficie de votre espace en m².
                                         </h3>
-                                        <div className="p-4 bg-muted/30 rounded">
-                                            <Input
-                                                placeholder="55 m²"
-                                                value={formData.officeSurface}
-                                                onChange={(e) => handleSurfaceChange(e.target.value)}
-                                                type="number"
-                                            />
+                                        <div className="px-8 py-10 border rounded-xl bg-white shadow-sm space-y-8">
+                                            <div className="relative pt-6">
+                                                <div className="absolute -top-4 left-0 transition-all duration-200" style={{ left: `${(Number(formData.officeSurface) / 300) * 100}%`, transform: 'translateX(-50%)' }}>
+                                                    <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-full text-sm border border-primary/20 whitespace-nowrap">
+                                                        {formData.officeSurface === "300" ? "300m² et plus" : `${formData.officeSurface}m²`}
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    value={[Number(formData.officeSurface)]}
+                                                    onValueChange={(value) => handleSurfaceChange(value[0].toString())}
+                                                    max={300}
+                                                    min={0}
+                                                    step={1}
+                                                    className="cursor-pointer"
+                                                />
+                                                <div className="flex justify-between mt-4 text-xs font-medium text-slate-400">
+                                                    <span>0m²</span>
+                                                    <span>300m² et plus</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -379,24 +437,71 @@ const GrandMenageBureaux = () => {
                                         <div className="grid md:grid-cols-2 gap-4">
                                             <div>
                                                 <Label>Numéro de téléphone*</Label>
-                                                <div className="flex gap-2 mt-1">
-                                                    <Input value="+212" disabled className="w-20" />
-                                                    <Input
-                                                        placeholder="6 12 00 00 00"
-                                                        value={formData.phoneNumber}
-                                                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                        required
-                                                    />
+                                                <div className="space-y-3 mt-1">
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            value={formData.phonePrefix}
+                                                            onChange={(e) => setFormData(prev => ({
+                                                                ...prev,
+                                                                phonePrefix: e.target.value,
+                                                                whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                                                            }))}
+                                                            className="w-20 text-center font-bold text-primary"
+                                                            placeholder="+212"
+                                                        />
+                                                        <Input
+                                                            placeholder="6 12 00 00 00"
+                                                            value={formData.phoneNumber}
+                                                            onChange={(e) => {
+                                                                const newVal = e.target.value;
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    phoneNumber: newVal,
+                                                                    whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                                                }));
+                                                            }}
+                                                            required
+                                                            className="flex-1"
+                                                        />
+                                                    </div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id="useWhatsapp"
+                                                            checked={formData.useWhatsappForPhone}
+                                                            onCheckedChange={(checked) => {
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    useWhatsappForPhone: !!checked,
+                                                                    whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                                                    whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                                                }));
+                                                            }}
+                                                            className="data-[state=checked]:bg-primary border-primary"
+                                                        />
+                                                        <label
+                                                            htmlFor="useWhatsapp"
+                                                            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                                                        >
+                                                            Utilisez-vous ce numéro pour WhatsApp ?
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div>
                                                 <Label>Numéro whatsapp*</Label>
                                                 <div className="flex gap-2 mt-1">
-                                                    <Input value="+212" disabled className="w-20" />
+                                                    <Input
+                                                        value={formData.whatsappPrefix}
+                                                        onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                                                        className="w-20 text-center font-bold text-primary"
+                                                        placeholder="+212"
+                                                        disabled={formData.useWhatsappForPhone}
+                                                    />
                                                     <Input
                                                         placeholder="6 12 00 00 00"
                                                         value={formData.whatsappNumber}
                                                         onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
+                                                        disabled={formData.useWhatsappForPhone}
                                                     />
                                                 </div>
                                             </div>

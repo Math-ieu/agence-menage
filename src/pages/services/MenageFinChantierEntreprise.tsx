@@ -9,9 +9,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import serviceChantier from "@/assets/service-chantier-entreprise-new.png";
+import serviceChantier from "@/assets/service-fin-chantier-entreprise.png";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MenageFinChantierEntreprise = () => {
     const [formData, setFormData] = useState({
@@ -25,6 +26,9 @@ const MenageFinChantierEntreprise = () => {
         fixedTime: "14:00",
         additionalServices: {},
         phoneNumber: "",
+        phonePrefix: "+212",
+        useWhatsappForPhone: true,
+        whatsappPrefix: "+212",
         whatsappNumber: "",
         entityName: "",
         contactPerson: "",
@@ -35,7 +39,7 @@ const MenageFinChantierEntreprise = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.entityName || !formData.contactPerson || !formData.phoneNumber) {
+        if (!formData.entityName || !formData.contactPerson || !formData.phoneNumber || !formData.city || !formData.neighborhood) {
             toast.error("Veuillez remplir tous les champs obligatoires");
             return;
         }
@@ -122,23 +126,16 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                             Indiquez la superficie de votre espace en m².
                                         </h3>
                                         <div className="p-8 space-y-8">
-                                            <div className="relative pt-6">
-                                                <div className="absolute -top-4 left-0 transition-all duration-200" style={{ left: `${(formData.surfaceArea / 5000) * 100}%`, transform: 'translateX(-50%)' }}>
-                                                    <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-full text-sm border border-primary/20 whitespace-nowrap">
-                                                        {formData.surfaceArea}m²
-                                                    </span>
-                                                </div>
-                                                <Slider
-                                                    value={[formData.surfaceArea]}
-                                                    onValueChange={(value) => setFormData({ ...formData, surfaceArea: value[0] })}
-                                                    max={5000}
-                                                    step={10}
-                                                    className="cursor-pointer"
+                                            <div className="flex items-center gap-4">
+                                                <Label htmlFor="surface" className="font-bold text-slate-700 whitespace-nowrap">Surface (m²) :</Label>
+                                                <Input
+                                                    id="surface"
+                                                    type="number"
+                                                    min="1"
+                                                    value={formData.surfaceArea}
+                                                    onChange={(e) => setFormData({ ...formData, surfaceArea: parseInt(e.target.value) || 0 })}
+                                                    className="text-lg font-bold border-slate-300 w-32"
                                                 />
-                                                <div className="flex justify-between mt-4 text-xs font-medium text-slate-400">
-                                                    <span>0m²</span>
-                                                    <span>5000m²</span>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -173,26 +170,71 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="text-xs font-bold text-muted-foreground uppercase">Numéro de téléphone*</Label>
-                                                <div className="flex gap-2">
-                                                    <div className="bg-slate-100 border rounded-lg w-20 flex items-center justify-center font-bold text-primary">+212</div>
-                                                    <Input
-                                                        placeholder="6 12 00 00 00"
-                                                        value={formData.phoneNumber}
-                                                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                        required
-                                                        className="bg-white"
-                                                    />
+                                                <div className="space-y-3">
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            value={formData.phonePrefix}
+                                                            onChange={(e) => setFormData(prev => ({
+                                                                ...prev,
+                                                                phonePrefix: e.target.value,
+                                                                whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                                                            }))}
+                                                            className="w-20 border-slate-300 font-bold text-slate-600 text-center"
+                                                            placeholder="+212"
+                                                        />
+                                                        <Input
+                                                            placeholder="6 12 00 00 00"
+                                                            value={formData.phoneNumber}
+                                                            onChange={(e) => {
+                                                                const newVal = e.target.value;
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    phoneNumber: newVal,
+                                                                    whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                                                }));
+                                                            }}
+                                                            required
+                                                            className="bg-white flex-1"
+                                                        />
+                                                    </div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <Checkbox
+                                                            id="useWhatsapp"
+                                                            checked={formData.useWhatsappForPhone}
+                                                            onCheckedChange={(checked) => {
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    useWhatsappForPhone: !!checked,
+                                                                    whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                                                    whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                                                }));
+                                                            }}
+                                                        />
+                                                        <label
+                                                            htmlFor="useWhatsapp"
+                                                            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                                                        >
+                                                            Utilisez-vous ce numéro pour WhatsApp ?
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="text-xs font-bold text-muted-foreground uppercase">Numéro whatsapp</Label>
                                                 <div className="flex gap-2">
-                                                    <div className="bg-slate-100 border rounded-lg w-20 flex items-center justify-center font-bold text-primary">+212</div>
+                                                    <Input
+                                                        value={formData.whatsappPrefix}
+                                                        onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                                                        className="bg-slate-100 border rounded-lg w-20 text-center font-bold text-primary"
+                                                        placeholder="+212"
+                                                        disabled={formData.useWhatsappForPhone}
+                                                    />
                                                     <Input
                                                         placeholder="6 12 00 00 00"
                                                         value={formData.whatsappNumber}
                                                         onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                                                         className="bg-white"
+                                                        disabled={formData.useWhatsappForPhone}
                                                     />
                                                 </div>
                                             </div>

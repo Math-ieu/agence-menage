@@ -5,56 +5,58 @@ import logoPlaceholder from "@/assets/logo.png";
 const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground py-16">
-      <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div className="w-full px-6 md:px-12 lg:px-20 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+          {/* Logo Column */}
           <div className="flex flex-col items-start">
-            <img src={logoPlaceholder} alt="Agence Ménage" className="h-16 w-auto mb-6 brightness-0 invert" />
-            <p className="text-primary-foreground/80 text-sm leading-relaxed">
+            <img src={logoPlaceholder} alt="Agence Ménage" className="h-20 w-auto mb-6 brightness-0 invert" />
+            <p className="text-primary-foreground font-bold text-lg leading-relaxed max-w-xs">
               Votre partenaire de confiance pour un espace propre et serein.
             </p>
           </div>
 
-          <div>
-            <h3 className="font-bold text-lg mb-6 border-b border-primary-foreground/20 pb-2">À PROPOS</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link to="#" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors flex items-center gap-2 text-sm">
-                  QUI SOMMES-NOUS
-                </Link>
-              </li>
-            </ul>
+          {/* Services Column */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:col-span-1">
+            <div className="space-y-6">
+              <Link to="/#services-particuliers" className="block font-black text-xl mb-6 border-b-2 border-primary-foreground/20 pb-2 hover:text-white transition-colors">Services pour particuliers</Link>
+              <ul className="space-y-3">
+                <li><Link to="/services/particulier/menage-standard" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Ménage standard</Link></li>
+                <li><Link to="/services/particulier/grand-menage" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Grand ménage</Link></li>
+                <li><Link to="/services/particulier/menage-airbnb" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Ménage Airbnb</Link></li>
+                <li><Link to="/services/particulier/menage-demenagement" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Ménage post déménagement</Link></li>
+                <li><Link to="/services/particulier/menage-fin-chantier" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Fin de chantier</Link></li>
+                <li><Link to="/services/particulier/garde-malade" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Auxiliaire de vie / garde malade</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-6">
+              <Link to="/entreprise#services-entreprises" className="block font-black text-xl mb-6 border-b-2 border-primary-foreground/20 pb-2 hover:text-white transition-colors">Services pour entreprises</Link>
+              <ul className="space-y-3">
+                <li><Link to="/services/entreprise/menage-bureaux" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Ménages bureaux</Link></li>
+                <li><Link to="/services/entreprise/placement" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Placement & gestion de propriété</Link></li>
+                <li><Link to="/services/entreprise/menage-fin-chantier" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Fin de chantier</Link></li>
+              </ul>
+            </div>
           </div>
 
+          {/* Contact Column */}
           <div>
-            <h3 className="font-bold text-lg mb-6 border-b border-primary-foreground/20 pb-2">NOS SERVICES</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm">
-                  SERVICES POUR PARTICULIERS
-                </Link>
+            <h3 className="font-black text-xl mb-6 border-b-2 border-primary-foreground/20 pb-2">CONTACTEZ-NOUS</h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 text-primary-foreground font-bold text-sm lg:text-base">
+                <Phone className="w-5 h-5 mt-1 shrink-0" />
+                <div className="flex flex-col">
+                  <a href="tel:+212664331463" className="hover:text-white transition-colors">06 64 33 14 63</a>
+                  <a href="tel:+212664226790" className="hover:text-white transition-colors">06 64 22 67 90</a>
+                  <a href="tel:+212522200177" className="hover:text-white transition-colors opacity-90">05 22 20 01 77 (Fixe)</a>
+                </div>
               </li>
-              <li>
-                <Link to="/entreprise" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors text-sm">
-                  SERVICES POUR ENTREPRISES
-                </Link>
+              <li className="flex items-center gap-3 text-primary-foreground font-bold text-sm lg:text-base">
+                <Mail className="w-5 h-5 shrink-0" />
+                <a href="mailto:contact@agencepremium.ma" className="hover:text-white transition-colors break-all">contact@agencepremium.ma</a>
               </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-bold text-lg mb-6 border-b border-primary-foreground/20 pb-2">CONTACTEZ-NOUS</h3>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-primary-foreground/80 text-sm">
-                <Phone className="w-4 h-4" />
-                +212 6 12 34 56 78
-              </li>
-              <li className="flex items-center gap-2 text-primary-foreground/80 text-sm">
-                <Mail className="w-4 h-4" />
-                contact@agence-menage.com
-              </li>
-              <li className="flex items-start gap-2 text-primary-foreground/80 text-sm">
-                <MapPin className="w-4 h-4 mt-0.5" />
-                123 Rue de George Sand, Casablanca, Maroc
+              <li className="flex items-start gap-3 text-primary-foreground font-bold text-sm lg:text-base">
+                <MapPin className="w-5 h-5 mt-1 shrink-0" />
+                <span>36 boulevard d’anfa, résidence Anafe A, etage 7, Casablanca</span>
               </li>
             </ul>
           </div>
@@ -62,19 +64,12 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/20 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-primary-foreground/60 text-sm">
-              © 2025 Agence Ménage. Tous droits réservés.
-              <span className="hidden md:inline mx-2 text-primary-foreground/40">|</span>
-              <span className="block md:inline mt-2 md:mt-0">
-                Developed by{" "}
-                <a href="https://new-folio-nu.vercel.app/" className="font-medium hover:text-white transition-colors underline decoration-primary-foreground/30 underline-offset-4 hover:decoration-white">
-                  MathDev
-                </a>
-              </span>
+            <p className="text-primary-foreground/70 font-bold text-sm text-center md:text-left">
+              © 2025 Groupe Agence premium services. Tous droits réservés.
             </p>
 
             <div className="flex items-center gap-6">
-              <span className="text-primary-foreground/80 font-medium">Suivez-nous</span>
+              <span className="text-primary-foreground font-bold">Suivez-nous</span>
               <div className="flex items-center gap-4">
                 <a href="#" className="bg-primary-foreground/10 p-2.5 rounded-full hover:bg-primary-foreground/20 transition-colors">
                   <Facebook className="w-5 h-5" />

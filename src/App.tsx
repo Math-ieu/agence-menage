@@ -19,6 +19,8 @@ import PlacementEntreprise from "./pages/services/PlacementEntreprise";
 import EspaceEmploye from "./pages/EspaceEmploye";
 import Contact from "./pages/Contact";
 import { Analytics } from "@vercel/analytics/react"
+import ScrollToTop from "./components/ScrollToTop";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -27,6 +29,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Analytics />
         <Routes>
           <Route path="/" element={<Index />} />

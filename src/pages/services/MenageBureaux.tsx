@@ -10,9 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import serviceBureaux from "@/assets/service-bureaux-new.png";
+import serviceBureaux from "@/assets/service-menage-bureaux.png";
 import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
 import "@/styles/sticky-summary.css";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MenageBureaux = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,9 @@ const MenageBureaux = () => {
       torchonsEtSerpierres: false
     },
     phoneNumber: "",
+    phonePrefix: "+212",
+    useWhatsappForPhone: true,
+    whatsappPrefix: "+212",
     whatsappNumber: "",
     entityName: "",
     contactPerson: "",
@@ -59,9 +63,55 @@ const MenageBureaux = () => {
     });
   };
 
-  const basePrice = formData.duration * formData.numberOfPeople * 60;
+  const handleIncrementDuration = () => {
+    setFormData(prev => ({ ...prev, duration: prev.duration + 1 }));
+  };
+
+  const handleDecrementDuration = () => {
+    const minResources = calculateResources(formData.officeSurface);
+    if (formData.duration > minResources.duration) {
+      setFormData(prev => ({ ...prev, duration: prev.duration - 1 }));
+    }
+  };
+
+  const handleIncrementPeople = () => {
+    setFormData(prev => ({ ...prev, numberOfPeople: prev.numberOfPeople + 1 }));
+  };
+
+  const handleDecrementPeople = () => {
+    const minResources = calculateResources(formData.officeSurface);
+    if (formData.numberOfPeople > minResources.people) {
+      setFormData(prev => ({ ...prev, numberOfPeople: prev.numberOfPeople - 1 }));
+    }
+  };
+
+  const perVisitBasePrice = formData.duration * formData.numberOfPeople * 60;
   const productsPrice = formData.additionalServices.produitsEtOutils ? 60 : 0;
-  const totalPrice = basePrice + productsPrice;
+  const perVisitTotal = perVisitBasePrice + productsPrice;
+
+  let totalPrice = 0;
+  let discountAmount = 0;
+  const discountRate = 0.1;
+
+  if (formData.frequency === "subscription") {
+    const visitsMap: Record<string, number> = {
+      "4foisSemaine": 4,
+      "2foisMois": 0.5,
+      "1foisSemaine": 1,
+      "5foisSemaine": 5,
+      "6foisSemaine": 6,
+      "7foisSemaine": 7,
+      "3foisSemaine": 3,
+      "1semaine2": 0.5,
+      "1foisMois": 0.25
+    };
+    const visitsPerWeek = visitsMap[formData.subFrequency] || 1;
+    const subtotalMonthly = perVisitTotal * visitsPerWeek * 4;
+    discountAmount = subtotalMonthly * discountRate;
+    totalPrice = subtotalMonthly - discountAmount;
+  } else {
+    totalPrice = perVisitTotal;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +121,15 @@ const MenageBureaux = () => {
       return;
     }
 
-    const message = formatBookingMessage("Ménage Bureaux", formData, totalPrice);
+    const bookingData = {
+      ...formData,
+      phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+      whatsappNumber: formData.useWhatsappForPhone
+        ? `${formData.phonePrefix} ${formData.phoneNumber}`
+        : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+    };
+
+    const message = formatBookingMessage("Ménage Bureaux", bookingData, totalPrice);
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
     window.open(whatsappLink, '_blank');
@@ -79,6 +137,7 @@ const MenageBureaux = () => {
   };
 
   const frequencies = [
+    { value: "4foisSemaine", label: "4 fois par semaine" },
     { value: "2foisMois", label: "2 fois par mois" },
     { value: "1foisSemaine", label: "Une fois par semaine" },
     { value: "5foisSemaine", label: "5 fois par semaine" },
@@ -157,9 +216,19 @@ const MenageBureaux = () => {
                     </div>
 
                     <div className="pt-4 border-t">
+                      {formData.frequency === "subscription" && discountAmount > 0 && (
+                        <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded mb-4 text-xs">
+                          <span>Réduction (10%):</span>
+                          <span>-{Math.round(discountAmount)} DH</span>
+                        </div>
+                      )}
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold">Total HT</span>
-                        <span className="text-2xl font-bold text-primary">{totalPrice} DH</span>
+                        <span className="text-lg font-bold">
+                          {formData.frequency === "subscription" ? "Total Mensuel HT" : "Total HT"}
+                        </span>
+                        <span className="text-2xl font-bold text-primary">
+                          {totalPrice > 0 ? `${Math.round(totalPrice)} DH` : "0 DH"}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -260,9 +329,30 @@ const MenageBureaux = () => {
                       Durée estimée
                     </h3>
                     <div className="flex items-center justify-center p-6 bg-muted/30 rounded-xl border border-muted">
-                      <div className="bg-white px-8 py-4 rounded-full border border-muted shadow-sm flex items-center gap-4">
-                        <span className="text-3xl font-black text-primary">{formData.duration}</span>
-                        <span className="text-sm font-bold text-muted-foreground uppercase pt-1">Heures</span>
+                      <div className="flex items-center gap-6">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-12 w-12 rounded-full bg-white border border-slate-200 text-primary hover:bg-slate-50 shadow-sm"
+                          onClick={handleDecrementDuration}
+                          disabled={formData.duration <= calculateResources(formData.officeSurface).duration}
+                        >
+                          <span className="text-2xl font-bold pb-1">-</span>
+                        </Button>
+                        <div className="bg-white px-8 py-4 rounded-full border border-muted shadow-sm flex flex-col items-center min-w-[140px]">
+                          <span className="text-3xl font-black text-primary">{formData.duration}</span>
+                          <span className="text-sm font-bold text-muted-foreground uppercase">Heures</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-12 w-12 rounded-full bg-white border border-slate-200 text-primary hover:bg-slate-50 shadow-sm"
+                          onClick={handleIncrementDuration}
+                        >
+                          <span className="text-2xl font-bold pb-1">+</span>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -272,9 +362,30 @@ const MenageBureaux = () => {
                       Nombre de personne
                     </h3>
                     <div className="flex items-center justify-center p-6 bg-muted/30 rounded-xl border border-muted">
-                      <div className="bg-white px-8 py-4 rounded-full border border-muted shadow-sm flex items-center gap-4">
-                        <span className="text-3xl font-black text-primary">{formData.numberOfPeople}</span>
-                        <span className="text-sm font-bold text-muted-foreground uppercase pt-1">Personne(s)</span>
+                      <div className="flex items-center gap-6">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-12 w-12 rounded-full bg-white border border-slate-200 text-primary hover:bg-slate-50 shadow-sm"
+                          onClick={handleDecrementPeople}
+                          disabled={formData.numberOfPeople <= calculateResources(formData.officeSurface).people}
+                        >
+                          <span className="text-2xl font-bold pb-1">-</span>
+                        </Button>
+                        <div className="bg-white px-8 py-4 rounded-full border border-muted shadow-sm flex flex-col items-center min-w-[140px]">
+                          <span className="text-3xl font-black text-primary">{formData.numberOfPeople}</span>
+                          <span className="text-sm font-bold text-muted-foreground uppercase">Personne(s)</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-12 w-12 rounded-full bg-white border border-slate-200 text-primary hover:bg-slate-50 shadow-sm"
+                          onClick={handleIncrementPeople}
+                        >
+                          <span className="text-2xl font-bold pb-1">+</span>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -444,26 +555,72 @@ const MenageBureaux = () => {
                       </div>
                       <div className="space-y-2">
                         <Label className="text-xs font-bold text-muted-foreground uppercase">Numéro de téléphone*</Label>
-                        <div className="flex gap-2">
-                          <div className="bg-slate-100 border rounded-lg w-20 flex items-center justify-center font-bold text-primary">+212</div>
-                          <Input
-                            placeholder="6 12 00 00 00"
-                            value={formData.phoneNumber}
-                            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                            required
-                            className="bg-white h-12"
-                          />
+                        <div className="space-y-3">
+                          <div className="flex gap-2">
+                            <Input
+                              value={formData.phonePrefix}
+                              onChange={(e) => setFormData(prev => ({
+                                ...prev,
+                                phonePrefix: e.target.value,
+                                whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                              }))}
+                              className="w-20 bg-slate-100 border rounded-lg font-bold text-primary text-center"
+                              placeholder="+212"
+                            />
+                            <Input
+                              placeholder="6 12 00 00 00"
+                              value={formData.phoneNumber}
+                              onChange={(e) => {
+                                const newVal = e.target.value;
+                                setFormData(prev => ({
+                                  ...prev,
+                                  phoneNumber: newVal,
+                                  whatsappNumber: prev.useWhatsappForPhone ? newVal : prev.whatsappNumber
+                                }));
+                              }}
+                              required
+                              className="bg-white h-12 flex-1"
+                            />
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="useWhatsapp"
+                              checked={formData.useWhatsappForPhone}
+                              onCheckedChange={(checked) => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  useWhatsappForPhone: !!checked,
+                                  whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                  whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                }));
+                              }}
+                              className="data-[state=checked]:bg-primary border-primary"
+                            />
+                            <label
+                              htmlFor="useWhatsapp"
+                              className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+                            >
+                              Utilisez-vous ce numéro pour WhatsApp ?
+                            </label>
+                          </div>
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="text-xs font-bold text-muted-foreground uppercase">Numéro whatsapp*</Label>
                         <div className="flex gap-2">
-                          <div className="bg-slate-100 border rounded-lg w-20 flex items-center justify-center font-bold text-primary">+212</div>
+                          <Input
+                            value={formData.whatsappPrefix}
+                            onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                            className="bg-slate-100 border rounded-lg w-20 text-center font-bold text-primary"
+                            placeholder="+212"
+                            disabled={formData.useWhatsappForPhone}
+                          />
                           <Input
                             placeholder="6 12 00 00 00"
                             value={formData.whatsappNumber}
                             onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                             className="bg-white h-12"
+                            disabled={formData.useWhatsappForPhone}
                           />
                         </div>
                       </div>
