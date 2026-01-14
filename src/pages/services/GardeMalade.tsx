@@ -146,7 +146,7 @@ const GardeMalade = () => {
                   </p>
                 </div>
 
-                <div className="bg-white/60 backdrop-blur-sm p-8 rounded-[2rem] shadow-xl border border-[#e2d9c2] text-lg text-[#4a4a4a] leading-relaxed">
+                <div className="bg-white/60 backdrop-blur-sm p-8 rounded-[2rem] shadow-xl border border-[#e2d9c2] text-lg text-[#4a4a4a] leading-relaxed font-bold">
                   Le service d'auxiliaires de vie / garde malade à domicile à Casablanca, proposé par Agence Ménage, met à votre disposition des auxiliaires de vie à domicile expérimentées pour accompagner les patients dans leur quotidien, avec sérieux, discrétion et bienveillance.
                 </div>
 
@@ -167,7 +167,7 @@ const GardeMalade = () => {
 
             <div className="grid md:grid-cols-2 gap-16 items-center text-left py-12">
               <div className="space-y-6">
-                <p className="text-xl text-[#4a4a4a] leading-relaxed font-medium">
+                <p className="text-xl text-[#4a4a4a] leading-relaxed font-bold">
                   Nos auxiliaires de vie assurent une présence 24h/24, 7j/7, selon les besoins en journée, la nuit, ou en continu. Elles interviennent auprès des personnes âgées, des personnes en situation de dépendance, qu'elles en soient venues suite à une hospitalisation ou nécessitant simplement une présence rassurante à domicile.
                 </p>
               </div>
@@ -185,7 +185,7 @@ const GardeMalade = () => {
                 </div>
               </div>
               <div className="space-y-6">
-                <p className="text-xl text-[#4a4a4a] leading-relaxed font-medium">
+                <p className="text-xl text-[#4a4a4a] leading-relaxed font-bold">
                   L'objectif est de garantir un cadre de vie confortable et sécurisant, tout en soutenant la famille au quotidien. Nos garde-malades / auxiliaires de vie veillent notamment à l'hygiène au confort, à l'aide à la mobilité et aux soins du corps, ainsi qu'à l'accompagnement dans les gestes de la vie courante. Elles contribuent également au bien-être moral de la personne aidée en créant un climat serein et une écoute active avec les proches.
                 </p>
               </div>
