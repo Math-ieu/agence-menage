@@ -11,20 +11,16 @@ export default {
       screens: {
         "2xl": "1280px",
       },
-      extend: {
-        fontFamily: {
-          work: [
-            "Work Sans",
-            "Work Sans - fallback",
-            "Arial",
-            "sans-serif"
-          ],
-        },
-      },
     },
     extend: {
       fontFamily: {
         sans: ['Work Sans', 'sans-serif'],
+        work: [
+          "Work Sans",
+          "Work Sans - fallback",
+          "Arial",
+          "sans-serif"
+        ],
       },
       colors: {
         border: "hsl(var(--border))",
