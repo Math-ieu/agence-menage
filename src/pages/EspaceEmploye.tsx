@@ -13,6 +13,7 @@ import heroImage from "@/assets/hero-espace-employe.png";
 import { GraduationCap, Clock, MapPin, Heart, Users } from "lucide-react";
 
 const EspaceEmploye = () => {
+    const [wasValidated, setWasValidated] = useState(false);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -75,11 +76,21 @@ const EspaceEmploye = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setWasValidated(true);
+
+        if (!e.currentTarget.checkValidity()) {
+            e.currentTarget.reportValidity();
+            return;
+        }
 
         if (formData.languages.length === 0) {
             toast.error("Veuillez sélectionner au moins une langue parlée.");
+            const langSection = document.getElementById('languages-section');
+            if (langSection) {
+                langSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             return;
         }
 
@@ -152,7 +163,7 @@ const EspaceEmploye = () => {
                                 <p className="text-slate-500">Remplissez les informations ci-dessous pour postuler</p>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-8">
+                            <form onSubmit={handleSubmit} noValidate className={`space-y-8 ${wasValidated ? 'was-validated' : ''}`}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="lastName">Nom*</Label>
@@ -260,7 +271,7 @@ const EspaceEmploye = () => {
                                             value={formData.position}
                                             onValueChange={value => setFormData({ ...formData, position: value })}
                                         >
-                                            <SelectTrigger className="border-slate-300 h-11">
+                                            <SelectTrigger className={`border-slate-300 h-11 ${wasValidated && !formData.position ? 'border-red-500 shadow-[0_0_0_1px_#ef4444]' : ''}`}>
                                                 <SelectValue placeholder="Sélectionnez le poste souhaité" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -278,7 +289,7 @@ const EspaceEmploye = () => {
                                             value={formData.experience}
                                             onValueChange={value => setFormData({ ...formData, experience: value })}
                                         >
-                                            <SelectTrigger className="border-slate-300 h-11">
+                                            <SelectTrigger className={`border-slate-300 h-11 ${wasValidated && !formData.experience ? 'border-red-500 shadow-[0_0_0_1px_#ef4444]' : ''}`}>
                                                 <SelectValue placeholder="Niveau d'expérience" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -291,9 +302,9 @@ const EspaceEmploye = () => {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-4">
+                                    <div className="space-y-4" id="languages-section">
                                         <Label>Langues parlées*</Label>
-                                        <div className="flex flex-wrap gap-4 p-4 border rounded-xl bg-slate-50 border-slate-200">
+                                        <div className={`flex flex-wrap gap-4 p-4 border rounded-xl bg-slate-50 transition-all ${wasValidated && formData.languages.length === 0 ? 'border-red-500 bg-red-50 shadow-[0_0_0_1px_#ef4444]' : 'border-slate-200'}`}>
                                             {availableLanguages.map(lang => (
                                                 <div key={lang} className="flex items-center space-x-2">
                                                     <Checkbox

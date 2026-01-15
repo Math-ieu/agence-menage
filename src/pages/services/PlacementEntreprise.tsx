@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceHeroSection from "@/components/ServiceHeroSection";
@@ -24,7 +25,9 @@ import {
 } from "@/components/ui/dialog";
 
 const PlacementEntreprise = () => {
+    const [wasValidated, setWasValidated] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const formRef = useRef<HTMLDivElement>(null);
 
@@ -57,8 +60,14 @@ const PlacementEntreprise = () => {
         }, 100);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setWasValidated(true);
+
+        if (!e.currentTarget.checkValidity()) {
+            e.currentTarget.reportValidity();
+            return;
+        }
 
         if (!formData.entityName || !formData.contactPerson || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.email) {
             toast.error("Veuillez remplir tous les champs obligatoires");
@@ -111,6 +120,7 @@ const PlacementEntreprise = () => {
             <main className="flex-1 flex flex-col" style={{ "--primary": "142 33% 30%" } as React.CSSProperties}>
                 <ServiceHeroSection
                     title="Placement & Gestion de Propreté pour Entreprises"
+                    isCollapsible={false}
                     description="Des solutions sur mesure pour l'entretien de vos locaux. Choisissez entre notre offre flexible pour garder le contrôle ou notre offre premium pour une gestion à 360° sans soucis."
                     image={serviceMenagePonctuel}
                     primaryColor="#5bbd82"
@@ -202,11 +212,11 @@ const PlacementEntreprise = () => {
                                     </h2>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+                                <form id="booking-form" onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
                                     {/* Summary Column */}
                                     <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                                         <div className="lg:sticky lg:top-24 space-y-6">
-                                            <div className="bg-white rounded-lg border border-[#5bbd82]/20 shadow-sm p-6 space-y-4">
+                                            <div className="bg-white rounded-lg border border-[#5bbd82]/20 shadow-sm p-6 space-y-4 relative">
                                                 <h3 className="text-xl font-bold text-[#2d5a3f] border-b border-[#5bbd82]/10 pb-2 text-center">
                                                     Ma Réservation
                                                 </h3>
@@ -215,23 +225,27 @@ const PlacementEntreprise = () => {
                                                         <span className="text-muted-foreground text-sm">Service:</span>
                                                         <span className="font-bold text-right text-[#2d5a3f] text-sm">Placement & Gestion</span>
                                                     </div>
-                                                    <div className="flex justify-between gap-4">
-                                                        <span className="text-muted-foreground text-sm">Offre:</span>
-                                                        <span className="font-medium text-right text-slate-700 text-sm capitalize">{formData.serviceType}</span>
-                                                    </div>
-                                                    <div className="flex justify-between gap-4">
-                                                        <span className="text-muted-foreground text-sm">Structure:</span>
-                                                        <span className="font-medium text-right text-slate-700 text-sm capitalize">{formData.structureType}</span>
-                                                    </div>
-                                                    <div className="flex justify-between gap-4">
-                                                        <span className="text-muted-foreground text-sm">Fréquence:</span>
-                                                        <span className="font-medium text-right text-slate-700 text-xs">
-                                                            {getFrequencyLabel(formData.frequency, formData.subFrequency)}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex justify-between gap-4">
-                                                        <span className="text-muted-foreground text-sm">Personnel:</span>
-                                                        <span className="font-medium text-right text-slate-700 text-sm">{formData.numberOfPeople} Pers.</span>
+
+                                                    {/* Detailed info - hidden on mobile when collapsed */}
+                                                    <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                                                        <div className="flex justify-between gap-4">
+                                                            <span className="text-muted-foreground text-sm">Offre:</span>
+                                                            <span className="font-medium text-right text-slate-700 text-sm capitalize">{formData.serviceType}</span>
+                                                        </div>
+                                                        <div className="flex justify-between gap-4">
+                                                            <span className="text-muted-foreground text-sm">Structure:</span>
+                                                            <span className="font-medium text-right text-slate-700 text-sm capitalize">{formData.structureType}</span>
+                                                        </div>
+                                                        <div className="flex justify-between gap-4">
+                                                            <span className="text-muted-foreground text-sm">Fréquence:</span>
+                                                            <span className="font-medium text-right text-slate-700 text-xs">
+                                                                {getFrequencyLabel(formData.frequency, formData.subFrequency)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between gap-4">
+                                                            <span className="text-muted-foreground text-sm">Personnel:</span>
+                                                            <span className="font-medium text-right text-slate-700 text-sm">{formData.numberOfPeople} Pers.</span>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -241,6 +255,15 @@ const PlacementEntreprise = () => {
                                                         <span className="text-lg font-black text-[#2d5a3f]">SUR DEVIS</span>
                                                     </div>
                                                 </div>
+
+                                                {/* Toggle Button for Mobile */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                                                    className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-[#2d5a3f]/90 transition-transform active:scale-90"
+                                                >
+                                                    {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -496,12 +519,14 @@ const PlacementEntreprise = () => {
                                                 <div className="grid md:grid-cols-2 gap-4">
                                                     <Input
                                                         placeholder="Ville (ex: Casablanca)"
+                                                        required
                                                         value={formData.city}
                                                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                                                         className="bg-white"
                                                     />
                                                     <Input
                                                         placeholder="Quartier (ex: Gauthier)"
+                                                        required
                                                         value={formData.neighborhood}
                                                         onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                                                         className="bg-white"
@@ -509,6 +534,7 @@ const PlacementEntreprise = () => {
                                                 </div>
                                                 <Textarea
                                                     placeholder="Champs de repère (Mosquée, École...)"
+                                                    required
                                                     value={formData.changeRepereNotes}
                                                     onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                                                     className="bg-white h-20 resize-none"

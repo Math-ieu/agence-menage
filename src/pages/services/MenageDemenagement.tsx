@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceHeroSection from "@/components/ServiceHeroSection";
@@ -26,7 +27,9 @@ import {
 } from "@/components/ui/dialog";
 
 const MenageDemenagement = () => {
+    const [wasValidated, setWasValidated] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
     const [formData, setFormData] = useState({
         propertyType: "studio",
         frequency: "oneshot",
@@ -90,8 +93,14 @@ const MenageDemenagement = () => {
         totalPrice = basePrice > 0 ? basePrice + intensivePrice + additionalCosts : 0;
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setWasValidated(true);
+
+        if (!e.currentTarget.checkValidity()) {
+            e.currentTarget.reportValidity();
+            return;
+        }
 
         if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
             toast.error("Veuillez remplir tous les champs obligatoires");
@@ -158,41 +167,45 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                 FORMULAIRE DE RESERVATION
                             </h2>
                         </div>
-                        <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+                        <form id="booking-form" onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
                             <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                                 <div className="lg:sticky lg:top-24 space-y-6">
-                                    <div className="bg-primary/5 rounded-lg border border-primary/20 shadow-sm p-6 space-y-4">
+                                    <div className="bg-primary/5 rounded-lg border border-primary/20 shadow-sm p-6 space-y-4 relative">
                                         <h3 className="text-xl font-bold text-primary border-b border-primary/20 pb-2 text-center">
                                             Ma Réservation
                                         </h3>
                                         <div className="space-y-3">
                                             <div className="flex justify-between gap-4 border-b border-primary/10 pb-2">
                                                 <span className="text-muted-foreground">Service:</span>
-                                                <span className="font-medium text-right">Post-déménagement</span>
+                                                <span className="font-medium text-right text-slate-700">Post-déménagement</span>
                                             </div>
-                                            <div className="flex justify-between gap-4">
-                                                <span className="text-muted-foreground">Superficie:</span>
-                                                <span className="font-medium text-right">
-                                                    {formData.surfaceArea >= 300 ? "300m² et plus" : `${formData.surfaceArea} m²`}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between gap-4">
-                                                <span className="text-muted-foreground">Salissure:</span>
-                                                <span className="font-medium text-right uppercase">{formData.cleanlinessType}</span>
-                                            </div>
-                                            {intensivePrice > 0 && (
-                                                <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded">
-                                                    <span>Majoration Intensif (15%):</span>
-                                                    <span>+{intensivePrice} DH</span>
+
+                                            {/* Detailed info - hidden on mobile when collapsed */}
+                                            <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                                                <div className="flex justify-between gap-4">
+                                                    <span className="text-muted-foreground">Superficie:</span>
+                                                    <span className="font-medium text-right text-slate-700">
+                                                        {formData.surfaceArea >= 300 ? "300m² et plus" : `${formData.surfaceArea} m²`}
+                                                    </span>
                                                 </div>
-                                            )}
-                                            <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
-                                                <span className="text-muted-foreground">Date:</span>
-                                                <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
-                                            </div>
-                                            <div className="flex justify-between gap-4">
-                                                <span className="text-muted-foreground">Heure:</span>
-                                                <span className="font-medium text-right">{formData.fixedTime}</span>
+                                                <div className="flex justify-between gap-4">
+                                                    <span className="text-muted-foreground">Salissure:</span>
+                                                    <span className="font-medium text-right uppercase text-slate-700">{formData.cleanlinessType}</span>
+                                                </div>
+                                                {intensivePrice > 0 && (
+                                                    <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded">
+                                                        <span>Majoration Intensif (15%):</span>
+                                                        <span>+{intensivePrice} DH</span>
+                                                    </div>
+                                                )}
+                                                <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
+                                                    <span className="text-muted-foreground">Date:</span>
+                                                    <span className="font-medium text-right text-slate-700">{formData.schedulingDate || "Non définie"}</span>
+                                                </div>
+                                                <div className="flex justify-between gap-4">
+                                                    <span className="text-muted-foreground">Heure:</span>
+                                                    <span className="font-medium text-right text-slate-700">{formData.fixedTime}</span>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -209,6 +222,15 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                                 </p>
                                             </div>
                                         </div>
+
+                                        {/* Toggle Button for Mobile */}
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                                            className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-primary/90 transition-transform active:scale-90"
+                                        >
+                                            {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -361,6 +383,7 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                                 <div className="flex justify-center">
                                                     <Input
                                                         type="time"
+                                                        required
                                                         value={formData.fixedTime}
                                                         onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
                                                         className="w-32 text-center text-xl font-bold h-12 border-[#d1a246]/30"
@@ -388,6 +411,7 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                                 <div className="font-bold text-[#8a6d2f] text-sm text-wrap">Quand souhaitez-vous votre ménage ?</div>
                                                 <Input
                                                     type="date"
+                                                    required
                                                     value={formData.schedulingDate}
                                                     onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
                                                     className="w-full border-slate-300"
@@ -403,12 +427,14 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                         <div className="grid md:grid-cols-2 gap-4 p-4 border rounded-xl bg-white mb-4 shadow-sm">
                                             <Input
                                                 placeholder="Ville , Casablanca"
+                                                required
                                                 value={formData.city}
                                                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                                                 className="border-slate-300 h-11"
                                             />
                                             <Input
                                                 placeholder="Quartier : j'inscris le nom"
+                                                required
                                                 value={formData.neighborhood}
                                                 onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                                                 className="border-slate-300 h-11"
@@ -418,6 +444,7 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                             <Label className="font-bold text-[#8a6d2f] text-xs uppercase mb-2 block">Champs de repère</Label>
                                             <Textarea
                                                 placeholder="Donnez-nous des repères pour faciliter le travail de ménage"
+                                                required
                                                 value={formData.changeRepereNotes}
                                                 onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                                                 className="mt-2 border-slate-300 min-h-[100px]"

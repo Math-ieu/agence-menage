@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceHeroSection from "@/components/ServiceHeroSection";
@@ -24,7 +25,9 @@ import {
 } from "@/components/ui/dialog";
 
 const MenageFinChantierEntreprise = () => {
+    const [wasValidated, setWasValidated] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
     const [formData, setFormData] = useState({
         propertyType: "studio",
         surfaceArea: 50,
@@ -46,8 +49,14 @@ const MenageFinChantierEntreprise = () => {
         changeRepereNotes: ""
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setWasValidated(true);
+
+        if (!e.currentTarget.checkValidity()) {
+            e.currentTarget.reportValidity();
+            return;
+        }
 
         if (!formData.entityName || !formData.contactPerson || !formData.phoneNumber || !formData.city || !formData.neighborhood) {
             toast.error("Veuillez remplir tous les champs obligatoires");
@@ -93,21 +102,25 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                 FORMULAIRE DE RESERVATION
                             </h2>
                         </div>
-                        <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+                        <form id="booking-form" onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
                             <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                                 <div className="lg:sticky lg:top-24 space-y-6">
-                                    <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4">
+                                    <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4 relative">
                                         <h3 className="text-xl font-bold text-primary border-b pb-2 text-center">
                                             Ma Réservation
                                         </h3>
                                         <div className="space-y-3">
                                             <div className="flex justify-between gap-4 border-b border-primary/10 pb-2">
                                                 <span className="text-muted-foreground">Service:</span>
-                                                <span className="font-medium text-right text-xs">Fin de chantier (Entreprise)</span>
+                                                <span className="font-medium text-right text-slate-700 text-xs">Fin de chantier (Entreprise)</span>
                                             </div>
-                                            <div className="flex justify-between gap-4">
-                                                <span className="text-muted-foreground">Surface:</span>
-                                                <span className="font-medium text-right">{formData.surfaceArea} m²</span>
+
+                                            {/* Detailed info - hidden on mobile when collapsed */}
+                                            <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                                                <div className="flex justify-between gap-4">
+                                                    <span className="text-muted-foreground">Surface:</span>
+                                                    <span className="font-medium text-right text-slate-700">{formData.surfaceArea} m²</span>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -117,6 +130,15 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                 <span className="text-xl font-bold text-primary italic">Sur devis</span>
                                             </div>
                                         </div>
+
+                                        {/* Toggle Button for Mobile */}
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                                            className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-primary/90 transition-transform active:scale-90"
+                                        >
+                                            {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -153,6 +175,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                     id="surface"
                                                     type="number"
                                                     min="1"
+                                                    required
                                                     value={formData.surfaceArea}
                                                     onChange={(e) => setFormData({ ...formData, surfaceArea: parseInt(e.target.value) || 0 })}
                                                     className="text-lg font-bold border-slate-300 w-32"
@@ -283,6 +306,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                     <Label className="text-xs font-bold text-muted-foreground uppercase">Ville</Label>
                                                     <Input
                                                         placeholder="ex: Casablanca"
+                                                        required
                                                         value={formData.city}
                                                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                                                         className="bg-white"
@@ -292,6 +316,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                     <Label className="text-xs font-bold text-muted-foreground uppercase">Quartier</Label>
                                                     <Input
                                                         placeholder="ex: Maarif"
+                                                        required
                                                         value={formData.neighborhood}
                                                         onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                                                         className="bg-white"
@@ -302,6 +327,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                 <Label className="text-xs font-bold text-muted-foreground uppercase">Champs de repère</Label>
                                                 <Textarea
                                                     placeholder="Donnez-nous des repères visuels proches (Mosquée, École, Pharmacie...)"
+                                                    required
                                                     value={formData.changeRepereNotes}
                                                     onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                                                     className="bg-white min-h-[80px] text-sm resize-none"

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceHeroSection from "@/components/ServiceHeroSection";
@@ -25,7 +26,9 @@ import {
 } from "@/components/ui/dialog";
 
 const MenageBureaux = () => {
+  const [wasValidated, setWasValidated] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   const [formData, setFormData] = useState({
     officeSurface: "0-70",
     frequency: "oneshot",
@@ -123,10 +126,16 @@ const MenageBureaux = () => {
     totalPrice = perVisitTotal;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setWasValidated(true);
 
-    if (!formData.entityName || !formData.contactPerson || !formData.phoneNumber) {
+    if (!e.currentTarget.checkValidity()) {
+      e.currentTarget.reportValidity();
+      return;
+    }
+
+    if (!formData.entityName || !formData.contactPerson || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
@@ -186,10 +195,10 @@ const MenageBureaux = () => {
                 FORMULAIRE DE RESERVATION
               </h2>
             </div>
-            <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+            <form id="booking-form" onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
               <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                 <div className="lg:sticky lg:top-24 space-y-6">
-                  <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4">
+                  <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4 relative">
                     <h3 className="text-xl font-bold text-primary border-b pb-2 text-center">
                       Ma Réservation
                     </h3>
@@ -198,33 +207,37 @@ const MenageBureaux = () => {
                         <span className="text-muted-foreground">Service:</span>
                         <span className="font-medium text-right">Ménage Bureaux</span>
                       </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Fréquence:</span>
-                        <span className="font-medium text-right text-sm">
-                          {getFrequencyLabel(formData.frequency, formData.subFrequency)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Superficie:</span>
-                        <span className="font-medium text-right">
-                          {formData.officeSurface === "300+" ? "300m² et plus" : `${formData.officeSurface} m²`}
-                        </span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Personnes:</span>
-                        <span className="font-medium text-right">{formData.numberOfPeople}</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Durée:</span>
-                        <span className="font-medium text-right">{formData.duration}h</span>
-                      </div>
-                      <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
-                        <span className="text-muted-foreground">Date:</span>
-                        <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Heure:</span>
-                        <span className="font-medium text-right">{formData.fixedTime}</span>
+
+                      {/* Detailed info - hidden on mobile when collapsed */}
+                      <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Fréquence:</span>
+                          <span className="font-medium text-right text-sm">
+                            {getFrequencyLabel(formData.frequency, formData.subFrequency)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Superficie:</span>
+                          <span className="font-medium text-right">
+                            {formData.officeSurface === "300+" ? "300m² et plus" : `${formData.officeSurface} m²`}
+                          </span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Personnes:</span>
+                          <span className="font-medium text-right">{formData.numberOfPeople}</span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Durée:</span>
+                          <span className="font-medium text-right">{formData.duration}h</span>
+                        </div>
+                        <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
+                          <span className="text-muted-foreground">Date:</span>
+                          <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Heure:</span>
+                          <span className="font-medium text-right">{formData.fixedTime}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -244,6 +257,15 @@ const MenageBureaux = () => {
                         </span>
                       </div>
                     </div>
+
+                    {/* Toggle Button for Mobile */}
+                    <button
+                      type="button"
+                      onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                      className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-primary/90 transition-transform active:scale-90"
+                    >
+                      {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -413,6 +435,7 @@ const MenageBureaux = () => {
                           <Label className="text-xs font-bold text-muted-foreground uppercase">Ville</Label>
                           <Input
                             placeholder="ex: Casablanca"
+                            required
                             value={formData.city}
                             onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                             className="bg-white"
@@ -422,6 +445,7 @@ const MenageBureaux = () => {
                           <Label className="text-xs font-bold text-muted-foreground uppercase">Quartier</Label>
                           <Input
                             placeholder="ex: Maarif"
+                            required
                             value={formData.neighborhood}
                             onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                             className="bg-white"
@@ -432,6 +456,7 @@ const MenageBureaux = () => {
                         <Label className="text-xs font-bold text-muted-foreground uppercase">Champs de repère</Label>
                         <Textarea
                           placeholder="Donnez-nous des repères visuels proches (Mosquée, École, Pharmacie...)"
+                          required
                           value={formData.changeRepereNotes}
                           onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                           className="bg-white min-h-[80px] text-sm resize-none"
@@ -452,6 +477,7 @@ const MenageBureaux = () => {
                         <div className="flex justify-center">
                           <Input
                             type="time"
+                            required
                             value={formData.fixedTime}
                             onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
                             className="w-32 text-center text-xl font-bold h-12"
@@ -479,6 +505,7 @@ const MenageBureaux = () => {
                         <div className="font-semibold mb-2">Quand souhaitez-vous votre premier ménage ?</div>
                         <Input
                           type="date"
+                          required
                           value={formData.schedulingDate}
                           onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
                           className="w-full"

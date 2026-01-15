@@ -10,6 +10,7 @@ import { createWhatsAppLink, formatContactMessage, DESTINATION_PHONE_NUMBER } fr
 import { Checkbox } from "@/components/ui/checkbox";
 
 const Contact = () => {
+    const [wasValidated, setWasValidated] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -21,8 +22,14 @@ const Contact = () => {
         message: ""
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setWasValidated(true);
+
+        if (!e.currentTarget.checkValidity()) {
+            e.currentTarget.reportValidity();
+            return;
+        }
 
         const processedData = {
             ...formData,
@@ -68,7 +75,7 @@ const Contact = () => {
                                     <p className="text-slate-500">Remplissez le formulaire et nous vous répondrons dans les plus brefs délais</p>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-6">
+                                <form onSubmit={handleSubmit} noValidate className={`space-y-6 ${wasValidated ? 'was-validated' : ''}`}>
                                     <div className="space-y-2">
                                         <Label htmlFor="name" className="font-semibold text-slate-700">Nom*</Label>
                                         <Input
@@ -194,7 +201,7 @@ const Contact = () => {
                             </div>
 
                             {/* Contact Info & Map */}
-                            <div className="space-y-8">
+                            <div className="flex flex-col h-full space-y-8">
                                 {/* Info Elements */}
                                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                                     <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center lg:text-left">Nos Coordonnées</h3>
@@ -248,7 +255,7 @@ const Contact = () => {
                                 </div>
 
                                 {/* Map */}
-                                <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 h-[400px] overflow-hidden">
+                                <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 flex-1 min-h-[400px] overflow-hidden">
                                     <iframe
                                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.4846067727145!2d-7.6324838!3d33.5932599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDM1JzM1LjciTiA3wrAzNyc1Ni45Ilc!5e0!3m2!1sfr!2sma!4v1635848529285!5m2!1sfr!2sma"
                                         width="100%"

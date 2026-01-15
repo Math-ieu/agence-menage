@@ -60,10 +60,11 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* Contact Info (Desktop) */}
-        <div className="hidden md:flex items-center flex-shrink-0">
+        {/* Mobile menu and Phone number group */}
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* Contact Info (Desktop & Mobile next to hamburger) */}
           <div className={`
-            flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all duration-300 whitespace-nowrap
+            flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-xl border-2 transition-all duration-300 whitespace-nowrap group
             ${isEntreprise
               ? "border-white/30 text-white hover:bg-white/5"
               : "border-primary/30 text-primary hover:bg-primary/5 hover:border-primary hover:shadow-sm"}
@@ -72,30 +73,30 @@ const Header = () => {
               href="https://wa.me/+212664331463"
               target="_blank"
               rel="noreferrer"
-              className="text-[#25D366] hover:scale-110 transition-transform flex items-center justify-center"
+              className="w-0 group-hover:w-6 group-active:w-6 transition-all duration-300 overflow-hidden flex items-center justify-center text-[#25D366]"
               aria-label="WhatsApp"
             >
-              <WhatsAppIcon className="w-6 h-6" />
+              <WhatsAppIcon className="w-6 h-6 shrink-0" />
             </a>
             <a
-              href="https://wa.me/+212664331463"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center group"
+              href="tel:+212664331463"
+              className="flex items-center"
             >
-              <span className={`text-lg xl:text-xl font-black tracking-tighter ${isEntreprise ? "text-white" : "text-primary"}`}>06 64 33 14 63</span>
+              <span className={`text-xs sm:text-sm md:text-base xl:text-lg font-black tracking-tighter transition-all duration-300 ${isEntreprise ? "text-white" : "text-primary"}`}>
+                06 64 33 14 63
+              </span>
             </a>
           </div>
-        </div>
 
-        {/* Mobile Menu Button - Visible on non-desktop */}
-        <button
-          className={`xl:hidden p-2 transition-all duration-[2000ms] ${isEntreprise ? "text-white hover:text-white/80" : "text-foreground hover:text-primary"}`}
-          onClick={toggleMobileMenu}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          {/* Mobile Menu Button - Visible on non-desktop */}
+          <button
+            className={`xl:hidden p-2 transition-all duration-300 ${isEntreprise ? "text-white hover:text-white/80" : "text-foreground hover:text-primary"}`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation Menu - Visible on non-desktop */}
@@ -116,29 +117,6 @@ const Header = () => {
                 {item.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-slate-200 mt-2 space-y-4">
-              <div className={`
-                flex items-center justify-center gap-4 p-4 rounded-xl border-2
-                ${isEntreprise ? "border-white/20 bg-white/5" : "border-primary/20 bg-primary/5"}
-              `}>
-                <a
-                  href="https://wa.me/+212664331463"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="bg-[#25D366] text-white p-2 rounded-lg shadow-sm"
-                >
-                  <WhatsAppIcon className="w-6 h-6" />
-                </a>
-                <a
-                  href="https://wa.me/+212664331463"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center flex-1"
-                >
-                  <span className={`text-xl font-black tracking-tight ${isEntreprise ? "text-white" : "text-primary"}`}>06 64 33 14 63</span>
-                </a>
-              </div>
-            </div>
           </nav>
         </div>
       )}

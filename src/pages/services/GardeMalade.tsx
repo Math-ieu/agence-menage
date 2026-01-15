@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ServiceHeroSection from "@/components/ServiceHeroSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,8 +29,10 @@ import handsCare from "@/assets/hands-care.png";
 import caregiverVisit from "@/assets/caregiver-visit.png";
 
 const GardeMalade = () => {
+  const [wasValidated, setWasValidated] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -90,8 +94,14 @@ const GardeMalade = () => {
     }, 100);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setWasValidated(true);
+
+    if (!e.currentTarget.checkValidity()) {
+      e.currentTarget.reportValidity();
+      return;
+    }
 
     if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
       toast.error("Veuillez remplir tous les champs obligatoires");
@@ -147,81 +157,27 @@ const GardeMalade = () => {
       <Header />
 
       <main className="flex-1 flex flex-col" style={{ "--primary": "28 59% 45%" } as React.CSSProperties}>
-        {/* Landing Sections */}
-        <section className="bg-[#f0e4d4] py-16">
+        <ServiceHeroSection
+          title="Garde Malade"
+          isCollapsible={false}
+          image={gardeMaladeHero}
+          primaryColor="#b46d2f"
+          description={`Notre service de garde-malade est conçu pour offrir une assistance humaine, chaleureuse et professionnelle aux personnes en perte d'autonomie ou en convalescence.
+
+Il comprend :
+- Accompagnement quotidien
+- Aide à la mobilité
+- Présence rassurante 24h/24
+- Aide à l'hygiène et au confort
+- Préparation des repas
+- Suivi de la prise de médicaments
+- Compagnie et soutien moral`}
+        />
+
+        {/* Extra info sections - Optional on mobile if we want to follow mockup strictly, but keeping them for now */}
+        <section className="py-8 bg-background md:hidden">
           <div className="container px-6">
-            <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-              <div className="space-y-8 text-left">
-                <div className="space-y-4">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#b46d2f] leading-[1.1]">
-                    Auxiliaires de vie /<br />Garde malade
-                  </h1>
-                  <p className="text-xl md:text-2xl font-bold text-[#4a4a4a]">
-                    à domicile à Casablanca – Service 24h/24
-                  </p>
-                </div>
-
-                <div className="bg-white/60 backdrop-blur-sm p-8 rounded-[2rem] shadow-xl border border-[#e2d9c2] text-lg text-[#4a4a4a] leading-relaxed font-bold">
-                  Le service d'auxiliaires de vie / garde malade à domicile à Casablanca, proposé par Agence Ménage, met à votre disposition des auxiliaires de vie à domicile expérimentées pour accompagner les patients dans leur quotidien, avec sérieux, discrétion et bienveillance.
-                </div>
-
-                <div className="flex justify-start">
-                  <Button
-                    onClick={scrollToForm}
-                    className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-base font-bold rounded-full shadow-lg shadow-[#b46d2f]/20 transition-all hover:scale-105 active:scale-95 h-auto text-center"
-                  >
-                    Contactez-nous
-                  </Button>
-                </div>
-              </div>
-
-              <div className="rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white h-[400px] md:h-[500px]">
-                <img src={gardeMaladeHero} alt="Garde Malade Hero" className="w-full h-full object-cover" />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-16 items-center text-left py-12">
-              <div className="space-y-6">
-                <p className="text-xl text-[#4a4a4a] leading-relaxed font-bold">
-                  Nos auxiliaires de vie assurent une présence 24h/24, 7j/7, selon les besoins en journée, la nuit, ou en continu. Elles interviennent auprès des personnes âgées, des personnes en situation de dépendance, qu'elles en soient venues suite à une hospitalisation ou nécessitant simplement une présence rassurante à domicile.
-                </p>
-              </div>
-              <div className="flex justify-center">
-                <div className="w-80 h-80 rounded-full overflow-hidden border-[12px] border-white shadow-2xl ring-1 ring-[#e2d9c2]">
-                  <img src={handsCare} alt="Mains soin" className="w-full h-full object-cover" />
-                </div>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-16 items-center text-right py-12">
-              <div className="flex justify-center md:order-first order-last">
-                <div className="w-80 h-80 rounded-[3rem] rotate-6 overflow-hidden border-[12px] border-white shadow-2xl ring-1 ring-[#e2d9c2]">
-                  <img src={caregiverVisit} alt="Visite soin" className="w-full h-full object-cover -rotate-6 scale-125" />
-                </div>
-              </div>
-              <div className="space-y-6">
-                <p className="text-xl text-[#4a4a4a] leading-relaxed font-bold">
-                  L'objectif est de garantir un cadre de vie confortable et sécurisant, tout en soutenant la famille au quotidien. Nos garde-malades / auxiliaires de vie veillent notamment à l'hygiène au confort, à l'aide à la mobilité et aux soins du corps, ainsi qu'à l'accompagnement dans les gestes de la vie courante. Elles contribuent également au bien-être moral de la personne aidée en créant un climat serein et une écoute active avec les proches.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white/90 p-12 rounded-[3.5rem] shadow-2xl border-4 border-[#b46d2f]/10 max-w-3xl mx-auto relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-2 h-full bg-[#b46d2f]" />
-              <p className="text-2xl font-black text-[#b46d2f] leading-snug italic mb-4">
-                "Avec Agence Ménage, vous bénéficiez d'un service fiable et humain, dans un environnement familial afin de préserver la qualité de vie du patient et d'apporter de la sérénité à toute la famille."
-              </p>
-              <p className="text-[#8a6d2f] font-bold text-lg">Un assistant social et garde-malade vous rappelleront pour valider les points essentiels.</p>
-            </div>
-
-            <div className="pt-12 text-center">
-              <Button
-                onClick={scrollToForm}
-                className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white px-8 py-4 text-xl font-bold rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 h-auto uppercase"
-              >
-                Contactez-nous
-              </Button>
-            </div>
+            {/* This could be simplified or removed for a cleaner mobile look as per mockup */}
           </div>
         </section>
 
@@ -238,10 +194,10 @@ const GardeMalade = () => {
                 </h2>
               </div>
 
-              <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+              <form id="booking-form" onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
                 <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                   <div className="lg:sticky lg:top-24 space-y-6">
-                    <div className="bg-[#b46d2f]/5 rounded-lg border border-[#b46d2f]/20 shadow-sm p-6 space-y-4">
+                    <div className="bg-[#b46d2f]/5 rounded-lg border border-[#b46d2f]/20 shadow-sm p-6 space-y-4 relative">
                       <h3 className="text-xl font-bold text-[#b46d2f] border-b border-[#b46d2f]/10 pb-2 text-center">
                         Ma Réservation
                       </h3>
@@ -250,23 +206,27 @@ const GardeMalade = () => {
                           <span className="text-muted-foreground">Service:</span>
                           <span className="font-medium text-right text-slate-700">Garde Malade</span>
                         </div>
-                        <div className="flex justify-between gap-4">
-                          <span className="text-muted-foreground">Fréquence:</span>
-                          <span className="font-medium text-right text-slate-700 text-sm">
-                            {getFrequencyLabel(formData.frequency, formData.subFrequency)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between gap-4">
-                          <span className="text-muted-foreground">Jours:</span>
-                          <span className="font-medium text-right text-slate-700">{formData.numberOfDays}</span>
-                        </div>
-                        <div className="flex justify-between gap-4">
-                          <span className="text-muted-foreground">Personnes:</span>
-                          <span className="font-medium text-right text-slate-700">{formData.numberOfPeople}</span>
-                        </div>
-                        <div className="flex justify-between gap-4 border-t border-[#b46d2f]/5 pt-2">
-                          <span className="text-muted-foreground">Date début:</span>
-                          <span className="font-medium text-right text-slate-700">{formData.schedulingDate || "Non définie"}</span>
+
+                        {/* Detailed info - hidden on mobile when collapsed */}
+                        <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Fréquence:</span>
+                            <span className="font-medium text-right text-slate-700 text-sm">
+                              {getFrequencyLabel(formData.frequency, formData.subFrequency)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Jours:</span>
+                            <span className="font-medium text-right text-slate-700">{formData.numberOfDays}</span>
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Personnes:</span>
+                            <span className="font-medium text-right text-slate-700">{formData.numberOfPeople}</span>
+                          </div>
+                          <div className="flex justify-between gap-4 border-t border-[#b46d2f]/5 pt-2">
+                            <span className="text-muted-foreground">Date début:</span>
+                            <span className="font-medium text-right text-slate-700">{formData.schedulingDate || "Non définie"}</span>
+                          </div>
                         </div>
                       </div>
 
@@ -286,6 +246,15 @@ const GardeMalade = () => {
                           </span>
                         </div>
                       </div>
+
+                      {/* Toggle Button for Mobile */}
+                      <button
+                        type="button"
+                        onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                        className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#b46d2f] text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-[#b46d2f]/90 transition-transform active:scale-90"
+                      >
+                        {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -386,6 +355,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Heure fixe</Label>
                             <Input
                               type="time"
+                              required
                               value={formData.fixedTime}
                               onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
                               className="h-10"
@@ -412,6 +382,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Date début</Label>
                             <Input
                               type="date"
+                              required
                               value={formData.schedulingDate}
                               onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
                               className="h-10"
@@ -456,6 +427,7 @@ const GardeMalade = () => {
                             <div className="relative">
                               <Input
                                 placeholder="Âge de la personne"
+                                required
                                 value={formData.patientAge}
                                 onChange={(e) => setFormData({ ...formData, patientAge: e.target.value })}
                                 className="pr-12"
@@ -507,6 +479,7 @@ const GardeMalade = () => {
                           <div className="space-y-4 flex flex-col">
                             <Label className="text-sm font-bold text-slate-600">Pathologie :</Label>
                             <Textarea
+                              required
                               value={formData.healthIssues}
                               onChange={(e) => setFormData({ ...formData, healthIssues: e.target.value })}
                               className="flex-1 min-h-[120px] text-sm resize-none"
@@ -524,6 +497,7 @@ const GardeMalade = () => {
                       </h3>
                       <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
                         <Textarea
+                          required
                           value={formData.additionalNotes}
                           onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
                           className="min-h-[80px] text-sm resize-none"
@@ -564,6 +538,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Ville</Label>
                             <Input
                               placeholder="ex: Casablanca"
+                              required
                               value={formData.city}
                               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                               className="h-10"
@@ -573,6 +548,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Quartier</Label>
                             <Input
                               placeholder="ex: Maarif"
+                              required
                               value={formData.neighborhood}
                               onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                               className="h-10"
@@ -583,6 +559,7 @@ const GardeMalade = () => {
                           <Label className="text-sm font-bold text-slate-600">Champs de repère</Label>
                           <Textarea
                             placeholder="Donnez-nous des repères visuels proches (Mosquée, École, Pharmacie...)"
+                            required
                             value={formData.careAddress}
                             onChange={(e) => setFormData({ ...formData, careAddress: e.target.value })}
                             className="min-h-[60px] text-sm resize-none"

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceHeroSection from "@/components/ServiceHeroSection";
@@ -24,7 +25,9 @@ import {
 } from "@/components/ui/dialog";
 
 const MenageFinChantier = () => {
+    const [wasValidated, setWasValidated] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
     const [formData, setFormData] = useState({
         propertyType: "studio",
         surfaceArea: 50,
@@ -45,8 +48,14 @@ const MenageFinChantier = () => {
         changeRepereNotes: ""
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setWasValidated(true);
+
+        if (!e.currentTarget.checkValidity()) {
+            e.currentTarget.reportValidity();
+            return;
+        }
 
         if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
             toast.error("Veuillez remplir tous les champs obligatoires");
@@ -92,21 +101,25 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                 FORMULAIRE DE RESERVATION
                             </h2>
                         </div>
-                        <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+                        <form id="booking-form" onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
                             <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                                 <div className="lg:sticky lg:top-24 space-y-6">
-                                    <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4">
+                                    <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4 relative">
                                         <h3 className="text-xl font-bold text-primary border-b pb-2 text-center">
                                             Ma Réservation
                                         </h3>
                                         <div className="space-y-3">
                                             <div className="flex justify-between gap-4 border-b border-primary/10 pb-2">
                                                 <span className="text-muted-foreground">Service:</span>
-                                                <span className="font-medium text-right text-xs">Ménage Fin de chantier</span>
+                                                <span className="font-medium text-right text-slate-700 text-xs">Ménage Fin de chantier</span>
                                             </div>
-                                            <div className="flex justify-between gap-4">
-                                                <span className="text-muted-foreground">Surface:</span>
-                                                <span className="font-medium text-right">{formData.surfaceArea} m²</span>
+
+                                            {/* Detailed info - hidden on mobile when collapsed */}
+                                            <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                                                <div className="flex justify-between gap-4">
+                                                    <span className="text-muted-foreground">Surface:</span>
+                                                    <span className="font-medium text-right text-slate-700">{formData.surfaceArea} m²</span>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -116,6 +129,15 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                 <span className="text-xl font-bold text-primary italic">Sur devis</span>
                                             </div>
                                         </div>
+
+                                        {/* Toggle Button for Mobile */}
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                                            className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-primary/90 transition-transform active:scale-90"
+                                        >
+                                            {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -152,6 +174,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                     id="surface"
                                                     type="number"
                                                     min="1"
+                                                    required
                                                     value={formData.surfaceArea}
                                                     onChange={(e) => setFormData({ ...formData, surfaceArea: parseInt(e.target.value) || 0 })}
                                                     className="text-lg font-bold border-slate-300 w-32"
@@ -167,12 +190,14 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                         <div className="grid md:grid-cols-2 gap-4 p-4 border rounded-xl bg-white mb-4">
                                             <Input
                                                 placeholder="Ville , Casablanca"
+                                                required
                                                 value={formData.city}
                                                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                                                 className="border-slate-300"
                                             />
                                             <Input
                                                 placeholder="Quartier : j'inscris le nom"
+                                                required
                                                 value={formData.neighborhood}
                                                 onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                                                 className="border-slate-300"
@@ -182,6 +207,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                             <Label className="font-bold text-slate-700">Champs de repère</Label>
                                             <Textarea
                                                 placeholder="Donnez-nous des repères pour faciliter le travail de ménage (points de référence pour la tournée du nettoyeur) après les points de repère"
+                                                required
                                                 value={formData.changeRepereNotes}
                                                 onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                                                 className="mt-2 border-slate-300"

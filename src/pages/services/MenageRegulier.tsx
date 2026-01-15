@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceHeroSection from "@/components/ServiceHeroSection";
@@ -27,14 +28,16 @@ import {
 
 const PRODUCTS_LIST = [
   "Nettoyant multi-usage",
-  "Prdt vitre, dégraissant",
-  "Prdt de vaisselle",
-  "Prdt bois et parqués",
+  "Produit vitre, dégraissant",
+  "Produit de vaisselle",
+  "Produit bois et parqués",
   "Neutralisant d’odeur"
 ];
 
 const MenageRegulier = () => {
+  const [wasValidated, setWasValidated] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   const [formData, setFormData] = useState({
     propertyType: "studio",
     frequency: "oneshot",
@@ -118,13 +121,23 @@ const MenageRegulier = () => {
 
   const totalPrice = calculateTotal();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setWasValidated(true);
+
+    if (!e.currentTarget.checkValidity()) {
+      e.currentTarget.reportValidity();
+      return;
+    }
 
     // Check if any room is selected
     const roomsSelected = Object.values(formData.rooms).some(count => count > 0);
     if (!roomsSelected) {
       toast.error("Veuillez décrire les pièces de votre logement avant de continuer");
+      const roomsSection = document.getElementById('rooms-section');
+      if (roomsSection) {
+        roomsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
 
@@ -248,10 +261,10 @@ Il comprend le :
                 FORMULAIRE DE RESERVATION
               </h2>
             </div>
-            <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+            <form id="booking-form" onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
               <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                 <div className="lg:sticky lg:top-24 space-y-6">
-                  <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4">
+                  <div className="bg-primary/5 rounded-lg border shadow-sm p-6 space-y-4 relative">
                     <h3 className="text-xl font-bold text-primary border-b pb-2 text-center">
                       Ma Réservation
                     </h3>
@@ -260,47 +273,51 @@ Il comprend le :
                         <span className="text-muted-foreground">Service:</span>
                         <span className="font-medium text-right">Ménage standard</span>
                       </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Fréquence:</span>
-                        <span className="font-medium text-right">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Durée choisie:</span>
-                        <span className="font-medium text-right">{formData.duration} heures</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Temps recommandé:</span>
-                        <span className="font-medium text-right font-bold text-primary">{formData.recommendedDuration} heures</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Personnes:</span>
-                        <span className="font-medium text-right">{formData.numberOfPeople}</span>
-                      </div>
-                      {formData.additionalServices.produitsEtOutils && (
-                        <div className="flex justify-between gap-4 text-xs">
-                          <span className="text-muted-foreground">Produits:</span>
-                          <span className="font-medium text-right">+90 DH</span>
+
+                      {/* Detailed info - hidden on mobile when collapsed */}
+                      <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Fréquence:</span>
+                          <span className="font-medium text-right">{getFrequencyLabel(formData.frequency, formData.subFrequency)}</span>
                         </div>
-                      )}
-                      {formData.additionalServices.torchonsEtSerpierres && (
-                        <div className="flex justify-between gap-4 text-xs">
-                          <span className="text-muted-foreground">Torchons:</span>
-                          <span className="font-medium text-right">+40 DH</span>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Durée choisie:</span>
+                          <span className="font-medium text-right">{formData.duration} heures</span>
                         </div>
-                      )}
-                      {discountRate > 0 && (
-                        <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded">
-                          <span>Réduction (10%):</span>
-                          <span>-{Math.round(discountAmount)} DH</span>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Temps recommandé:</span>
+                          <span className="font-medium text-right font-bold text-primary">{formData.recommendedDuration} heures</span>
                         </div>
-                      )}
-                      <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
-                        <span className="text-muted-foreground">Date:</span>
-                        <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="text-muted-foreground">Heure:</span>
-                        <span className="font-medium text-right">{formData.fixedTime}</span>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Personnes:</span>
+                          <span className="font-medium text-right">{formData.numberOfPeople}</span>
+                        </div>
+                        {formData.additionalServices.produitsEtOutils && (
+                          <div className="flex justify-between gap-4 text-xs">
+                            <span className="text-muted-foreground">Produits:</span>
+                            <span className="font-medium text-right">+90 DH</span>
+                          </div>
+                        )}
+                        {formData.additionalServices.torchonsEtSerpierres && (
+                          <div className="flex justify-between gap-4 text-xs">
+                            <span className="text-muted-foreground">Torchons:</span>
+                            <span className="font-medium text-right">+40 DH</span>
+                          </div>
+                        )}
+                        {discountRate > 0 && (
+                          <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded">
+                            <span>Réduction (10%):</span>
+                            <span>-{Math.round(discountAmount)} DH</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between gap-4 border-t border-primary/10 pt-2">
+                          <span className="text-muted-foreground">Date:</span>
+                          <span className="font-medium text-right">{formData.schedulingDate || "Non définie"}</span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Heure:</span>
+                          <span className="font-medium text-right">{formData.fixedTime}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -310,6 +327,15 @@ Il comprend le :
                         <span className="text-2xl font-bold text-primary">{totalPrice} DH</span>
                       </div>
                     </div>
+
+                    {/* Toggle Button for Mobile */}
+                    <button
+                      type="button"
+                      onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                      className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-primary/90 transition-transform active:scale-90"
+                    >
+                      {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -540,6 +566,7 @@ Il comprend le :
                         <div className="flex justify-center">
                           <Input
                             type="time"
+                            required
                             value={formData.fixedTime}
                             onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
                             className="w-32 text-center text-xl font-bold h-12 border-[#1c6664]/30"
@@ -567,6 +594,7 @@ Il comprend le :
                         <div className="font-bold text-[#1c6664] text-sm">Premier ménage ?</div>
                         <Input
                           type="date"
+                          required
                           value={formData.schedulingDate}
                           onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
                           className="w-full border-slate-300"
@@ -641,12 +669,14 @@ Il comprend le :
                     <div className="grid md:grid-cols-2 gap-4 p-4 border rounded-xl bg-white mb-4">
                       <Input
                         placeholder="Ville , Casablanca"
+                        required
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                         className="border-slate-300"
                       />
                       <Input
                         placeholder="Quartier : j'inscris le nom"
+                        required
                         value={formData.neighborhood}
                         onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                         className="border-slate-300"
@@ -656,6 +686,7 @@ Il comprend le :
                       <Label className="font-bold text-[#1c6664]">Champs de repère</Label>
                       <Textarea
                         placeholder="Donnez-nous des repères pour faciliter le travail de ménage (points de référence pour la tournée du nettoyeur) après les points de repère"
+                        required
                         value={formData.changeRepereNotes}
                         onChange={(e) => setFormData({ ...formData, changeRepereNotes: e.target.value })}
                         className="mt-2 border-slate-300"

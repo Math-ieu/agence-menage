@@ -102,7 +102,12 @@
     font-family: "Work Sans", "Work Sans - fallback", Arial, sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: "Work Sans", "Work Sans - fallback", Arial, sans-serif;
   }
 }
@@ -112,4 +117,19 @@
     text-wrap: balance;
   }
 
+  /* Form Validation Styles */
+  .was-validated :invalid {
+    border-color: #ef4444 !important;
+    border-width: 2px !important;
+  }
+
+  .was-validated .invalid-field {
+    border-color: #ef4444 !important;
+    border-width: 2px !important;
+  }
+
+  /* For custom components that don't support :invalid natively */
+  .was-validated .border-red-500 {
+    border-color: #ef4444 !important;
+  }
 }

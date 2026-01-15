@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import aboutVideo from "@/assets/video.mp4";
+import aboutVideo from "@/assets/Video-corrected.mp4";
 
 const AboutSection = () => {
   const [isVisible, setIsVisible] = useState(false);
