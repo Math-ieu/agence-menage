@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
-import logoPlaceholder from "@/assets/logo.png";
+import logoPlaceholder from "@/assets/LOGO-AGENCE-MENAGE.png";
 
 const Footer = () => {
   return (
@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Logo Column */}
           <div className="flex flex-col items-start">
-            <img src={logoPlaceholder} alt="Agence Ménage" className="h-20 w-auto mb-6 brightness-0 invert" />
+            <img src={logoPlaceholder} alt="Agence Ménage" className="h-16 w-auto mb-6 brightness-0 invert" />
             <p className="text-primary-foreground font-bold text-lg leading-relaxed max-w-xs">
               Votre partenaire de confiance pour un espace propre et serein.
             </p>

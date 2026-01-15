@@ -67,10 +67,10 @@ const Contact = () => {
                 {/* Form Section */}
                 <section className="py-16 px-2 sm:px-4 bg-slate-50">
                     <div className="container max-w-6xl mx-auto px-0 sm:px-4">
-                        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+                        <div className="grid xl:grid-cols-2 gap-8 xl:gap-12">
                             {/* Form */}
-                            <div className="bg-card p-6 md:p-8 rounded-lg shadow-sm border border-slate-100 h-full lg:order-2">
-                                <div className="mb-8 text-center lg:text-left">
+                            <div className="bg-card p-6 md:p-8 rounded-lg shadow-sm border border-slate-100 h-full xl:order-2">
+                                <div className="mb-8 text-center xl:text-left">
                                     <h2 className="text-3xl font-bold text-slate-800 mb-2">Ecrivez-nous</h2>
                                     <p className="text-slate-500">Remplissez le formulaire et nous vous répondrons dans les plus brefs délais</p>
                                 </div>
@@ -204,7 +204,7 @@ const Contact = () => {
                             <div className="flex flex-col h-full space-y-8">
                                 {/* Info Elements */}
                                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                                    <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center lg:text-left">Nos Coordonnées</h3>
+                                    <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center xl:text-left">Nos Coordonnées</h3>
 
                                     <div className="space-y-6">
                                         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logoPlaceholder from "@/assets/logo.png";
+import logoPlaceholder from "@/assets/LOGO-AGENCE-MENAGE.png";
 import { Menu, X, Phone } from "lucide-react";
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -35,7 +35,7 @@ const Header = () => {
   return (
     <header className={`sticky top-0 z-50 w-full shadow-sm border-b transition-all duration-[2000ms] ${isEntreprise ? "bg-primary border-primary/20" : "bg-background"
       }`}>
-      <div className="w-full px-4 md:px-8 lg:px-12 flex h-20 items-center justify-between">
+      <div className="w-full px-6 md:px-12 lg:px-20 flex h-20 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 flex-shrink-0">
           <img
             src={logoPlaceholder}

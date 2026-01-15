@@ -6,6 +6,7 @@ import ServicesGrid from "@/components/ServicesGrid";
 import AboutSection from "@/components/AboutSection";
 import BookingSteps from "@/components/BookingSteps";
 import TeamReviews from "@/components/TeamReviews";
+import PartnersSection from "@/components/PartnersSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Footer from "@/components/Footer";
 
@@ -20,6 +21,7 @@ const Entreprise = () => {
         <BookingSteps />
         <WhyChooseUs />
         <TeamReviews />
+        <PartnersSection />
       </main>
       <Footer />
     </div>

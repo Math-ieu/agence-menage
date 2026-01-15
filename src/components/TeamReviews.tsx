@@ -10,6 +10,7 @@ import team6 from "@/assets/team/Parfaite FLEAN.png";
 import team7 from "@/assets/team/Imane HARIT.png";
 import team8 from "@/assets/team/Meriem GUERRI.png";
 import team9 from "@/assets/team/Noura GOUJANE.png";
+import team10 from "@/assets/team/Kaoutar IDRISSI .png";
 
 const teamData = [
     { id: "01", name: "Mehdi HARIT", role: "General Manager", image: team1 },
@@ -21,6 +22,7 @@ const teamData = [
     { id: "07", name: "Imane HARIT", role: "Chargée de recrutement", image: team7 },
     { id: "08", name: "Meriem GUERRI", role: "Chargée de recrutement", image: team8 },
     { id: "09", name: "Noura GOUJANE", role: "Chargée de recrutement", image: team9 },
+    { id: "10", name: "Kaoutar IDRISSI", role: "Account manager", image: team10 },
 ];
 
 const TeamReviews = () => {
@@ -77,20 +79,20 @@ const TeamReviews = () => {
     return (
         <section className="py-24 bg-white overflow-hidden">
             <div className="container mx-auto px-4 max-w-7xl">
-                <div className="flex flex-col lg:flex-row items-center lg:items-end justify-start gap-8 lg:gap-16">
+                <div className="flex flex-col xl:flex-row items-center xl:items-end justify-start gap-8 xl:gap-16">
 
                     {/* Column 1: "Notre equipe" Title */}
-                    <div className="w-full lg:w-[250px] flex-shrink-0">
-                        <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-[#287271] leading-[0.9] text-center lg:text-left">
+                    <div className="w-full xl:w-[250px] flex-shrink-0">
+                        <h2 className="text-5xl xl:text-7xl font-black text-[#287271] leading-[0.9] text-center xl:text-left">
                             NOTRE<br />EQUIPE
                         </h2>
                     </div>
 
                     {/* Main Content Area */}
-                    <div className="flex flex-col md:flex-row items-center md:items-end gap-10 lg:gap-14 w-full">
+                    <div className="flex flex-col xl:flex-row items-center xl:items-end gap-10 xl:gap-14 w-full">
 
                         {/* Column 2: The Staircase (Hidden on very small mobile if too crowded, but user wants it clean) */}
-                        <div className="hidden sm:flex items-center gap-6 lg:gap-8 self-center lg:self-end">
+                        <div className="hidden xl:flex items-center gap-6 lg:gap-8 self-center xl:self-end">
                             <div className="flex flex-col items-center gap-4 min-w-[40px]">
                                 <div className="text-[10px] font-bold tracking-widest text-slate-300 uppercase [writing-mode:vertical-lr] rotate-180">
                                     {activeMember.id} — {teamData.length.toString().padStart(2, '0')}
@@ -122,7 +124,7 @@ const TeamReviews = () => {
 
                         {/* Column 3: Main Profile Image */}
                         <div
-                            className="w-full md:w-[320px] lg:w-[380px] h-[400px] md:h-[500px] lg:h-[580px] relative overflow-hidden rounded-xl shadow-2xl bg-slate-100 flex-shrink-0 touch-none"
+                            className="w-full xl:w-[380px] h-[400px] xl:h-[580px] relative overflow-hidden rounded-xl shadow-2xl bg-slate-100 flex-shrink-0 touch-none"
                             onTouchStart={handleTouchStart}
                             onTouchEnd={handleTouchEnd}
                         >
@@ -143,23 +145,23 @@ const TeamReviews = () => {
                         </div>
 
                         {/* Column 4: Content - Only Name and Role */}
-                        <div className="flex flex-col justify-end pb-4 md:pb-12 flex-1 space-y-6 text-center md:text-left transition-all duration-700">
+                        <div className="flex flex-col justify-end pb-4 xl:pb-12 flex-1 space-y-6 text-center xl:text-left transition-all duration-700">
                             <div
                                 className={cn(
                                     "space-y-3 transition-all duration-700",
                                     isTransitioning ? "opacity-0 -translate-y-8" : "opacity-100 translate-y-0"
                                 )}
                             >
-                                <h3 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 leading-none">
+                                <h3 className="text-3xl xl:text-5xl font-black text-slate-900 leading-none">
                                     {activeMember.name}
                                 </h3>
-                                <p className="text-[#287271] font-bold tracking-[0.2em] text-sm md:text-base lg:text-lg uppercase">
+                                <p className="text-[#287271] font-bold tracking-[0.2em] text-sm xl:text-lg uppercase">
                                     {activeMember.role}
                                 </p>
-                                <div className="h-1.5 w-12 bg-[#287271] mt-6 mx-auto md:mx-0 rounded-full" />
+                                <div className="h-1.5 w-12 bg-[#287271] mt-6 mx-auto xl:mx-0 rounded-full" />
                             </div>
 
-                            <div className="pt-8 flex justify-center md:justify-start">
+                            <div className="pt-8 flex justify-center xl:justify-start">
                                 <button
                                     onClick={nextSlide}
                                     className="group relative w-20 h-20 rounded-full bg-[#287271] flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 shadow-2xl shadow-[#287271]/40 overflow-hidden"
