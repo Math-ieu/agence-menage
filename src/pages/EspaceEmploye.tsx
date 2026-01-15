@@ -16,7 +16,10 @@ const EspaceEmploye = () => {
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
+        phonePrefix: "+212",
         phoneNumber: "",
+        useWhatsappForPhone: true,
+        whatsappPrefix: "+212",
         whatsappNumber: "",
         position: "",
         experience: "",
@@ -80,8 +83,16 @@ const EspaceEmploye = () => {
             return;
         }
 
-        const message = formatCandidateMessage(formData);
-        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message); // Replace with target number
+        const processedData = {
+            ...formData,
+            phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+            whatsappNumber: formData.useWhatsappForPhone
+                ? `${formData.phonePrefix} ${formData.phoneNumber}`
+                : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+        };
+
+        const message = formatCandidateMessage(processedData);
+        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
         window.open(whatsappLink, "_blank");
         toast.success("Votre candidature a été préparée pour WhatsApp.");
     };
@@ -133,8 +144,8 @@ const EspaceEmploye = () => {
                 </section>
 
                 {/* Form Section */}
-                <section className="py-16 px-4 bg-slate-50">
-                    <div className="container max-w-4xl">
+                <section className="py-16 px-2 sm:px-4 bg-slate-50">
+                    <div className="container max-w-4xl px-0 sm:px-4">
                         <div className="bg-card p-6 rounded-lg shadow-sm border border-slate-100">
                             <div className="text-center mb-10">
                                 <h2 className="text-3xl font-bold text-slate-800 mb-2">Formulaire de candidature</h2>
@@ -168,32 +179,74 @@ const EspaceEmploye = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="phone">Numéro de téléphone*</Label>
-                                        <div className="flex gap-2">
-                                            <div className="bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-sm font-bold text-slate-600 flex items-center">
-                                                +212
+                                        <div className="space-y-3">
+                                            <div className="flex gap-2">
+                                                <Input
+                                                    value={formData.phonePrefix}
+                                                    onChange={e => setFormData(prev => ({
+                                                        ...prev,
+                                                        phonePrefix: e.target.value,
+                                                        whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                                                    }))}
+                                                    className="w-20 border-slate-300 h-11 text-center font-bold text-slate-600"
+                                                    placeholder="+212"
+                                                />
+                                                <Input
+                                                    id="phone"
+                                                    required
+                                                    placeholder="6XXXXXXXX"
+                                                    value={formData.phoneNumber}
+                                                    onChange={e => {
+                                                        const val = e.target.value;
+                                                        setFormData(prev => ({
+                                                            ...prev,
+                                                            phoneNumber: val,
+                                                            whatsappNumber: prev.useWhatsappForPhone ? val : prev.whatsappNumber
+                                                        }));
+                                                    }}
+                                                    className="border-slate-300 h-11 flex-1"
+                                                />
                                             </div>
-                                            <Input
-                                                id="phone"
-                                                required
-                                                placeholder="6XXXXXXXX"
-                                                value={formData.phoneNumber}
-                                                onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                className="border-slate-300 h-11"
-                                            />
+                                            <div className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id="useWhatsapp"
+                                                    checked={formData.useWhatsappForPhone}
+                                                    onCheckedChange={(checked) => {
+                                                        setFormData(prev => ({
+                                                            ...prev,
+                                                            useWhatsappForPhone: !!checked,
+                                                            whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                                            whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                                        }));
+                                                    }}
+                                                    className="data-[state=checked]:bg-primary border-primary"
+                                                />
+                                                <label
+                                                    htmlFor="useWhatsapp"
+                                                    className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600 cursor-pointer"
+                                                >
+                                                    Utilisez-vous ce numéro pour WhatsApp ?
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="whatsapp">Numéro whatsapp</Label>
                                         <div className="flex gap-2">
-                                            <div className="bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-sm font-bold text-slate-600 flex items-center">
-                                                +212
-                                            </div>
+                                            <Input
+                                                value={formData.whatsappPrefix}
+                                                onChange={e => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                                                className="w-20 border-slate-300 h-11 text-center font-bold text-slate-600"
+                                                placeholder="+212"
+                                                disabled={formData.useWhatsappForPhone}
+                                            />
                                             <Input
                                                 id="whatsapp"
                                                 placeholder="6XXXXXXXX"
                                                 value={formData.whatsappNumber}
                                                 onChange={e => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                                                className="border-slate-300 h-11"
+                                                className="border-slate-300 h-11 flex-1"
+                                                disabled={formData.useWhatsappForPhone}
                                             />
                                         </div>
                                     </div>

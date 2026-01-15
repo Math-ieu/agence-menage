@@ -459,7 +459,7 @@ const GrandMenageBureaux = () => {
                                                                 phonePrefix: e.target.value,
                                                                 whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
                                                             }))}
-                                                            className="w-20 text-center font-bold text-primary"
+                                                            className="w-24 text-center font-bold text-primary"
                                                             placeholder="+212"
                                                         />
                                                         <Input

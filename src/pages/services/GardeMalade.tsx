@@ -612,7 +612,7 @@ const GardeMalade = () => {
                                     phonePrefix: e.target.value,
                                     whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
                                   }))}
-                                  className="w-20 font-bold text-[#b46d2f] text-xs text-center"
+                                  className="w-24 font-bold text-[#b46d2f] text-xs text-center"
                                   placeholder="+212"
                                 />
                                 <Input

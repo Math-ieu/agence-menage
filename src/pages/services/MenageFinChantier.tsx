@@ -210,7 +210,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                                 phonePrefix: e.target.value,
                                                                 whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
                                                             }))}
-                                                            className="w-20 border-slate-300 font-bold text-slate-600 text-center"
+                                                            className="w-24 border-slate-300 font-bold text-slate-600 text-center"
                                                             placeholder="+212"
                                                         />
                                                         <Input
@@ -256,7 +256,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                                     <Input
                                                         value={formData.whatsappPrefix}
                                                         onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
-                                                        className="w-20 border-slate-300 font-bold text-slate-600 text-center"
+                                                        className="bg-slate-100 border rounded-lg w-24 text-center font-bold text-primary"
                                                         placeholder="+212"
                                                         disabled={formData.useWhatsappForPhone}
                                                     />

@@ -414,7 +414,7 @@ const PlacementEntreprise = () => {
                                                                         phonePrefix: e.target.value,
                                                                         whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
                                                                     }))}
-                                                                    className="w-20 font-bold text-[#5bbd82] text-xs text-center"
+                                                                    className="w-24 border-slate-300 font-bold text-[#1c6664] text-center"
                                                                     placeholder="+212"
                                                                 />
                                                                 <Input

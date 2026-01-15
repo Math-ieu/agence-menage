@@ -441,7 +441,7 @@ Options possibles : vitres extérieures/grandes baies, terrasse.`}
                                                                 phonePrefix: e.target.value,
                                                                 whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
                                                             }))}
-                                                            className="w-20 border-slate-300 font-bold text-[#8a6d2f] text-center"
+                                                            className="w-24 border-slate-300 font-bold text-[#8a6d2f] text-center"
                                                             placeholder="+212"
                                                         />
                                                         <Input

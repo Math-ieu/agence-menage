@@ -605,7 +605,7 @@ Il comprend le :
                             <Input
                               value={formData.phonePrefix}
                               onChange={(e) => setFormData({ ...formData, phonePrefix: e.target.value })}
-                              className="w-20 border-slate-300 font-bold text-[#c5b89a] text-center"
+                              className="w-24 border-slate-300 font-bold text-[#1c6664] text-center"
                               placeholder="+212"
                             />
                             <Input

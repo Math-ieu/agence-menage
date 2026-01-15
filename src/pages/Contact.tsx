@@ -7,20 +7,33 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { createWhatsAppLink, formatContactMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Contact = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
+        phonePrefix: "+212",
         phoneNumber: "",
+        useWhatsappForPhone: true,
+        whatsappPrefix: "+212",
         whatsappNumber: "",
         message: ""
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const whatsappMessage = formatContactMessage(formData);
-        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, whatsappMessage); // Target number
+
+        const processedData = {
+            ...formData,
+            phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+            whatsappNumber: formData.useWhatsappForPhone
+                ? `${formData.phonePrefix} ${formData.phoneNumber}`
+                : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+        };
+
+        const whatsappMessage = formatContactMessage(processedData);
+        const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, whatsappMessage);
         window.open(whatsappLink, "_blank");
         toast.success("Votre message a été préparé pour WhatsApp.");
     };
@@ -45,9 +58,9 @@ const Contact = () => {
                 </section>
 
                 {/* Form Section */}
-                <section className="py-16 px-4 bg-slate-50">
-                    <div className="container max-w-6xl mx-auto">
-                        <div className="grid lg:grid-cols-2 gap-12">
+                <section className="py-16 px-2 sm:px-4 bg-slate-50">
+                    <div className="container max-w-6xl mx-auto px-0 sm:px-4">
+                        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
                             {/* Form */}
                             <div className="bg-card p-6 md:p-8 rounded-lg shadow-sm border border-slate-100 h-full lg:order-2">
                                 <div className="mb-8 text-center lg:text-left">
@@ -83,32 +96,74 @@ const Contact = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="phone" className="font-semibold text-slate-700">Numéro de téléphone*</Label>
-                                            <div className="flex gap-3">
-                                                <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-600 flex items-center shrink-0">
-                                                    +212
+                                            <div className="space-y-3">
+                                                <div className="flex gap-2">
+                                                    <Input
+                                                        value={formData.phonePrefix}
+                                                        onChange={e => setFormData(prev => ({
+                                                            ...prev,
+                                                            phonePrefix: e.target.value,
+                                                            whatsappPrefix: prev.useWhatsappForPhone ? e.target.value : prev.whatsappPrefix
+                                                        }))}
+                                                        className="w-20 border-slate-200 h-12 rounded-xl text-center font-bold text-slate-600 focus:ring-primary focus:border-primary transition-all"
+                                                        placeholder="+212"
+                                                    />
+                                                    <Input
+                                                        id="phone"
+                                                        required
+                                                        placeholder="6XXXXXXXX"
+                                                        value={formData.phoneNumber}
+                                                        onChange={e => {
+                                                            const val = e.target.value;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                phoneNumber: val,
+                                                                whatsappNumber: prev.useWhatsappForPhone ? val : prev.whatsappNumber
+                                                            }));
+                                                        }}
+                                                        className="border-slate-200 h-12 rounded-xl focus:ring-primary focus:border-primary transition-all flex-1"
+                                                    />
                                                 </div>
-                                                <Input
-                                                    id="phone"
-                                                    required
-                                                    placeholder="6XXXXXXXX"
-                                                    value={formData.phoneNumber}
-                                                    onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                                    className="border-slate-200 h-12 rounded-xl focus:ring-primary focus:border-primary transition-all"
-                                                />
+                                                <div className="flex items-center space-x-2">
+                                                    <Checkbox
+                                                        id="useWhatsapp"
+                                                        checked={formData.useWhatsappForPhone}
+                                                        onCheckedChange={(checked) => {
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                useWhatsappForPhone: !!checked,
+                                                                whatsappNumber: checked ? prev.phoneNumber : prev.whatsappNumber,
+                                                                whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
+                                                            }));
+                                                        }}
+                                                        className="data-[state=checked]:bg-primary border-primary rounded"
+                                                    />
+                                                    <label
+                                                        htmlFor="useWhatsapp"
+                                                        className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600 cursor-pointer"
+                                                    >
+                                                        Utilisez-vous ce numéro pour WhatsApp ?
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="whatsapp" className="font-semibold text-slate-700">Numéro whatsapp</Label>
-                                            <div className="flex gap-3">
-                                                <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-600 flex items-center shrink-0">
-                                                    +212
-                                                </div>
+                                            <div className="flex gap-2">
+                                                <Input
+                                                    value={formData.whatsappPrefix}
+                                                    onChange={e => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                                                    className="w-20 border-slate-200 h-12 rounded-xl text-center font-bold text-slate-600 focus:ring-primary focus:border-primary transition-all"
+                                                    placeholder="+212"
+                                                    disabled={formData.useWhatsappForPhone}
+                                                />
                                                 <Input
                                                     id="whatsapp"
                                                     placeholder="6XXXXXXXX"
                                                     value={formData.whatsappNumber}
                                                     onChange={e => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                                                    className="border-slate-200 h-12 rounded-xl focus:ring-primary focus:border-primary transition-all"
+                                                    className="border-slate-200 h-12 rounded-xl focus:ring-primary focus:border-primary transition-all flex-1"
+                                                    disabled={formData.useWhatsappForPhone}
                                                 />
                                             </div>
                                         </div>

@@ -54,11 +54,19 @@ const MenageFinChantierEntreprise = () => {
             return;
         }
 
-        const message = formatBookingMessage("Ménage Fin de chantier (Entreprise)", formData, "Sur devis", true);
+        const bookingData = {
+            ...formData,
+            phoneNumber: `${formData.phonePrefix} ${formData.phoneNumber}`,
+            whatsappNumber: formData.useWhatsappForPhone
+                ? `${formData.phonePrefix} ${formData.phoneNumber}`
+                : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
+        };
+
+        const message = formatBookingMessage("Ménage Fin de chantier (Entreprise)", bookingData, "Sur devis", true);
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         // Send email notification (async)
-        sendBookingEmail("Ménage Fin de chantier (Entreprise)", formData, "Sur devis").catch(console.error);
+        sendBookingEmail("Ménage Fin de chantier (Entreprise)", bookingData, "Sur devis").catch(console.error);
 
         window.open(whatsappLink, '_blank');
         setShowConfirmation(true);
