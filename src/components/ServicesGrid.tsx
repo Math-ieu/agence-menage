@@ -18,7 +18,7 @@ const particulierServices = [
   { title: "Ménage standard", subtitle: "", color: "#287271", image: serviceRegulier, url: "/services/particulier/menage-standard" },
   { title: "Grand ménage", subtitle: "", color: "#e6dec7", image: serviceGrandMenage, url: "/services/particulier/grand-menage" },
   { title: "Ménage Airbnb", subtitle: "", color: "#9ed2ce", image: serviceAirbnb, url: "/services/particulier/menage-airbnb" },
-  { title: "Fin de chantier", subtitle: "", color: "#e9f6e9", image: serviceChantierParticulier, url: "/services/particulier/menage-fin-chantier" },
+  { title: "Nettoyage Fin de chantier", subtitle: "", color: "#e9f6e9", image: serviceChantierParticulier, url: "/services/particulier/menage-fin-chantier" },
   { title: "Ménage post déména-\n gement", subtitle: "", color: "#d1a246", image: serviceDemenagement, url: "/services/particulier/menage-demenagement" },
   { title: "Auxiliaire de vie / garde malade", subtitle: "", color: "#b46d2f", image: serviceGardeMalade, url: "/services/particulier/garde-malade" },
 ];
@@ -26,7 +26,7 @@ const particulierServices = [
 const entrepriseServices = [
   { title: "Ménages bureaux", subtitle: "", color: "#1caf9a", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
   { title: "Placement & gestion de propriété", subtitle: "", color: "#5bbd82", image: servicePlacement, url: "/services/entreprise/placement" },
-  { title: "Fin de chantier", subtitle: "", color: "#f3d299", image: serviceChantierEntreprise, url: "/services/entreprise/menage-fin-chantier" },
+  { title: "Nettoyage Fin de chantier", subtitle: "", color: "#f3d299", image: serviceChantierEntreprise, url: "/services/entreprise/menage-fin-chantier" },
 ];
 
 const ServicesGrid = ({ type }: ServicesGridProps) => {

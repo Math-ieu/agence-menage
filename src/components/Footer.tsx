@@ -24,7 +24,7 @@ const Footer = () => {
                 <li><Link to="/services/particulier/grand-menage" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Grand ménage</Link></li>
                 <li><Link to="/services/particulier/menage-airbnb" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Ménage Airbnb</Link></li>
                 <li><Link to="/services/particulier/menage-demenagement" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Ménage post déménagement</Link></li>
-                <li><Link to="/services/particulier/menage-fin-chantier" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Fin de chantier</Link></li>
+                <li><Link to="/services/particulier/menage-fin-chantier" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Nettoyage Fin de chantier</Link></li>
                 <li><Link to="/services/particulier/garde-malade" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Auxiliaire de vie / garde malade</Link></li>
               </ul>
             </div>
@@ -33,7 +33,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 <li><Link to="/services/entreprise/menage-bureaux" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Ménages bureaux</Link></li>
                 <li><Link to="/services/entreprise/placement" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Placement & gestion de propriété</Link></li>
-                <li><Link to="/services/entreprise/menage-fin-chantier" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Fin de chantier</Link></li>
+                <li><Link to="/services/entreprise/menage-fin-chantier" className="text-primary-foreground hover:text-white transition-colors font-bold text-sm lg:text-base">Nettoyage Fin de chantier</Link></li>
               </ul>
             </div>
           </div>

@@ -29,7 +29,7 @@ const HeroSection = () => {
           <div className="flex flex-col items-center">
 
             <p className="text-primary font-bold text-xl md:text-2xl mb-4 bg-white rounded-lg px-4 py-2 inline-block shadow-md text-center">
-              Opter pour Ménage ponctuel ou régulier
+              Zone de couverture actuelle : Grand Casablanca
             </p>
             <div className="inline-flex rounded-full overflow-hidden bg-background/95 p-1 shadow-xl">
               <Link to="/">

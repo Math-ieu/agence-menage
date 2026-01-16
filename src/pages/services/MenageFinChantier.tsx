@@ -70,11 +70,11 @@ const MenageFinChantier = () => {
                 : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
         };
 
-        const message = formatBookingMessage("Ménage Fin de chantier", bookingData, "Sur devis", false);
+        const message = formatBookingMessage("Nettoyage Fin de chantier", bookingData, "Sur devis", false);
         const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
         // Send email notification (async)
-        sendBookingEmail("Ménage Fin de chantier", bookingData, "Sur devis").catch(console.error);
+        sendBookingEmail("Nettoyage Fin de chantier", bookingData, "Sur devis").catch(console.error);
 
         window.open(whatsappLink, '_blank');
         setShowConfirmation(true);
@@ -86,7 +86,7 @@ const MenageFinChantier = () => {
 
             <div style={{ "--primary": "142 45% 40%", "--secondary": "142 30% 85%" } as React.CSSProperties}>
                 <ServiceHeroSection
-                    title="Fin de chantier"
+                    title="Nettoyage Fin de chantier"
                     description={`Le ménage de fin de chantier consiste à effectuer un nettoyage approfondi du logement ou des locaux après des travaux, afin de les rendre propres, sains et prêts à être utilisés.
 
 La prestation comprend : L’évacuation des poussières et résidus de chantier, Le nettoyage des sols (balayage, aspiration et lavage),Le dépoussiérage et le nettoyage des surfaces, murs et plinthes accessibles, Le nettoyage des vitres accessibles et encadrements, La désinfection des sanitaires, Le nettoyage de la cuisine, L’entretien des escaliers, balcons, terrasses et autres espaces accessibles.`}
@@ -111,7 +111,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                         <div className="space-y-3">
                                             <div className="flex justify-between gap-4 border-b border-primary/10 pb-2">
                                                 <span className="text-muted-foreground">Service:</span>
-                                                <span className="font-medium text-right text-slate-700 text-xs">Ménage Fin de chantier</span>
+                                                <span className="font-medium text-right text-slate-700 text-xs">Nettoyage Fin de chantier</span>
                                             </div>
 
                                             {/* Detailed info - hidden on mobile when collapsed */}
