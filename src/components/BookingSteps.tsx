@@ -16,7 +16,7 @@ const BookingSteps = () => {
           </p>
 
           <p>
-            Pour aller plus loin, j’ai choisi de m’associer à <span className="font-bold text-[#287271]">Julien CONSTANT</span>, expert de la propreté et du nettoyage depuis <span className="font-bold text-[#287271]">15 ans en Suisse</span>. Son approche – rigoureuse, méthodique, orientée process – nous permet d’installer au Maroc des standards inspirés des meilleures pratiques européennes : <span className="font-bold text-[#287271]">check-lists qualité, encadrement des équipes, respect des matériaux, ponctualité et finition</span>.
+            Pour aller plus loin, j’ai choisi de m’associer à <span className="font-bold text-[#287271]">Julien COSTAN ZANON, Président de la société ROSSILAN S.A</span>, expert de la propreté et du nettoyage depuis <span className="font-bold text-[#287271]">15 ans en Suisse</span>. Son approche – rigoureuse, méthodique, orientée process – nous permet d’installer au Maroc des standards inspirés des meilleures pratiques européennes : <span className="font-bold text-[#287271]">check-lists qualité, encadrement des équipes, respect des matériaux, ponctualité et finition</span>.
           </p>
 
           <p>

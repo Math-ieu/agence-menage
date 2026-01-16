@@ -1,8 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import heroParticulier from "@/assets/hero-home-particulier.png";
 import heroEntreprise from "@/assets/hero-home-entreprise.png";
-import WhatsAppSidebar from "./WhatsAppSidebar";
-
 const HeroSection = () => {
   const location = useLocation();
   const isEntreprise = location.pathname === "/entreprise";
@@ -10,7 +8,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative h-[550px] md:h-[650px] overflow-hidden">
-      <WhatsAppSidebar />
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroImage})` }}

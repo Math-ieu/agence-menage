@@ -20,6 +20,7 @@ import EspaceEmploye from "./pages/EspaceEmploye";
 import Contact from "./pages/Contact";
 import { Analytics } from "@vercel/analytics/react"
 import ScrollToTop from "./components/ScrollToTop";
+import WhatsAppSidebar from "./components/WhatsAppSidebar";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <WhatsAppSidebar />
         <Analytics />
         <Routes>
           <Route path="/" element={<Index />} />

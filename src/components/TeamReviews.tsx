@@ -14,15 +14,15 @@ import team10 from "@/assets/team/Kaoutar IDRISSI .png";
 
 const teamData = [
     { id: "01", name: "Mehdi HARIT", role: "General Manager", image: team1 },
-    { id: "02", name: "Julien COSTAN ZANON", role: "Directeur des opérations", image: team2 },
-    { id: "03", name: "Hasna BOUADILI", role: "Responsable qualité", image: team3 },
-    { id: "04", name: "Dianne ADOTE", role: "Chargée de com", image: team4 },
-    { id: "05", name: "Zineb BOUNEFFAH", role: "Responsable Nettoyage", image: team5 },
-    { id: "06", name: "Parfaite FLEAN", role: "Chargée de recrutement", image: team6 },
-    { id: "07", name: "Imane HARIT", role: "Chargée de recrutement", image: team7 },
-    { id: "08", name: "Meriem GUERRI", role: "Chargée de recrutement", image: team8 },
-    { id: "09", name: "Noura GOUJANE", role: "Chargée de recrutement", image: team9 },
-    { id: "10", name: "Kaoutar IDRISSI", role: "Account manager", image: team10 },
+    { id: "02", name: "Julien COSTAN ZANON", role: "Président de la société ROSSILAN S.A", image: team2 },
+    { id: "03", name: "Zineb BOUNEFFAH", role: "Responsable Nettoyage", image: team5 },
+    { id: "04", name: "Kaoutar IDRISSI", role: "Account manager", image: team10 },
+    { id: "05", name: "Dianne ADOTE", role: "Chargée de com", image: team4 },
+    { id: "06", name: "Hasna BOUADILI", role: "Responsable qualité", image: team3 },
+    { id: "07", name: "Noura GOUJANE", role: "Chargée de recrutement", image: team9 },
+    { id: "08", name: "Parfaite FLEAN", role: "Chargée de recrutement", image: team6 },
+    { id: "09", name: "Meriem GUERRI", role: "Chargée de recrutement", image: team8 },
+    { id: "10", name: "Imane HARIT", role: "Chargée de recrutement", image: team7 },
 ];
 
 const TeamReviews = () => {
