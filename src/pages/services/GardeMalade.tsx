@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,9 +9,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER } from "@/lib/whatsapp";
+import { createWhatsAppLink, formatBookingMessage, DESTINATION_PHONE_NUMBER, getConfirmationMessage } from "@/lib/whatsapp";
+import { sendBookingEmail } from "@/lib/email";
 import "@/styles/sticky-summary.css";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // New assets
 import gardeMaladeHero from "@/assets/service-garde-malade.png";
@@ -19,6 +29,9 @@ import caregiverVisit from "@/assets/caregiver-visit.png";
 
 const GardeMalade = () => {
   const [showForm, setShowForm] = useState(false);
+  const [wasValidated, setWasValidated] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -48,30 +61,8 @@ const GardeMalade = () => {
     lastName: ""
   });
 
-  const perVisitPrice = formData.numberOfDays * 500;
-  let totalPrice = 0;
-  let discountAmount = 0;
-  const discountRate = 0.1;
-
-  if (formData.frequency === "subscription") {
-    const visitsMap: Record<string, number> = {
-      "4foisSemaine": 4,
-      "3foisSemaine": 3,
-      "1foisSemaine": 1,
-      "5foisSemaine": 5,
-      "6foisSemaine": 6,
-      "7foisSemaine": 7,
-      "2foisSemaine": 2,
-      "1semaine2": 0.5,
-      "1foisMois": 0.25
-    };
-    const visitsPerWeek = visitsMap[formData.subFrequency] || 1;
-    const subtotalMonthly = perVisitPrice * visitsPerWeek * 4;
-    discountAmount = subtotalMonthly * discountRate;
-    totalPrice = subtotalMonthly - discountAmount;
-  } else {
-    totalPrice = perVisitPrice;
-  }
+  const totalPrice = 0;
+  const discountAmount = 0;
 
   const scrollToForm = () => {
     setShowForm(true);
@@ -80,8 +71,14 @@ const GardeMalade = () => {
     }, 100);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setWasValidated(true);
+
+    if (!e.currentTarget.checkValidity()) {
+      e.currentTarget.reportValidity();
+      return;
+    }
 
     if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.city || !formData.neighborhood || !formData.schedulingDate) {
       toast.error("Veuillez remplir tous les champs obligatoires");
@@ -96,11 +93,16 @@ const GardeMalade = () => {
         : `${formData.whatsappPrefix} ${formData.whatsappNumber}`
     };
 
-    const message = formatBookingMessage("Garde Malade", bookingData, "Sur devis");
+    const isDevis = totalPrice <= 0;
+    const priceValue = isDevis ? "Sur devis" : totalPrice;
+    const message = formatBookingMessage("Garde Malade", bookingData, priceValue, false);
     const whatsappLink = createWhatsAppLink(DESTINATION_PHONE_NUMBER, message);
 
+    // Send email notification (async)
+    sendBookingEmail("Garde Malade", bookingData, priceValue).catch(console.error);
+
     window.open(whatsappLink, '_blank');
-    toast.success("Redirection vers WhatsApp pour finaliser la réservation...");
+    setShowConfirmation(true);
   };
 
   const incrementPeople = () => setFormData({ ...formData, numberOfPeople: formData.numberOfPeople + 1 });
@@ -223,7 +225,7 @@ const GardeMalade = () => {
                 </h2>
               </div>
 
-              <form onSubmit={handleSubmit} className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+              <form onSubmit={handleSubmit} noValidate className={`flex flex-col lg:grid lg:grid-cols-3 gap-8 ${wasValidated ? 'was-validated' : ''}`}>
                 <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                   <div className="lg:sticky lg:top-24 space-y-6">
                     <div className="bg-[#b46d2f]/5 rounded-lg border border-[#b46d2f]/20 shadow-sm p-6 space-y-4">
@@ -235,43 +237,49 @@ const GardeMalade = () => {
                           <span className="text-muted-foreground">Service:</span>
                           <span className="font-medium text-right text-slate-700">Garde Malade</span>
                         </div>
-                        <div className="flex justify-between gap-4">
-                          <span className="text-muted-foreground">Fréquence:</span>
-                          <span className="font-medium text-right text-slate-700 text-sm">
-                            {getFrequencyLabel(formData.frequency, formData.subFrequency)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between gap-4">
-                          <span className="text-muted-foreground">Jours:</span>
-                          <span className="font-medium text-right text-slate-700">{formData.numberOfDays}</span>
-                        </div>
-                        <div className="flex justify-between gap-4">
-                          <span className="text-muted-foreground">Personnes:</span>
-                          <span className="font-medium text-right text-slate-700">{formData.numberOfPeople}</span>
-                        </div>
-                        <div className="flex justify-between gap-4 border-t border-[#b46d2f]/5 pt-2">
-                          <span className="text-muted-foreground">Date début:</span>
-                          <span className="font-medium text-right text-slate-700">{formData.schedulingDate || "Non définie"}</span>
+
+                        {/* Detailed info - hidden on mobile when collapsed */}
+                        <div className={`space-y-3 ${!isSummaryExpanded ? 'max-lg:hidden' : ''}`}>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Fréquence:</span>
+                            <span className="font-medium text-right text-slate-700 text-sm">
+                              {getFrequencyLabel(formData.frequency, formData.subFrequency)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Jours:</span>
+                            <span className="font-medium text-right text-slate-700">{formData.numberOfDays}</span>
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Personnes:</span>
+                            <span className="font-medium text-right text-slate-700">{formData.numberOfPeople}</span>
+                          </div>
+                          <div className="flex justify-between gap-4 border-t border-[#b46d2f]/5 pt-2">
+                            <span className="text-muted-foreground">Date début:</span>
+                            <span className="font-medium text-right text-slate-700">{formData.schedulingDate || "Non définie"}</span>
+                          </div>
                         </div>
                       </div>
 
                       <div className="pt-4 border-t border-[#b46d2f]/20">
-                        {formData.frequency === "subscription" && discountAmount > 0 && (
-                          <div className="flex justify-between gap-4 text-red-600 font-bold bg-red-50 p-2 rounded mb-4 text-xs">
-                            <span>Réduction (10%):</span>
-                            <span>-{Math.round(discountAmount)} DH</span>
-                          </div>
-                        )}
                         <div className="flex justify-between items-center bg-[#b46d2f]/5 p-3 rounded-lg border border-[#b46d2f]/10">
                           <span className="text-xs font-bold text-[#b46d2f] uppercase tracking-wider">
-                            {formData.frequency === "subscription" ? "Mensuel HT" : "Total HT"}
+                            Estimation
                           </span>
                           <span className="text-lg font-black text-[#b46d2f]">
-                            {totalPrice > 0 ? `${Math.round(totalPrice)} DH` : "SUR DEVIS"}
+                            SUR DEVIS
                           </span>
                         </div>
                       </div>
                     </div>
+                    {/* Toggle Button for Mobile */}
+                    <button
+                      type="button"
+                      onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                      className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#b46d2f] text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-[#b46d2f]/90 transition-transform active:scale-90"
+                    >
+                      {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    </button>
                   </div>
                 </div>
 
@@ -371,6 +379,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Heure fixe</Label>
                             <Input
                               type="time"
+                              required
                               value={formData.fixedTime}
                               onChange={(e) => setFormData({ ...formData, fixedTime: e.target.value })}
                               className="h-10"
@@ -397,6 +406,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Date début</Label>
                             <Input
                               type="date"
+                              required
                               value={formData.schedulingDate}
                               onChange={(e) => setFormData({ ...formData, schedulingDate: e.target.value })}
                               className="h-10"
@@ -492,6 +502,7 @@ const GardeMalade = () => {
                           <div className="space-y-4 flex flex-col">
                             <Label className="text-sm font-bold text-slate-600">Pathologie :</Label>
                             <Textarea
+                              required
                               value={formData.healthIssues}
                               onChange={(e) => setFormData({ ...formData, healthIssues: e.target.value })}
                               className="flex-1 min-h-[120px] text-sm resize-none"
@@ -509,6 +520,7 @@ const GardeMalade = () => {
                       </h3>
                       <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
                         <Textarea
+                          required
                           value={formData.additionalNotes}
                           onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
                           className="min-h-[80px] text-sm resize-none"
@@ -549,6 +561,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Ville</Label>
                             <Input
                               placeholder="ex: Casablanca"
+                              required
                               value={formData.city}
                               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                               className="h-10"
@@ -558,6 +571,7 @@ const GardeMalade = () => {
                             <Label className="text-sm font-bold text-slate-600">Quartier</Label>
                             <Input
                               placeholder="ex: Maarif"
+                              required
                               value={formData.neighborhood}
                               onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                               className="h-10"
@@ -568,6 +582,7 @@ const GardeMalade = () => {
                           <Label className="text-sm font-bold text-slate-600">Champs de repère</Label>
                           <Textarea
                             placeholder="Donnez-nous des repères visuels proches (Mosquée, École, Pharmacie...)"
+                            required
                             value={formData.careAddress}
                             onChange={(e) => setFormData({ ...formData, careAddress: e.target.value })}
                             className="min-h-[60px] text-sm resize-none"
@@ -698,6 +713,25 @@ const GardeMalade = () => {
       </main>
 
       <Footer />
+
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent className="sm:max-w-md bg-[#fdf8f1] border-[#b46d2f]/20">
+          <DialogHeader>
+            <DialogTitle className="text-[#b46d2f] text-2xl font-bold">Confirmation</DialogTitle>
+            <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
+              {getConfirmationMessage(`${formData.firstName} ${formData.lastName}`, totalPrice === 0)}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-6">
+            <Button
+              onClick={() => setShowConfirmation(false)}
+              className="bg-[#b46d2f] hover:bg-[#9a5d28] text-white rounded-full px-8"
+            >
+              Fermer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
