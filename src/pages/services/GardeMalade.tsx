@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -136,7 +136,14 @@ const GardeMalade = () => {
       <main className="flex-1 flex flex-col" style={{ "--primary": "28 59% 45%" } as React.CSSProperties}>
         {/* Landing Sections */}
         <section className="bg-[#f0e4d4] py-16">
-          <div className="container px-6">
+          <div className="container px-6 relative">
+            <button
+              onClick={() => window.history.back()}
+              className="absolute -top-4 md:-top-8 left-0 md:-left-4 p-2 hover:bg-[#b46d2f]/10 rounded-full transition-colors text-[#b46d2f]"
+              aria-label="Retour"
+            >
+              <ArrowLeft size={24} />
+            </button>
             <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
               <div className="space-y-8 text-left">
                 <div className="space-y-4">
