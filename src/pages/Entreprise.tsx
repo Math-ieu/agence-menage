@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import ServicesGrid from "@/components/ServicesGrid";
 import AboutSection from "@/components/AboutSection";
-import BookingSteps from "@/components/BookingSteps";
+import PresentationSection from "@/components/PresentationSection";
 import TeamReviews from "@/components/TeamReviews";
 import PartnersSection from "@/components/PartnersSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
@@ -18,7 +18,7 @@ const Entreprise = () => {
         <HeroSection />
         <ServicesGrid type="entreprise" />
         <AboutSection />
-        <BookingSteps />
+        <PresentationSection />
         <WhyChooseUs />
         <TeamReviews />
         <PartnersSection />

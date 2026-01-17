@@ -124,7 +124,7 @@ const TeamReviews = () => {
 
                         {/* Column 3: Main Profile Image */}
                         <div
-                            className="w-full xl:w-[380px] h-[400px] xl:h-[580px] relative overflow-hidden rounded-xl shadow-2xl bg-slate-100 flex-shrink-0 touch-none"
+                            className="w-full md:w-[340px] xl:w-[380px] h-[400px] md:h-[500px] xl:h-[580px] relative overflow-hidden rounded-xl shadow-2xl bg-slate-100 flex-shrink-0 touch-none"
                             onTouchStart={handleTouchStart}
                             onTouchEnd={handleTouchEnd}
                         >
