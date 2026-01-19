@@ -42,7 +42,7 @@ const PresentationSection = () => {
 
                             <div className="relative">
                                 {/* Top Quote Mark */}
-                                <div className="text-black text-4xl md:text-5xl font-serif leading-none select-none absolute -top-4 left-0 md:-top-2">
+                                <div className="text-black text-4xl md:text-5xl font-serif leading-none select-none absolute -top-4 left-0 md:-top-6">
                                     “
                                 </div>
 
