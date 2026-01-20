@@ -189,10 +189,10 @@ const Contact = () => {
                                         />
                                     </div>
 
-                                    <div className="pt-4">
+                                    <div className="pt-4 flex justify-center">
                                         <Button
                                             type="submit"
-                                            className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full transition-all hover:scale-[1.02] active:scale-95"
+                                            className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                                         >
                                             Envoyer le message
                                         </Button>
