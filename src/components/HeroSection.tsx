@@ -17,12 +17,12 @@ const HeroSection = () => {
 
       <div className="relative container h-full flex flex-col justify-center py-12">
         {/* Texte centré verticalement à gauche sur desktop, centré sur mobile */}
-        <div className="animate-fade-in mb-auto mt-auto text-center md:text-left">
+        {/* <div className="animate-fade-in mb-auto mt-auto text-center md:text-left">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground leading-tight">
             Un espace propre,<br />
             une vie sereine.
           </h1>
-        </div>
+        </div> */}
 
         {/* Toggle centré en bas */}
         <div className="mt-auto flex justify-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
