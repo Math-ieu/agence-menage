@@ -24,9 +24,9 @@ const particulierServices = [
 ];
 
 const entrepriseServices = [
-  { title: "Ménages bureaux", subtitle: "", color: "#1caf9a", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
-  { title: "Placement & gestion de propreté", subtitle: "", color: "#5bbd82", image: servicePlacement, url: "/services/entreprise/placement" },
-  { title: "Nettoyage Fin de chantier", subtitle: "", color: "#f3d299", image: serviceChantierEntreprise, url: "/services/entreprise/menage-fin-chantier" },
+  { title: "Ménages bureaux", subtitle: "", color: "#c7dd54", image: serviceBureaux, url: "/services/entreprise/menage-bureaux" },
+  { title: "Placement & gestion de propreté", subtitle: "", color: "#f1db08", image: servicePlacement, url: "/services/entreprise/placement" },
+  { title: "Nettoyage Fin de chantier", subtitle: "", color: "#88d89d", image: serviceChantierEntreprise, url: "/services/entreprise/menage-fin-chantier" },
 ];
 
 const ServicesGrid = ({ type }: ServicesGridProps) => {

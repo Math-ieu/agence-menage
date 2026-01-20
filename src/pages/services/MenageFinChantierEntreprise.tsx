@@ -85,19 +85,19 @@ const MenageFinChantierEntreprise = () => {
         <div className="min-h-screen flex flex-col">
             <Header />
 
-            <div style={{ "--primary": "28 59% 45%" } as React.CSSProperties}>
+            <div style={{ "--primary": "136 51% 55%" } as React.CSSProperties}>
                 <ServiceHeroSection
                     title="Nettoyage Fin de chantier"
                     description={`Le ménage de fin de chantier consiste à effectuer un nettoyage approfondi du logement ou des locaux après des travaux, afin de les rendre propres, sains et prêts à être utilisés.
 
 La prestation comprend : L’évacuation des poussières et résidus de chantier, Le nettoyage des sols (balayage, aspiration et lavage),Le dépoussiérage et le nettoyage des surfaces, murs et plinthes accessibles, Le nettoyage des vitres accessibles et encadrements, La désinfection des sanitaires, Le nettoyage de la cuisine, L’entretien des escaliers, balcons, terrasses et autres espaces accessibles.`}
                     image={serviceChantier}
-                    primaryColor="#f3d299"
+                    primaryColor="#88d89d"
                 />
 
                 <main className="flex-1 bg-background py-12">
                     <div className="container max-w-5xl">
-                        <div className="bg-[#fdf3e7] rounded-lg p-6 text-center mb-8 border border-[#f3d299]">
+                        <div className="bg-[#f0faf2] rounded-lg p-6 text-center mb-8 border border-[#88d89d]">
                             <h2 className="text-2xl font-bold text-primary mb-2 uppercase tracking-wide">
                                 FORMULAIRE DE RESERVATION
                             </h2>
@@ -147,7 +147,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
 
                                 <div className="bg-card rounded-lg p-6 border shadow-sm space-y-6">
                                     <div>
-                                        <h3 className="text-xl font-bold bg-[#f3d299] text-slate-800 p-3 rounded-lg mb-4 text-center">
+                                        <h3 className="text-xl font-bold bg-[#88d89d] text-slate-800 p-3 rounded-lg mb-4 text-center">
                                             Type d'habitation
                                         </h3>
                                         <RadioGroup
@@ -165,7 +165,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                     </div>
 
                                     <div className="bg-card rounded-lg border shadow-sm space-y-6">
-                                        <h3 className="text-xl font-bold bg-[#f3d299] text-slate-800 p-3 rounded-lg mb-4 text-center">
+                                        <h3 className="text-xl font-bold bg-[#88d89d] text-slate-800 p-3 rounded-lg mb-4 text-center">
                                             Indiquez la superficie de votre espace en m².
                                         </h3>
                                         <div className="p-8 space-y-8">
@@ -185,7 +185,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                     </div>
 
                                     <div className="bg-muted/30 rounded-xl p-6 border border-muted">
-                                        <h3 className="text-xl font-bold bg-[#f3d299] text-slate-800 p-3 rounded-lg text-center mb-6 uppercase">
+                                        <h3 className="text-xl font-bold bg-[#88d89d] text-slate-800 p-3 rounded-lg text-center mb-6 uppercase">
                                             Les informations
                                         </h3>
                                         <p className="text-xs font-bold text-center text-slate-500 mb-6 uppercase tracking-wider">
@@ -297,7 +297,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                     </div>
 
                                     <div>
-                                        <h3 className="text-xl font-bold bg-[#f3d299] text-slate-800 p-3 rounded-lg text-center mb-4 uppercase">
+                                        <h3 className="text-xl font-bold bg-[#88d89d] text-slate-800 p-3 rounded-lg text-center mb-4 uppercase">
                                             Où aura lieu votre ménage ?
                                         </h3>
                                         <div className="p-6 bg-muted/30 rounded-xl border border-muted space-y-6">
@@ -339,7 +339,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
                                     <div className="flex justify-center pt-8">
                                         <Button
                                             type="submit"
-                                            className="bg-[#f3d299] hover:bg-[#eac485] text-slate-800 px-8 py-4 text-base font-bold shadow-lg shadow-[#f3d299]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
+                                            className="bg-[#88d89d] hover:bg-[#7bc88f] text-slate-800 px-8 py-4 text-base font-bold shadow-lg shadow-[#88d89d]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                                         >
                                             Demander un devis
                                         </Button>
@@ -354,7 +354,7 @@ La prestation comprend : L’évacuation des poussières et résidus de chantier
             <Footer />
 
             <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
-                <DialogContent className="sm:max-w-md bg-[#fdf3e7] border-[#f3d299]/20">
+                <DialogContent className="sm:max-w-md bg-[#f0faf2] border-[#88d89d]/20">
                     <DialogHeader>
                         <DialogTitle className="text-primary text-2xl font-bold">Confirmation</DialogTitle>
                         <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">

@@ -180,17 +180,17 @@ const MenageBureaux = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <div style={{ "--primary": "173 95% 36%" } as React.CSSProperties}>
+      <div style={{ "--primary": "69 66% 51%" } as React.CSSProperties}>
         <ServiceHeroSection
           title="Ménage Bureaux"
           description="Nettoyage des espaces de travail afin de garantir un environnement propre, sain et agréable pour les employés et les visiteurs. La prestation comprend : Le dépoussiérage des bureaux, plans de travail et surfaces accessibles, Le nettoyage des sols (balayage, serpière…), Le vidage des poubelles, Le nettoyage des vitres accessibles, L’entretien des espaces communs (salles de réunion, couloirs, cuisine, escaliers), nettoyage des bureaux, chaises, sols, toilettes… ainsi que les balcons, escaliers lorsqu’ils sont accessibles."
           image={serviceBureaux}
-          primaryColor="#05b5a0"
+          primaryColor="#c7dd54"
         />
 
         <main className="flex-1 bg-background py-12">
           <div className="container max-w-5xl">
-            <div className="bg-[#e0f2f1] rounded-lg p-6 text-center mb-8 border border-[#b2dfdb]">
+            <div className="bg-[#f2f8d9] rounded-lg p-6 text-center mb-8 border border-[#d6e792]">
               <h2 className="text-2xl font-bold text-primary mb-2 uppercase tracking-wide">
                 FORMULAIRE DE RESERVATION
               </h2>

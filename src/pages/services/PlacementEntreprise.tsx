@@ -117,19 +117,19 @@ const PlacementEntreprise = () => {
         <div className="min-h-screen flex flex-col bg-[#f0f4f0]">
             <Header />
 
-            <main className="flex-1 flex flex-col" style={{ "--primary": "142 33% 30%" } as React.CSSProperties}>
+            <main className="flex-1 flex flex-col" style={{ "--primary": "54 95% 49%" } as React.CSSProperties}>
                 <ServiceHeroSection
                     title="Placement & Gestion de Propreté pour Entreprises"
                     isCollapsible={false}
                     description="Des solutions sur mesure pour l'entretien de vos locaux. Choisissez entre notre offre flexible pour garder le contrôle ou notre offre premium pour une gestion à 360° sans soucis."
                     image={serviceMenagePonctuel}
-                    primaryColor="#5bbd82"
+                    primaryColor="#f1db08"
                 />
 
                 <section className="py-16 container px-6">
                     <div className="grid md:grid-cols-2 gap-12 mb-16 px-4">
                         {/* Flexible Service */}
-                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-green-100 flex flex-col h-full">
+                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-yellow-100 flex flex-col h-full">
                             <h2 className="text-2xl font-black text-[#2d5a3f] mb-6 uppercase border-b pb-4">Service ménage flexible :</h2>
                             <div className="space-y-4 text-slate-700 flex-1">
                                 <p className="font-bold">Vous gardez la main sur l’organisation. Nous sécurisons toute la partie RH.</p>
@@ -156,7 +156,7 @@ const PlacementEntreprise = () => {
                         </div>
 
                         {/* Premium Service */}
-                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-green-100 flex flex-col h-full ring-2 ring-[#5bbd82]/20">
+                        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-yellow-100 flex flex-col h-full ring-2 ring-[#f1db08]/20">
                             <h2 className="text-2xl font-black text-[#2d5a3f] mb-6 uppercase border-b pb-4">Service ménage Premium - gestion 360</h2>
                             <div className="space-y-4 text-slate-700 flex-1">
                                 <p className="font-bold">Vous n’achetez pas “du ménage”. Vous achetez un standard de propreté garanti.</p>
@@ -206,7 +206,7 @@ const PlacementEntreprise = () => {
                             className="py-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-both"
                         >
                             <div className="max-w-5xl mx-auto">
-                                <div className="bg-[#5bbd82]/20 rounded-lg p-6 text-center mb-8 border border-[#5bbd82]/30">
+                                <div className="bg-[#fefce8] rounded-lg p-6 text-center mb-8 border border-[#fef08a]">
                                     <h2 className="text-2xl font-bold text-[#2d5a3f] mb-2 uppercase tracking-wide">
                                         FORMULAIRE DE RESERVATION
                                     </h2>
@@ -216,14 +216,14 @@ const PlacementEntreprise = () => {
                                     {/* Summary Column */}
                                     <div className="lg:col-span-1 lg:order-last sticky-reservation-summary-container">
                                         <div className="lg:sticky lg:top-24 space-y-6">
-                                            <div className="bg-white rounded-lg border border-[#5bbd82]/20 shadow-sm p-6 space-y-4 relative">
-                                                <h3 className="text-xl font-bold text-[#2d5a3f] border-b border-[#5bbd82]/10 pb-2 text-center">
+                                            <div className="bg-white rounded-lg border border-[#f1db08]/20 shadow-sm p-6 space-y-4 relative">
+                                                <h3 className="text-xl font-bold text-[#b48d00] border-b border-[#f1db08]/10 pb-2 text-center">
                                                     Ma Réservation
                                                 </h3>
                                                 <div className="space-y-3">
                                                     <div className="flex justify-between gap-4 border-b border-slate-50 pb-2">
                                                         <span className="text-muted-foreground text-sm">Service:</span>
-                                                        <span className="font-bold text-right text-[#2d5a3f] text-sm">Placement & Gestion</span>
+                                                        <span className="font-bold text-right text-[#b48d00] text-sm">Placement & Gestion</span>
                                                     </div>
 
                                                     {/* Detailed info - hidden on mobile when collapsed */}
@@ -250,9 +250,9 @@ const PlacementEntreprise = () => {
                                                 </div>
 
                                                 <div className="pt-4 border-t border-[#5bbd82]/20">
-                                                    <div className="flex justify-between items-center bg-[#5bbd82]/5 p-3 rounded-lg border border-[#5bbd82]/10">
-                                                        <span className="text-xs font-bold text-[#2d5a3f] uppercase tracking-wider">Prix HT</span>
-                                                        <span className="text-lg font-black text-[#2d5a3f]">SUR DEVIS</span>
+                                                    <div className="flex justify-between items-center bg-[#f1db08]/5 p-3 rounded-lg border border-[#f1db08]/10">
+                                                        <span className="text-xs font-bold text-[#b48d00] uppercase tracking-wider">Prix HT</span>
+                                                        <span className="text-lg font-black text-[#b48d00]">SUR DEVIS</span>
                                                     </div>
                                                 </div>
 
@@ -260,7 +260,7 @@ const PlacementEntreprise = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
-                                                    className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-[#2d5a3f]/90 transition-transform active:scale-90"
+                                                    className="lg:hidden absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#b48d00] text-white flex items-center justify-center shadow-lg border-2 border-white z-20 hover:bg-[#b48d00]/90 transition-transform active:scale-90"
                                                 >
                                                     {isSummaryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                                                 </button>
@@ -282,12 +282,12 @@ const PlacementEntreprise = () => {
                                                     onValueChange={(value) => setFormData({ ...formData, serviceType: value })}
                                                     className="grid grid-cols-1 md:grid-cols-2 gap-4"
                                                 >
-                                                    <div className={`p-4 rounded-xl border-2 transition-all cursor-pointer flex items-center gap-3 ${formData.serviceType === "flexible" ? 'border-[#5bbd82] bg-[#f0f9f4]' : 'border-slate-100 hover:border-green-200'}`}>
-                                                        <RadioGroupItem value="flexible" id="serv-flexible" className="border-[#5bbd82] text-[#5bbd82]" />
+                                                    <div className={`p-4 rounded-xl border-2 transition-all cursor-pointer flex items-center gap-3 ${formData.serviceType === "flexible" ? 'border-[#f1db08] bg-[#fefce8]' : 'border-slate-100 hover:border-yellow-200'}`}>
+                                                        <RadioGroupItem value="flexible" id="serv-flexible" className="border-[#f1db08] text-[#f1db08]" />
                                                         <Label htmlFor="serv-flexible" className="font-bold text-sm text-slate-700 cursor-pointer">Service ménage flexible</Label>
                                                     </div>
-                                                    <div className={`p-4 rounded-xl border-2 transition-all cursor-pointer flex items-center gap-3 ${formData.serviceType === "premium" ? 'border-[#5bbd82] bg-[#f0f9f4]' : 'border-slate-100 hover:border-green-200'}`}>
-                                                        <RadioGroupItem value="premium" id="serv-premium" className="border-[#5bbd82] text-[#5bbd82]" />
+                                                    <div className={`p-4 rounded-xl border-2 transition-all cursor-pointer flex items-center gap-3 ${formData.serviceType === "premium" ? 'border-[#f1db08] bg-[#fefce8]' : 'border-slate-100 hover:border-yellow-200'}`}>
+                                                        <RadioGroupItem value="premium" id="serv-premium" className="border-[#f1db08] text-[#f1db08]" />
                                                         <Label htmlFor={`serv-premium`} className="font-bold text-sm text-slate-700 cursor-pointer">Service ménage Premium</Label>
                                                     </div>
                                                 </RadioGroup>
@@ -295,7 +295,7 @@ const PlacementEntreprise = () => {
 
                                             {/* Structure Type Selection */}
                                             <div className="space-y-4">
-                                                <h3 className="text-lg font-bold bg-[#5bbd82]/10 text-[#2d5a3f] p-3 rounded-lg text-center uppercase border border-[#5bbd82]/20">
+                                                <h3 className="text-lg font-bold bg-[#f1db08]/10 text-[#b48d00] p-3 rounded-lg text-center uppercase border border-[#f1db08]/20">
                                                     Type de structure
                                                 </h3>
                                                 <div className="p-4 bg-muted/20 rounded-xl border border-muted">
@@ -308,8 +308,8 @@ const PlacementEntreprise = () => {
                                                             "Bureaux", "Magasin/Boutique", "Restaurant/Café", "Clinique",
                                                             "Hôpital", "Hôtel", "Riad", "Immeuble/Résidence/Luxe", "Entrepôt"
                                                         ].map((type) => (
-                                                            <div key={type} className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all cursor-pointer group ${formData.structureType === type.toLowerCase() ? 'border-[#5bbd82] bg-white ring-2 ring-[#5bbd82]/10' : 'border-transparent bg-white/50 hover:bg-white'}`}>
-                                                                <RadioGroupItem value={type.toLowerCase()} id={`struct-${type}`} className="mb-2 border-[#5bbd82] text-[#5bbd82]" />
+                                                            <div key={type} className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all cursor-pointer group ${formData.structureType === type.toLowerCase() ? 'border-[#f1db08] bg-white ring-2 ring-[#f1db08]/10' : 'border-transparent bg-white/50 hover:bg-white'}`}>
+                                                                <RadioGroupItem value={type.toLowerCase()} id={`struct-${type}`} className="mb-2 border-[#f1db08] text-[#f1db08]" />
                                                                 <Label htmlFor={`struct-${type}`} className="font-bold text-[10px] text-slate-700 text-center leading-tight cursor-pointer">{type}</Label>
                                                             </div>
                                                         ))}
@@ -319,15 +319,15 @@ const PlacementEntreprise = () => {
 
                                             {/* Frequency Section */}
                                             <div className="space-y-4">
-                                                <h3 className="text-lg font-bold bg-[#5bbd82]/10 text-[#2d5a3f] p-3 rounded-lg text-center uppercase border border-[#5bbd82]/20">
+                                                <h3 className="text-lg font-bold bg-[#f1db08]/10 text-[#b48d00] p-3 rounded-lg text-center uppercase border border-[#f1db08]/20">
                                                     Choisissez la fréquence
                                                 </h3>
                                                 <div className="flex bg-slate-100 p-1 rounded-full w-full max-w-md mx-auto">
                                                     <button
                                                         type="button"
                                                         className={`flex-1 py-2 px-4 rounded-full text-sm font-bold transition-all ${formData.frequency === "oneshot"
-                                                            ? "bg-[#5bbd82] text-white shadow-sm"
-                                                            : "text-slate-500 hover:text-[#5bbd82]"
+                                                            ? "bg-[#f1db08] text-slate-800 shadow-sm"
+                                                            : "text-slate-500 hover:text-[#b48d00]"
                                                             }`}
                                                         onClick={() => setFormData({ ...formData, frequency: "oneshot", subFrequency: "" })}
                                                     >
@@ -336,8 +336,8 @@ const PlacementEntreprise = () => {
                                                     <button
                                                         type="button"
                                                         className={`flex-1 py-2 px-4 rounded-full text-sm font-bold transition-all ${formData.frequency === "subscription"
-                                                            ? "bg-[#5bbd82] text-white shadow-sm"
-                                                            : "text-slate-500 hover:text-[#5bbd82]"
+                                                            ? "bg-[#f1db08] text-slate-800 shadow-sm"
+                                                            : "text-slate-500 hover:text-[#b48d00]"
                                                             }`}
                                                         onClick={() => setFormData({ ...formData, frequency: "subscription" })}
                                                     >
@@ -367,7 +367,7 @@ const PlacementEntreprise = () => {
 
                                             {/* Resources Section */}
                                             <div className="space-y-4">
-                                                <h3 className="text-lg font-bold bg-[#5bbd82]/10 text-[#2d5a3f] p-3 rounded-lg text-center uppercase border border-[#5bbd82]/20">
+                                                <h3 className="text-lg font-bold bg-[#f1db08]/10 text-[#b48d00] p-3 rounded-lg text-center uppercase border border-[#f1db08]/20">
                                                     Nombre de personne
                                                 </h3>
                                                 <div className="flex items-center justify-center gap-10 p-4 bg-slate-50 rounded-xl">
@@ -375,13 +375,13 @@ const PlacementEntreprise = () => {
                                                         type="button"
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-10 w-10 rounded-full bg-slate-200 text-[#2d5a3f] hover:bg-slate-300 shadow-sm"
+                                                        className="h-10 w-10 rounded-full bg-slate-200 text-[#b48d00] hover:bg-slate-300 shadow-sm"
                                                         onClick={decrementPeople}
                                                     >
                                                         <span className="text-2xl">-</span>
                                                     </Button>
                                                     <div className="flex flex-col items-center">
-                                                        <span className="text-3xl font-black text-[#2d5a3f] leading-none">
+                                                        <span className="text-3xl font-black text-[#b48d00] leading-none">
                                                             {formData.numberOfPeople}
                                                         </span>
                                                     </div>
@@ -389,7 +389,7 @@ const PlacementEntreprise = () => {
                                                         type="button"
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-10 w-10 rounded-full bg-slate-200 text-[#2d5a3f] hover:bg-slate-300 shadow-sm"
+                                                        className="h-10 w-10 rounded-full bg-slate-200 text-[#b48d00] hover:bg-slate-300 shadow-sm"
                                                         onClick={incrementPeople}
                                                     >
                                                         <span className="text-2xl">+</span>
@@ -467,7 +467,7 @@ const PlacementEntreprise = () => {
                                                                             whatsappPrefix: checked ? prev.phonePrefix : prev.whatsappPrefix
                                                                         }));
                                                                     }}
-                                                                    className="data-[state=checked]:bg-[#5bbd82] border-[#5bbd82]"
+                                                                    className="data-[state=checked]:bg-[#f1db08] border-[#f1db08]"
                                                                 />
                                                                 <label
                                                                     htmlFor="useWhatsapp"
@@ -484,7 +484,7 @@ const PlacementEntreprise = () => {
                                                             <Input
                                                                 value={formData.whatsappPrefix}
                                                                 onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
-                                                                className="bg-slate-50 border rounded-lg w-20 text-center font-bold text-[#5bbd82] text-xs"
+                                                                className="bg-slate-50 border rounded-lg w-20 text-center font-bold text-[#b48d00] text-xs"
                                                                 placeholder="+212"
                                                                 disabled={formData.useWhatsappForPhone}
                                                             />
@@ -513,7 +513,7 @@ const PlacementEntreprise = () => {
 
                                             {/* Location Section */}
                                             <div className="space-y-4">
-                                                <h3 className="text-lg font-bold bg-[#5bbd82]/10 text-[#2d5a3f] p-3 rounded-lg text-center uppercase border border-[#5bbd82]/20">
+                                                <h3 className="text-lg font-bold bg-[#f1db08]/10 text-[#b48d00] p-3 rounded-lg text-center uppercase border border-[#f1db08]/20">
                                                     Où aura lieu votre ménage ?
                                                 </h3>
                                                 <div className="grid md:grid-cols-2 gap-4">
@@ -544,7 +544,7 @@ const PlacementEntreprise = () => {
                                             <div className="flex justify-center pt-8">
                                                 <Button
                                                     type="submit"
-                                                    className="bg-[#5bbd82] hover:bg-[#4a9d6d] text-white px-8 py-4 text-base font-bold shadow-lg shadow-[#5bbd82]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
+                                                    className="bg-[#f1db08] hover:bg-[#e1cc07] text-slate-800 px-8 py-4 text-base font-bold shadow-lg shadow-[#f1db08]/20 h-auto rounded-full w-full md:w-auto md:min-w-[260px] transition-all hover:scale-105 active:scale-95"
                                                 >
                                                     Demander un devis
                                                 </Button>
@@ -561,9 +561,9 @@ const PlacementEntreprise = () => {
             <Footer />
 
             <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
-                <DialogContent className="sm:max-w-md bg-[#f0f9f4] border-[#5bbd82]/20">
+                <DialogContent className="sm:max-w-md bg-[#fefce8] border-[#f1db08]/20">
                     <DialogHeader>
-                        <DialogTitle className="text-[#2d5a3f] text-2xl font-bold">Confirmation</DialogTitle>
+                        <DialogTitle className="text-[#b48d00] text-2xl font-bold">Confirmation</DialogTitle>
                         <DialogDescription className="text-slate-700 text-lg mt-4 leading-relaxed">
                             {getConfirmationMessage(formData.contactPerson, true)}
                         </DialogDescription>
@@ -571,7 +571,7 @@ const PlacementEntreprise = () => {
                     <DialogFooter className="mt-6">
                         <Button
                             onClick={() => setShowConfirmation(false)}
-                            className="bg-[#5bbd82] hover:bg-[#4a9d6d] text-white rounded-full px-8"
+                            className="bg-[#f1db08] hover:bg-[#e1cc07] text-slate-800 rounded-full px-8"
                         >
                             Fermer
                         </Button>
