@@ -24,7 +24,10 @@ const PartnersSection = () => {
 
     return (
         <section className="py-16 bg-white border-t border-gray-100">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-4 text-center">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-800 mb-12">
+                    Groupe Agence Premium
+                </h2>
                 <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24">
                     {partners.map((partner, index) => (
                         <a

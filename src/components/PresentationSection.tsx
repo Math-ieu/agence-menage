@@ -27,8 +27,8 @@ const PresentationSection = () => {
             <div className="container relative z-10 mx-auto px-6 max-w-6xl">
                 <div className="flex flex-col items-center">
 
-                    {/* Mobile: Photo at top */}
-                    <div className="md:hidden -mb-12 relative z-20">
+                    {/* Mobile & Tablet: Photo at top */}
+                    <div className="xl:hidden -mb-12 relative z-20">
                         <img
                             src={photoMehdi}
                             alt="Mehdi HARIT"
@@ -46,7 +46,7 @@ const PresentationSection = () => {
                                     “
                                 </div>
 
-                                <div className="space-y-3 text-slate-800 text-lg md:text-xl xl:text-2xl leading-tight text-center md:text-left pt-2">
+                                <div className="space-y-3 text-slate-800 text-lg md:text-xl xl:text-2xl leading-tight text-center xl:text-left pt-2">
                                     <p>
                                         À Casablanca, nous recherchons un service qui respecte notre rythme, nos espaces et nos standards.
                                     </p>
@@ -62,9 +62,9 @@ const PresentationSection = () => {
                                 </div>
 
                                 {/* Bottom Quote Mark & Author Block */}
-                                <div className="flex flex-col md:flex-row items-center md:items-end mt-0">
+                                <div className="flex flex-col xl:flex-row items-center xl:items-end mt-0">
                                     {/* Desktop Photo: positioned bottom-left corner */}
-                                    <div className="hidden md:block flex-shrink-0 -mb-28 -ml-56 lg:-ml-64">
+                                    <div className="hidden xl:block flex-shrink-0 -mb-28 -ml-56 xl:-ml-64">
                                         <img
                                             src={photoMehdi}
                                             alt="Mehdi HARIT"
@@ -72,13 +72,13 @@ const PresentationSection = () => {
                                         />
                                     </div>
 
-                                    <div className="flex-1 flex flex-col items-center md:items-start pl-0 md:pl-20 relative">
+                                    <div className="flex-1 flex flex-col items-center xl:items-start pl-0 xl:pl-20 relative">
                                         {/* Bottom Quote Mark - Closer to text */}
-                                        <div className="text-black text-4xl md:text-5xl font-serif leading-none select-none mb-2 md:absolute md:-top-36 md:left-72">
+                                        <div className="text-black text-4xl md:text-5xl font-serif leading-none select-none mb-2 xl:absolute xl:-top-36 xl:left-72">
                                             ”
                                         </div>
 
-                                        <div className="text-center md:text-left mt-0">
+                                        <div className="text-center xl:text-left mt-0">
                                             <h4 className="text-[#287271] text-xl md:text-2xl font-black mb-0">Mehdi HARIT</h4>
                                             <p className="text-slate-600 text-xs md:text-sm font-bold uppercase tracking-wider">
                                                 General Manager du groupe agence premium

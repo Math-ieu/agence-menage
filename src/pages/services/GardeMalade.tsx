@@ -139,7 +139,7 @@ const GardeMalade = () => {
           <div className="container px-6 relative">
             <button
               onClick={() => window.history.back()}
-              className="absolute -top-4 md:-top-8 left-0 md:-left-4 p-2 hover:bg-[#b46d2f]/10 rounded-full transition-colors text-[#b46d2f]"
+              className="absolute -top-4 md:-top-8 left-0 xl:-left-4 p-2 hover:bg-[#b46d2f]/10 rounded-full transition-colors text-[#b46d2f]"
               aria-label="Retour"
             >
               <ArrowLeft size={24} />

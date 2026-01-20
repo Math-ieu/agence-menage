@@ -53,7 +53,7 @@ const ServiceHeroSection = ({ title, description, image, primaryColor, isCollaps
             <div className="container relative">
                 <button
                     onClick={() => window.history.back()}
-                    className="absolute -top-4 md:-top-8 left-0 md:-left-12 p-2 hover:bg-black/5 rounded-full transition-colors"
+                    className="absolute -top-4 md:-top-8 left-0 xl:-left-12 p-2 hover:bg-black/5 rounded-full transition-colors"
                     aria-label="Retour"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

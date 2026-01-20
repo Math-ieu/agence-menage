@@ -14,7 +14,7 @@ import team10 from "@/assets/team/Kaoutar IDRISSI .png";
 
 const teamData = [
     { id: "01", name: "Mehdi HARIT", role: "General Manager", image: team1 },
-    { id: "02", name: "Julien COSTAN ZANON", role: "Président de la société ROSSILAN S.A", image: team2 },
+    { id: "02", name: "Julien COSTAN ZANON", role: "Directeur des opérations", image: team2 },
     { id: "03", name: "Zineb BOUNEFFAH", role: "Responsable Nettoyage", image: team5 },
     { id: "04", name: "Kaoutar IDRISSI", role: "Account manager", image: team10 },
     { id: "05", name: "Dianne ADOTE", role: "Chargée de com", image: team4 },

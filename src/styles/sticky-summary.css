@@ -1,7 +1,7 @@
 @media (max-width: 1023px) {
   .sticky-reservation-summary-container {
     position: sticky;
-    top: 5rem;
+    top: 5rem; 
     z-index: 40;
     background-color: hsl(var(--background) / 0.9);
     backdrop-filter: blur(12px);
