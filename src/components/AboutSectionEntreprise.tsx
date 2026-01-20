@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import aboutVideo from "@/assets/Video-corrected.mp4";
 
-const AboutSection = () => {
+const AboutSectionEntreprise = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -59,4 +59,4 @@ const AboutSection = () => {
   );
 };
 
-export default AboutSection;
+export default AboutSectionEntreprise;

@@ -3,7 +3,7 @@ import React from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import ServicesGrid from "@/components/ServicesGrid";
-import AboutSection from "@/components/AboutSection";
+import AboutSectionEntreprise from "@/components/AboutSectionEntreprise";
 import PresentationSection from "@/components/PresentationSection";
 import TeamReviews from "@/components/TeamReviews";
 import PartnersSection from "@/components/PartnersSection";
@@ -17,7 +17,7 @@ const Entreprise = () => {
       <main className="flex-1">
         <HeroSection />
         <ServicesGrid type="entreprise" />
-        <AboutSection />
+        <AboutSectionEntreprise />
         <PresentationSection />
         <WhyChooseUs />
         <TeamReviews />

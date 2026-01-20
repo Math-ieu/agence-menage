@@ -1,18 +1,31 @@
 import { Link, useLocation } from "react-router-dom";
 import heroParticulier from "@/assets/hero-home-particulier.png";
 import heroEntreprise from "@/assets/hero-home-entreprise.png";
+import heroParticulierMobile from "@/assets/couverture-particulier-mobile.png";
+import heroEntrepriseMobile from "@/assets/couverture-entreprise-mobile.png";
+
 const HeroSection = () => {
   const location = useLocation();
   const isEntreprise = location.pathname === "/entreprise";
   const heroImage = isEntreprise ? heroEntreprise : heroParticulier;
+  const heroImageMobile = isEntreprise ? heroEntrepriseMobile : heroParticulierMobile;
 
   return (
     <section className="relative h-[550px] md:h-[650px] overflow-hidden">
+      {/* Desktop Background */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat hidden md:block"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 to-transparent" />
+      </div>
+
+      {/* Mobile Background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat block md:hidden"
+        style={{ backgroundImage: `url(${heroImageMobile})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/40 via-transparent to-transparent" />
       </div>
 
       <div className="relative container h-full flex flex-col justify-center py-12">

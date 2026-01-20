@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import ServicesGrid from "@/components/ServicesGrid";
-import AboutSection from "@/components/AboutSection";
+import AboutSectionParticulier from "@/components/AboutSectionParliculier";
 import PresentationSection from "@/components/PresentationSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import TeamReviews from "@/components/TeamReviews";
@@ -15,7 +15,7 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <ServicesGrid type="particulier" />
-        <AboutSection />
+        <AboutSectionParticulier />
         <PresentationSection />
         <WhyChooseUs />
         <TeamReviews />
